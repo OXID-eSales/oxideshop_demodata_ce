@@ -10,9 +10,27 @@
 /*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `oxacceptedterms`
+--
+
+DROP TABLE IF EXISTS `oxacceptedterms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxacceptedterms` (
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'User id (oxuser)',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTERMVERSION` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Terms version',
+  `OXACCEPTEDTIME` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Time, when terms were accepted',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXUSERID`,`OXSHOPID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows which users has accepted shop terms';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxacceptedterms`
@@ -22,6 +40,25 @@ LOCK TABLES `oxacceptedterms` WRITE;
 /*!40000 ALTER TABLE `oxacceptedterms` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxacceptedterms` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxaccessoire2article`
+--
+
+DROP TABLE IF EXISTS `oxaccessoire2article`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxaccessoire2article` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Accessory Article id (oxarticles)',
+  `OXARTICLENID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXSORT` int(5) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXARTICLENID` (`OXARTICLENID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between article and its accessory articles';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxaccessoire2article`
@@ -34,6 +71,44 @@ INSERT INTO `oxaccessoire2article` VALUES ('d68982f166e4ac56d5d0d959e3554751','d
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxactions`
+--
+
+DROP TABLE IF EXISTS `oxactions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxactions` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Action id',
+  `OXSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTYPE` tinyint(1) NOT NULL COMMENT 'Action type: 0 or 1 - action, 2 - promotion, 3 - banner',
+  `OXTITLE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXTITLE_1` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(128) NOT NULL DEFAULT '',
+  `OXLONGDESC` text NOT NULL COMMENT 'Long description, used for promotion (multilanguage)',
+  `OXLONGDESC_1` text NOT NULL,
+  `OXLONGDESC_2` text NOT NULL,
+  `OXLONGDESC_3` text NOT NULL,
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active',
+  `OXACTIVEFROM` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active from specified date',
+  `OXACTIVETO` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active to specified date',
+  `OXPIC` varchar(128) NOT NULL DEFAULT '' COMMENT 'Picture filename, used for banner (multilanguage)',
+  `OXPIC_1` varchar(128) NOT NULL DEFAULT '',
+  `OXPIC_2` varchar(128) NOT NULL DEFAULT '',
+  `OXPIC_3` varchar(128) NOT NULL DEFAULT '',
+  `OXLINK` varchar(128) NOT NULL DEFAULT '' COMMENT 'Link, used on banner (multilanguage)',
+  `OXLINK_1` varchar(128) NOT NULL DEFAULT '',
+  `OXLINK_2` varchar(128) NOT NULL DEFAULT '',
+  `OXLINK_3` varchar(128) NOT NULL DEFAULT '',
+  `OXSORT` int(5) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSORT` (`OXSORT`),
+  KEY `OXTYPE` (`OXTYPE`,`OXACTIVE`,`OXACTIVETO`,`OXACTIVEFROM`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Stores information about actions, promotions and banners';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxactions`
 --
 
@@ -42,6 +117,26 @@ LOCK TABLES `oxactions` WRITE;
 INSERT INTO `oxactions` VALUES ('oxstart','oxbaseshop',0,'Startseite unten','Start page bottom','','','','','','',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('oxtopstart','oxbaseshop',0,'Topangebot Startseite','Top offer start page','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('oxbargain','oxbaseshop',0,'Angebote der Woche','Week\'s Special','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('oxtop5','oxbaseshop',0,'Topseller','Top seller','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('oxcatoffer','oxbaseshop',0,'Kategorien-Topangebot','Top offer in categories','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('oxnewest','oxbaseshop',0,'Frisch eingetroffen','Just arrived','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('oxnewsletter','oxbaseshop',0,'Newsletter','Newsletter','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','','',0,'2016-07-19 14:11:07'),('d51dbdafb1e51b869f5d8ac233e97814','oxbaseshop',2,'Current Promotion','Current Promotion','','','<a href=\"[{ oxgetseourl type=\'oxcategory\' oxid=\'30e44ab85808a1f05.26160932\' }]\">          <img alt=\"\" src=\"[{$oViewConf->getPictureDir()}]promo/current_en.jpg\" /></a>','<p>&nbsp;</p>','','',0,'2010-01-01 00:00:00','2011-10-10 00:00:00','','','','','','','','',2,'2016-07-19 14:11:14'),('d51f5e7446e9193188fb315c9d60520a','oxbaseshop',2,'Expired promotion','Expired promotion','','','<a href=\"[{ oxgetseourl type=\'oxarticle\' oxid=\'1651\' }]\">                                 <img alt=\"\" src=\"[{$oViewConf->getPictureDir()}]promo/expired_en.jpg\" /></a>','<a href=\"[{ oxgetseourl type=\'oxarticle\' oxid=\'1651\' }]\">                                 <img alt=\"\" src=\"[{$oViewConf->getPictureDir()}]promo/expired_de.jpg\" /></a>','','',0,'2010-01-01 00:00:00','2010-02-01 00:00:00','','','','','','','','',1,'2016-07-19 14:11:14'),('d51545e80843be666a9326783a73e91d','oxbaseshop',2,'Upcoming Promotion','Upcoming Promotion','','','<a href=\"[{ oxgetseourl type=\'oxmanufacturer\' oxid=\'9434afb379a46d6c141de9c9e5b94fcf\' }]\"><img alt=\"\" src=\"[{$oViewConf->getPictureDir()}]promo/upcoming_en.jpg\" /></a>','<p>&nbsp;</p>','','',0,'2010-10-10 00:00:00','2011-10-10 00:00:00','','','','','','','','',3,'2016-07-19 14:11:14'),('b5639c6431b26687321f6ce654878fa5','oxbaseshop',3,'Banner 1','Banner 1','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','surfer_wave_promo.jpg','surfer_wave(1)_promo.jpg','','','','','','',0,'2016-07-19 14:11:14'),('b56a097dedf5db44e20ed56ac6defaa8','oxbaseshop',3,'Banner 2','Banner 2','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','longboard_startpage_promo.jpg','longboard_startpage(1)_promo.jpg','','','','','','',0,'2016-07-19 14:11:14'),('b56efaf6c93664b6dca5b1cee1f87057','oxbaseshop',3,'Banner 3','Banner 3','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','cabrinha_startpage_promo.jpg','cabrinha_startpage(1)_promo.jpg','','','','','','',0,'2016-07-19 14:11:14'),('cb34f86f56162d0c95890b5985693710','oxbaseshop',3,'Banner 4','Banner 4','','','','','','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','banner4de(1)_promo.jpg','banner4en_promo.jpg','','','Wakeboarding/Wakeboards/','en/Wakeboarding/Wakeboards/','','',0,'2016-07-19 14:11:14');
 /*!40000 ALTER TABLE `oxactions` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxactions2article`
+--
+
+DROP TABLE IF EXISTS `oxactions2article`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxactions2article` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIONID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Action id (oxactions)',
+  `OXARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXSORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXMAINIDX` (`OXSHOPID`,`OXACTIONID`,`OXSORT`),
+  KEY `OXARTID` (`OXARTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between actions and articles';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxactions2article`
@@ -54,6 +149,37 @@ INSERT INTO `oxactions2article` VALUES ('d8842e3c913930f47.00463447','oxbaseshop
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxaddress`
+--
+
+DROP TABLE IF EXISTS `oxaddress`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxaddress` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Address id',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXADDRESSUSERID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'User id (oxuser)',
+  `OXCOMPANY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Company name',
+  `OXFNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'First name',
+  `OXLNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Last name',
+  `OXSTREET` varchar(255) NOT NULL DEFAULT '' COMMENT 'Street',
+  `OXSTREETNR` varchar(16) NOT NULL DEFAULT '' COMMENT 'House number',
+  `OXADDINFO` varchar(255) NOT NULL DEFAULT '' COMMENT 'Additional info',
+  `OXCITY` varchar(255) NOT NULL DEFAULT '' COMMENT 'City',
+  `OXCOUNTRY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Country name',
+  `OXCOUNTRYID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Country id (oxcountry)',
+  `OXSTATEID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'State id (oxstate)',
+  `OXZIP` varchar(50) NOT NULL DEFAULT '' COMMENT 'Zip code',
+  `OXFON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Phone number',
+  `OXFAX` varchar(128) NOT NULL DEFAULT '' COMMENT 'Fax number',
+  `OXSAL` varchar(128) NOT NULL DEFAULT '' COMMENT 'User title prefix (Mr/Mrs)',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXUSERID` (`OXUSERID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Stores user shipping addresses';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxaddress`
 --
 
@@ -63,6 +189,20 @@ LOCK TABLES `oxaddress` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxadminlog`
+--
+
+DROP TABLE IF EXISTS `oxadminlog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxadminlog` (
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXSQL` text NOT NULL COMMENT 'Logged sql'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Logs admin actions';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxadminlog`
 --
 
@@ -70,6 +210,32 @@ LOCK TABLES `oxadminlog` WRITE;
 /*!40000 ALTER TABLE `oxadminlog` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxadminlog` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxartextends`
+--
+
+DROP TABLE IF EXISTS `oxartextends`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxartextends` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article id (extends oxarticles article with this id)',
+  `OXLONGDESC` text NOT NULL COMMENT 'Long description (multilanguage)',
+  `OXLONGDESC_1` text NOT NULL,
+  `OXLONGDESC_2` text NOT NULL,
+  `OXLONGDESC_3` text NOT NULL,
+  `OXTAGS` varchar(255) NOT NULL COMMENT 'Tags (multilanguage)',
+  `OXTAGS_1` varchar(255) NOT NULL,
+  `OXTAGS_2` varchar(255) NOT NULL,
+  `OXTAGS_3` varchar(255) NOT NULL,
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  FULLTEXT KEY `OXTAGS` (`OXTAGS`),
+  FULLTEXT KEY `OXTAGS_1` (`OXTAGS_1`),
+  FULLTEXT KEY `OXTAGS_2` (`OXTAGS_2`),
+  FULLTEXT KEY `OXTAGS_3` (`OXTAGS_3`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Additional information for articles';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxartextends`
@@ -82,6 +248,149 @@ INSERT INTO `oxartextends` VALUES ('adcb9deae73557006a8ac748f45288b4','<div clas
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxarticles`
+--
+
+DROP TABLE IF EXISTS `oxarticles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxarticles` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article id',
+  `OXSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXPARENTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Parent article id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active',
+  `OXACTIVEFROM` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active from specified date',
+  `OXACTIVETO` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active to specified date',
+  `OXARTNUM` varchar(255) NOT NULL DEFAULT '' COMMENT 'Article number',
+  `OXEAN` varchar(128) NOT NULL DEFAULT '' COMMENT 'International Article Number (EAN)',
+  `OXDISTEAN` varchar(128) NOT NULL DEFAULT '' COMMENT 'Manufacture International Article Number (Man. EAN)',
+  `OXMPN` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Manufacture Part Number (MPN)',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXSHORTDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Short description (multilanguage)',
+  `OXPRICE` double NOT NULL DEFAULT '0' COMMENT 'Article Price',
+  `OXBLFIXEDPRICE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'No Promotions (Price Alert) ',
+  `OXPRICEA` double NOT NULL DEFAULT '0' COMMENT 'Price A',
+  `OXPRICEB` double NOT NULL DEFAULT '0' COMMENT 'Price B',
+  `OXPRICEC` double NOT NULL DEFAULT '0' COMMENT 'Price C',
+  `OXBPRICE` double NOT NULL DEFAULT '0' COMMENT 'Purchase Price',
+  `OXTPRICE` double NOT NULL DEFAULT '0' COMMENT 'Recommended Retail Price (RRP)',
+  `OXUNITNAME` varchar(32) NOT NULL DEFAULT '' COMMENT 'Unit name (kg,g,l,cm etc), used in setting price per quantity unit calculation',
+  `OXUNITQUANTITY` double NOT NULL DEFAULT '0' COMMENT 'Article quantity, used in setting price per quantity unit calculation',
+  `OXEXTURL` varchar(255) NOT NULL DEFAULT '' COMMENT 'External URL to other information about the article',
+  `OXURLDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Text for external URL (multilanguage)',
+  `OXURLIMG` varchar(128) NOT NULL DEFAULT '' COMMENT 'External URL image',
+  `OXVAT` float DEFAULT NULL COMMENT 'Value added tax. If specified, used in all calculations instead of global vat',
+  `OXTHUMB` varchar(128) NOT NULL DEFAULT '' COMMENT 'Thumbnail filename',
+  `OXICON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Icon filename',
+  `OXPIC1` varchar(128) NOT NULL DEFAULT '' COMMENT '1# Picture filename',
+  `OXPIC2` varchar(128) NOT NULL DEFAULT '' COMMENT '2# Picture filename',
+  `OXPIC3` varchar(128) NOT NULL DEFAULT '' COMMENT '3# Picture filename',
+  `OXPIC4` varchar(128) NOT NULL DEFAULT '' COMMENT '4# Picture filename',
+  `OXPIC5` varchar(128) NOT NULL DEFAULT '' COMMENT '5# Picture filename',
+  `OXPIC6` varchar(128) NOT NULL DEFAULT '' COMMENT '6# Picture filename',
+  `OXPIC7` varchar(128) NOT NULL DEFAULT '' COMMENT '7# Picture filename',
+  `OXPIC8` varchar(128) NOT NULL DEFAULT '' COMMENT '8# Picture filename',
+  `OXPIC9` varchar(128) NOT NULL DEFAULT '' COMMENT '9# Picture filename',
+  `OXPIC10` varchar(128) NOT NULL DEFAULT '' COMMENT '10# Picture filename',
+  `OXPIC11` varchar(128) NOT NULL DEFAULT '' COMMENT '11# Picture filename',
+  `OXPIC12` varchar(128) NOT NULL DEFAULT '' COMMENT '12# Picture filename',
+  `OXWEIGHT` double NOT NULL DEFAULT '0' COMMENT 'Weight (kg)',
+  `OXSTOCK` double NOT NULL DEFAULT '0' COMMENT 'Article quantity in stock',
+  `OXSTOCKFLAG` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Delivery Status: 1 - Standard, 2 - If out of Stock, offline, 3 - If out of Stock, not orderable, 4 - External Storehouse',
+  `OXSTOCKTEXT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Message, which is shown if the article is in stock (multilanguage)',
+  `OXNOSTOCKTEXT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Message, which is shown if the article is off stock (multilanguage)',
+  `OXDELIVERY` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Date, when the product will be available again if it is sold out',
+  `OXINSERT` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Creation time',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXLENGTH` double NOT NULL DEFAULT '0' COMMENT 'Article dimensions: Length',
+  `OXWIDTH` double NOT NULL DEFAULT '0' COMMENT 'Article dimensions: Width',
+  `OXHEIGHT` double NOT NULL DEFAULT '0' COMMENT 'Article dimensions: Height',
+  `OXFILE` varchar(128) NOT NULL DEFAULT '' COMMENT 'File, shown in article media list',
+  `OXSEARCHKEYS` varchar(255) NOT NULL DEFAULT '' COMMENT 'Search terms (multilanguage)',
+  `OXTEMPLATE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Alternative template filename (if empty, default is used)',
+  `OXQUESTIONEMAIL` varchar(255) NOT NULL DEFAULT '' COMMENT 'E-mail for question',
+  `OXISSEARCH` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Should article be shown in search',
+  `OXISCONFIGURABLE` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Can article be customized',
+  `OXVARNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Name of variants selection lists (different lists are separated by | ) (multilanguage)',
+  `OXVARSTOCK` int(5) NOT NULL DEFAULT '0' COMMENT 'Sum of active article variants stock quantity',
+  `OXVARCOUNT` int(1) NOT NULL DEFAULT '0' COMMENT 'Total number of variants that article has (active and inactive)',
+  `OXVARSELECT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Variant article selections (separated by | ) (multilanguage)',
+  `OXVARMINPRICE` double NOT NULL DEFAULT '0' COMMENT 'Lowest price in active article variants',
+  `OXVARMAXPRICE` double NOT NULL DEFAULT '0' COMMENT 'Highest price in active article variants',
+  `OXVARNAME_1` varchar(255) NOT NULL DEFAULT '',
+  `OXVARSELECT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXVARNAME_2` varchar(255) NOT NULL DEFAULT '',
+  `OXVARSELECT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXVARNAME_3` varchar(255) NOT NULL DEFAULT '',
+  `OXVARSELECT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_1` varchar(255) NOT NULL DEFAULT '',
+  `OXURLDESC_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSEARCHKEYS_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_2` varchar(255) NOT NULL DEFAULT '',
+  `OXURLDESC_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSEARCHKEYS_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_3` varchar(255) NOT NULL DEFAULT '',
+  `OXURLDESC_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSEARCHKEYS_3` varchar(255) NOT NULL DEFAULT '',
+  `OXBUNDLEID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Bundled article id',
+  `OXFOLDER` varchar(32) NOT NULL DEFAULT '' COMMENT 'Folder',
+  `OXSUBCLASS` varchar(32) NOT NULL DEFAULT '' COMMENT 'Subclass',
+  `OXSTOCKTEXT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSTOCKTEXT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSTOCKTEXT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXNOSTOCKTEXT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXNOSTOCKTEXT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXNOSTOCKTEXT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSORT` int(5) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXSOLDAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Amount of sold articles including variants (used only for parent articles)',
+  `OXNONMATERIAL` int(1) NOT NULL DEFAULT '0' COMMENT 'Intangible article, free shipping is used (variants inherits parent setting)',
+  `OXFREESHIPPING` int(1) NOT NULL DEFAULT '0' COMMENT 'Free shipping (variants inherits parent setting)',
+  `OXREMINDACTIVE` int(1) NOT NULL DEFAULT '0' COMMENT 'Enables sending of notification email when oxstock field value falls below oxremindamount value',
+  `OXREMINDAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Defines the amount, below which notification email will be sent if oxremindactive is set to 1',
+  `OXAMITEMID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '',
+  `OXAMTASKID` varchar(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '0',
+  `OXVENDORID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Vendor id (oxvendor)',
+  `OXMANUFACTURERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Manufacturer id (oxmanufacturers)',
+  `OXSKIPDISCOUNTS` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Skips all negative Discounts (Discounts, Vouchers, Delivery ...)',
+  `OXRATING` double NOT NULL DEFAULT '0' COMMENT 'Article rating',
+  `OXRATINGCNT` int(11) NOT NULL DEFAULT '0' COMMENT 'Rating votes count',
+  `OXMINDELTIME` int(11) NOT NULL DEFAULT '0' COMMENT 'Minimal delivery time (unit is set in oxdeltimeunit)',
+  `OXMAXDELTIME` int(11) NOT NULL DEFAULT '0' COMMENT 'Maximum delivery time (unit is set in oxdeltimeunit)',
+  `OXDELTIMEUNIT` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Delivery time unit: DAY, WEEK, MONTH',
+  `OXUPDATEPRICE` double NOT NULL DEFAULT '0' COMMENT 'If not 0, oxprice will be updated to this value on oxupdatepricetime date',
+  `OXUPDATEPRICEA` double NOT NULL DEFAULT '0' COMMENT 'If not 0, oxpricea will be updated to this value on oxupdatepricetime date',
+  `OXUPDATEPRICEB` double NOT NULL DEFAULT '0' COMMENT 'If not 0, oxpriceb will be updated to this value on oxupdatepricetime date',
+  `OXUPDATEPRICEC` double NOT NULL DEFAULT '0' COMMENT 'If not 0, oxpricec will be updated to this value on oxupdatepricetime date',
+  `OXUPDATEPRICETIME` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date, when oxprice[a,b,c] should be updated to oxupdateprice[a,b,c] values',
+  `OXISDOWNLOADABLE` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Enable download of files for this product',
+  `OXSHOWCUSTOMAGREEMENT` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT 'Show custom agreement check in checkout',
+  PRIMARY KEY (`OXID`),
+  KEY `OXCOUNT` (`OXPARENTID`,`OXSHOPID`),
+  KEY `OXSORT` (`OXSORT`),
+  KEY `OXSHOPID` (`OXSHOPID`),
+  KEY `OXISSEARCH` (`OXISSEARCH`),
+  KEY `OXARTNUM` (`OXARTNUM`),
+  KEY `OXSTOCK` (`OXSTOCK`),
+  KEY `OXSTOCKFLAG` (`OXSTOCKFLAG`),
+  KEY `OXINSERT` (`OXINSERT`),
+  KEY `OXVARNAME` (`OXVARNAME`),
+  KEY `OXACTIVE` (`OXACTIVE`),
+  KEY `OXACTIVEFROM` (`OXACTIVEFROM`),
+  KEY `OXACTIVETO` (`OXACTIVETO`),
+  KEY `OXVENDORID` (`OXVENDORID`),
+  KEY `OXMANUFACTURERID` (`OXMANUFACTURERID`),
+  KEY `OXSOLDAMOUNT` (`OXSOLDAMOUNT`),
+  KEY `parentsort` (`OXPARENTID`,`OXSORT`),
+  KEY `OXUPDATEPRICETIME` (`OXUPDATEPRICETIME`),
+  KEY `OXISDOWNLOADABLE` (`OXISDOWNLOADABLE`),
+  KEY `OXPRICE` (`OXPRICE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Articles information';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxarticles`
 --
 
@@ -90,6 +399,27 @@ LOCK TABLES `oxarticles` WRITE;
 INSERT INTO `oxarticles` VALUES ('05833e961f65616e55a2208c2ed7c6b8','oxbaseshop','0584e8b766a4de2177f9ed11d1587f55',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','400-01','','','','','',7.99,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,6,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'weiß',0,0,'','white','','','','','','','','','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('05848170643ab0deb9914566391c0c63','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1402','','','','Trapez ION MADTRIXX','Neues Freestyle Trapez mit einer schlank geschnittenen Outline',159,0,0,0,0,0,0,'',0,'','','',NULL,'','','ion_madtrixx_kite_waist_2011_1.jpg','','','','','','','','','','','',0,15,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','trapez, hüfttrapez, madtrixx','','',1,0,'',0,0,'',159,0,'','','','','','','Harness MADTRIXX','New freestyle harness with a lean cut outline','','harness, hip harness, madtrixx','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','90a0b84564cde2394491df1c673b6aa0',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('0584e8b766a4de2177f9ed11d1587f55','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1501','','','','Klebeband DACRON KITEFIX','Ideal für kleine Reparaturen am Kite',7.99,0,0,0,0,0,0,'',1,'','','',NULL,'','','kitefix_self-adhesive_dacron_1.jpg','','','','','','','','','','','',0,50,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',1.52,0.05,0,'','klebeband, kite, reparieren, kitefix','','',1,0,'Farbe',11,2,'',7.99,7.99,'Color','','','','','','Sticky Tape DACRON KITEFIX','ideal for small repairs of the kite','','sticky tape, kite, repair, kitefix','','','','','','','','','','','oxarticle','','','','','','',0,3,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('058c7b525aad619d8b343c0ffada0247','oxbaseshop','0584e8b766a4de2177f9ed11d1587f55',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','400-03','','','','','',7.99,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,5,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'schwarz',0,0,'','black','','','','','','','','','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('058de8224773a1d5fd54d523f0c823e0','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1302','','','','Kiteboard CABRINHA CALIBER 2011','Freestyle und Freeride Board',479,0,0,0,0,0,499,'',0,'','','',NULL,'','','cabrinha_caliber_2011.jpg','cabrinha_caliber_2011_deck.jpg','cabrinha_caliber_2011_bottom.jpg','','','','','','','','','',0,13,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','kiteboard, kite, board, caliber, cabrinha','','',1,0,'',0,0,'',479,479,'','','','','','','Kiteboard CABRINHA CALIBER 2011','Freestyle und Freeride Board','','kiteboard, kite, board, caliber, cabrinha','','','','','','','','','','','oxarticle','','','','','','',0,2,0,0,0,0,'','','','90a3eccf9d7121a9ca7d659f29021b7a',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('058e613db53d782adfc9f2ccb43c45fe','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2401','','','','Bindung O\'BRIEN DECADE CT 2010','Geringes Gewicht, beste Performance!',359,0,0,0,0,0,399,'',0,'','','',NULL,'','','obrien_decade_ct_boot_2010_1.jpg','','','','','','','','','','','',0,16,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','bindung, decade, schuh, wakeboarding','','',1,0,'',0,0,'',359,0,'','','','','','','Binding O\'BRIEN DECADE CT 2010','Less weight, best performance!','','binding, decade, boot, wakeboarding','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('09602cddb5af0aba745293d08ae6bcf6','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-7-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Blau',0,0,'','W 32/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',12001,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('09620040146118fbc4b7eef6a0faf072','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-11','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Schwarz',0,0,'','W 34/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',16000,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('0962081a5693597654fd2887af7a6095','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-10','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Schwarz',0,0,'','W 34/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',15000,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('0963c9792aea84adff1d2ef8aa4a7679','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-2','','','','','',95,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(3).jpg','icon_ico(3).jpg','front_z1(3).jpg','back_z2(3).jpg','detail1_z3(3).jpg','detail2_z4(3).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Schwarz',0,0,'','W 30/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',70000,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('096421726d7eecdd2e04ce674e046215','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-11-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Blau',0,0,'','W 34/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',16001,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('09646538b54bac72b4ccb92fb5e3649f','oxbaseshop','943ed656e21971fb2f1827facbba9bec',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-8','','','','','Lässige Jeans mit Reißverschluß über der Hosentasche, geradem und engem Beinschnitt',99,0,0,0,0,0,0,'',0,'','','',NULL,'thumb(1)_th.jpg','icon(1)_ico.jpg','front_z1(5).jpg','back_z2(5).jpg','','','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,lässig,frisch,gerade,locker','','',0,0,'',0,0,'W 32/L 32 | Schwarz',0,0,'','W 32/L 32 | Black ','','','','','','Casual jeans with a zipper over the pockets and straight, tight legs','','kuyichi,jeans,dark,casual,fresh,straight,cool','','','','','','','','','','','','','','','','','',13000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('0964a33fb0e51ca6b907a34fbede7c2e','oxbaseshop','943ed656e21971fb2f1827facbba9bec',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-8-1','','','','','Lässige Jeans mit Reißverschluß über der Hosentasche, geradem und engem Beinschnitt',109,0,0,0,0,0,0,'',0,'','','',NULL,'detail1_z3_ico_th.jpg','thumb_b_ico.jpg','detail1_z3.jpg','detail2_z4.jpg','','','','','','','','','','',0,3,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,lässig,frisch,gerade,locker','','',0,0,'',0,0,'W 32/L 32 | Blau',0,0,'','W 32/L 32 | Blue ','','','','','','Casual jeans with a zipper over the pockets and straight, tight legs','','kuyichi,jeans,dark,casual,fresh,straight,cool','','','','','','','','','','','','','','','','','',13001,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('09651d283fce7bcb313debfad743121f','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-4','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Schwarz',0,0,'','W 31/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',90000,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('09660be8ebd60cc617293f022c0b4fac','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-3','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Schwarz',0,0,'','W 30/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',80000,0,0,0,0,0,'','','','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('0966da066fff2cb487a4860ca5d821e4','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Schwarz',0,0,'','W 30/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',60000,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('09680f1bbaf5723ba16fbe96c0b48245','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-7','','','','','',95,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Schwarz',0,0,'','W 32/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',12000,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('0968aa1f9aab0958ed0a88539dbdf88d','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-6','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 34 | Schwarz',0,0,'','W 31/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',11000,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('0968bb43f197a32856eae19688287649','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-4-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Blau',0,0,'','W 31/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',90010,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('0968da9f88f6330e7f05f9b7eed00bd8','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-3-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Blau',0,0,'','W 30/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',80010,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('0969ce57a6260f3826c252df0e6a6e17','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-6-1','','','','','',95,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 34 | Blau',0,0,'','W 31/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',11001,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('096a1b0849d5ffa4dd48cd388902420b','oxbaseshop','943ed656e21971fb2f1827facbba9bec',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-12-1','','','','','Lässige Jeans mit Reißverschluß über der Hosentasche, geradem und engem Beinschnitt',109,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_b_th.jpg','detail1_z3_ico_ico.jpg','detail1_z3(1).jpg','detail2_z4(1).jpg','','','','','','','','','','',0,12,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,lässig,frisch,gerade,locker','','',0,0,'',0,0,'W 34/L 34 | Blau',0,0,'','W 34/L 34 | Blue ','','','','','','Casual jeans with a zipper over the pockets and straight, tight legs','','kuyichi,jeans,dark,casual,fresh,straight,cool','','','','','','','','','','','','','','','','','',17001,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('096a92e7e82be0d65fee8f3fda9b8230','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-9','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Schwarz',0,0,'','W 32/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',14000,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('096af915ec01c2d73e6477c42283c56e','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-2-1','','','','','',95,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(1).jpg','icon_ico(1).jpg','front_z1(1).jpg','back_z2(1).jpg','detail1_z3(1).jpg','detail2_z4(1).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Blau',0,0,'','W 30/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',70010,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('096b0ff894c38ed8ddfc693d6d6887e5','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-5','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Schwarz',0,0,'','W 31/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',10000,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('096bcffdf7345b174b18a41a76d54218','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-1-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Blau',0,0,'','W 30/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',60010,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('096cfee89f066471590d3552d3266e6f','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-10-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Blau',0,0,'','W 34/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',15001,0,0,0,0,0,'','','','',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('096d0f954953901b7c83504f548a78ca','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-9-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Blau',0,0,'','W 32/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',14001,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('096e38032896a847682651d565966c45','oxbaseshop','943ed656e21971fb2f1827facbba9bec',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-12','','','','','Lässige Jeans mit Reißverschluß über der Hosentasche, geradem und engem Beinschnitt',109,0,0,0,0,0,0,'',0,'','','',NULL,'thumb(2)_th.jpg','icon(2)_ico.jpg','front_z1(6).jpg','back_z2(6).jpg','','','','','','','','','','',0,20,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,lässig,frisch,gerade,locker','','',0,0,'',0,0,'W 34/L 34 | Schwarz',0,0,'','W 34/L 34 | Black ','','','','','','Casual jeans with a zipper over the pockets and straight, tight legs','','kuyichi,jeans,dark,casual,fresh,straight,cool','','','','','','','','','','','','','','','','','',17000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('096fec4cae008af69c9087228bd8af38','oxbaseshop','943ed656e21971fb2f1827facbba9bec',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0802-85-823-5-1','','','','','',109,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Blau',0,0,'','W 31/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',10001,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('10002696d80479437dda4882c77b3bd8','oxbaseshop','dc581d8a115035cbfb0223c9c736f513',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552-4','','','','','',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0027_1_z1(1).jpg','img_0030_z2(1).jpg','img_0032_z3(1).jpg','','','','','','','','','',0,2,1,'','','0000-00-00','2011-07-18','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'M | orange',0,0,'','M | orange','','','','','','','','','','','','','','','','','','','oxarticle','','','','','','',2,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('10049f9322cf8852f8d567e9662cb12c','oxbaseshop','dc581d8a115035cbfb0223c9c736f513',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552-5','','','','','',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0019_1_z4(2).jpg','img_0022_z5(2).jpg','img_0024_z6(2).jpg','','','','','','','','','',0,9,1,'','','0000-00-00','2011-07-18','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'L | grau',0,0,'','L | gray','','','','','','','','','','','','','','','','','','','oxarticle','','','','','','',3,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('10067ab25bf275b7e68bc0431b204d24','oxbaseshop','dc581d8a115035cbfb0223c9c736f513',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552-6','','','','','',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0027_1_z1(2).jpg','img_0030_z2(2).jpg','img_0032_z3(2).jpg','','','','','','','','','',0,1,1,'','','0000-00-00','2011-07-18','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'L | orange',0,0,'','L | orange','','','','','','','','','','','','','','','','','','','oxarticle','','','','','','',3,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('1008b12cef0476f5e941da460ba621e6','oxbaseshop','dc581d8a115035cbfb0223c9c736f513',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552-3','','','','','',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0019_1_z4(1).jpg','img_0022_z5(1).jpg','img_0024_z6(1).jpg','','','','','','','','','',0,0,1,'','','0000-00-00','2011-07-18','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'M | grau',0,0,'','M | gray','','','','','','','','','','','','','','','','','','','oxarticle','','','','','','',2,0,0,0,0,0,'','','','',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('5310c8b1267f5ee156c0a0e213ac3187','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-9-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Blau',0,0,'','W 32/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',14001,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('5312465764d63badd3618dd06c1cf7e5','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Schwarz',0,0,'','W 30/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',80000,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('531254b90e3fb4035bf29b1dd6243491','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-12','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 34 | Schwarz',0,0,'','W 34/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',17000,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('5312d72e4b46e67dba01478b7695d9de','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-6','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 34 | Schwarz',0,0,'','W 31/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',11000,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('53134ff82995abce4cc18f0bc67df183','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-4-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Blau',0,0,'','W 31/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',90010,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531381841fdadd8bef8f68868bd53e28','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-2-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,10,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Blau',0,0,'','W 30/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',70010,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531399454a6fd8ac0b6611138679d1fb','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-10-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Blau',0,0,'','W 34/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',15001,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('5313a6695afac7f982c72b7d2c62b558','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-7-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Blau',0,0,'','W 32/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',12001,0,0,0,0,0,'','','','',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('53149cadc27d71f7bf0386d62b0a3d69','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-2','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Schwarz',0,0,'','W 30/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',70000,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('531591c3a072fb33d2f8eefa21e73132','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-10','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Schwarz',0,0,'','W 34/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',15000,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('5315f8c47ecdd89357d87c3ca6514396','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Schwarz',0,0,'','W 31/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',90000,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('5316bbab81c19d81d5e36e59ecd7f506','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-8-1','','','','','Schmale Low Boot Jeans mit geradem Beinschnitt',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(2)_th.jpg','icon_ico(2)_ico.jpg','front_z1(2)(1).jpg','back_z2(2)(1).jpg','detail1_z3(2)(1).jpg','detail2_z4(2)(1).jpg','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,kuyichi,modisch,dunkel','','',0,0,'',0,0,'W 32/L 32 | Blau',0,0,'','W 32/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',13001,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('53176c60fda309f2f6474553ee1b0f69','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-11','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Schwarz',0,0,'','W 34/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',16000,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('5317f32b8cd1b40fd4fbe16ce6a7a4a6','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-6-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 34 | Blau',0,0,'','W 31/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',11001,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('5317fcc3f8359b909b2b1da9fea84920','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-7','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Schwarz',0,0,'','W 32/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',12000,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('531919e2b559de31a9bd7ba6adb429ae','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-9','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Schwarz',0,0,'','W 32/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',14000,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('53196680c5e67476fecfa43e1c0efc77','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-5','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Schwarz',0,0,'','W 31/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',10000,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('5319ef52ee8f21f8f4085924fe5ff00a','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-8','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(3).jpg','icon_ico(3).jpg','front_z1(3).jpg','back_z2(3).jpg','detail1_z3(3).jpg','detail2_z4(3).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 32 | Schwarz',0,0,'','W 32/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',13000,0,0,0,0,0,'','','','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('531a8af7d9a9a5bb53b65a2b9a5356e5','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Schwarz',0,0,'','W 30/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',60000,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('531ab80ec10426dcfedadbdd8b5b66c1','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-5-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Blau',0,0,'','W 31/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',10001,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531ac7eda175429a3208f9acae3062ce','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-1-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Blau',0,0,'','W 30/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',60010,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531b537118f5f4d7a427cdb825440922','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3570','','','','Kuyichi Jeans ANNA','Lässige Damenjeans von Kuyichi',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'front(4)_v_th_th.jpg','front(4)_v_ico_ico.jpg','front(4)_v_pi.jpg','','','','','','','','','','','',0,17,1,'','','0000-00-00','2009-12-14','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',1,0,'Größe | Farbe',123,36,'',92.9,109.9,'Size | Color','','','','','','Kuyichi Jeans ANNA','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531bf39eb388a9407a9c179f7c3239dc','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-11-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Blau',0,0,'','W 34/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',16001,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531f10b886f201323fd5d94e2ec6d23d','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-12-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,10,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 34 | Blau',0,0,'','W 34/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',17001,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531f9066701b5a2666b009e5b0e7d000','oxbaseshop','531f91d4ab8bfb24c4d04e473d246d0b',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0601-85-069-3-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Blau',0,0,'','W 30/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',80010,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('531f91d4ab8bfb24c4d04e473d246d0b','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3560','','','','Kuyichi Jeans KYLE','Schmale Low Boot Jeans mit geradem Beinschnitt',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(2).jpg','icon_ico(2).jpg','front_z1(2).jpg','back_z2(2).jpg','detail1_z3(2).jpg','detail2_z4(2).jpg','','','','','','','','',0,4,1,'','','0000-00-00','2009-12-14','2016-07-19 14:11:15',0,0,0,'','jeans,kuyichi,modisch,dunkel','','',1,0,'Größe | Farbe',5,24,'',89.9,89.9,'Size | Color','','','','','','Kuyichi Jeans KYLE','Narrow low boot cut Jeans with straight legs.','','jeans,kuyichi,stylish,dark','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b601c0b45cea6507b28b90a613174c8','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-8-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 32 | Super Blue',0,0,'','W 32/L 32 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',13003,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6032141245c2efb4d75a7e6205aa6b','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-11-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Super Blue',0,0,'','W 34/L 32 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',16003,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6053b5460127331e9e433cb09cac1f','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-10-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Dark Blue | Predded Green',0,0,'','W 34/L 30 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',15004,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b605db2fd1cd3f36154b59c8e6d2e40','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-9-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Dark Blue',0,0,'','W 32/L 34 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',14004,0,0,0,0,0,'','','','',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6083371005843bc8c3385a85ccb4ec','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-8-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(10).jpg','icon_ico(10).jpg','front_z1(10).jpg','back_z2(10).jpg','detail1_z3(10).jpg','detail2_z4(10).jpg','','','','','','','','',0,18,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 32 | Dark Blue | Predded Green',0,0,'','W 32/L 32 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',13004,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6099c305f591cb39d4314e9a823fc1','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3582','','','','Stewart+Brown Shirt Kisser Fish','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,72.9,'',0,'','','',NULL,'thumb_th(12)(5)_th.jpg','icon_ico(12)(5)_ico.jpg','front_z1(12).jpg','back_z2(12).jpg','detail1_z3(12).jpg','detail2_z4(12).jpg','','','','','','','','',0,0,1,'','','0000-00-00','2009-12-17','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',1,0,'EU-Größe | Farbe',100,10,'',59.9,59.9,'EU-Size | Color','','','','','','Stewart+Brown Shirt Kisser Fish','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b60d3cf6bcd898b1b66174b1cf66fd9','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-5-6','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)v_th.jpg','icon_ico(12)v_ico.jpg','front_z1(12)v_z1.jpg','back_z2(12)v_z2.jpg','detail1_z3(12)v_z3.jpg','detail2_z4(12)v_z4.jpg','','','','','','','','',0,2,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'XL | Violet',0,0,'','XL | Violet ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',10006,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b60e17566a9a3cb22ab6a02d1a19b79','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-9-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Dark Blue | Predded Green',0,0,'','W 32/L 34 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',14004,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6102e4f214581a9c3356bdd3839e1b','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-7-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Super Blue',0,0,'','W 32/L 30 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',12003,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b61038a50af6b49794833fae52d8596','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-2','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Schwarz',0,0,'','W 30/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',70000,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b61647e12835f0f9dee1d5596132e26','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-4-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Super Blue',0,0,'','W 31/L 30 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',90030,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b61a3e622c3b7fc95f06792b84e175f','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(8).jpg','icon_ico(8).jpg','front_z1(8).jpg','back_z2(8).jpg','detail1_z3(8).jpg','detail2_z4(8).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Schwarz',0,0,'','W 31/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',90000,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b61c8d544b8fa43b40db907e8520575','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-3-5','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)(3)_th.jpg','icon_ico(12)(3)_ico.jpg','front_z1(12)_z1(3).jpg','back_z2(12)_z2(3).jpg','detail1_z3(12)_z3(3).jpg','detail2_z4(12)_z4(3).jpg','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'M | Clover',0,0,'','M | Clover ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',80050,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b61e50aa933a96b5f6d0572d0083948','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-3-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Dark Blue | Predded Green',0,0,'','W 30/L 34 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',80043,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b620860ad13ce38d708d6fbdd3b4a14','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-7','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Schwarz',0,0,'','W 32/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',12000,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b62700a4eb25d6c370ea2ae3807b9e3','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-6-4','','','','','Eng geschnittene Stretch-Jeans',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(7)_th.jpg','icon_ico(7)_ico.jpg','front_z1(7)(1).jpg','back_z2(7)(1).jpg','detail1_z3(7)(1).jpg','detail2_z4(7)(1).jpg','','','','','','','','',0,2,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,eng','','',0,0,'',0,0,'W 31/L 34 | Dark Blue',0,0,'','W 31/L 34 | Dark Blue ','','','','','','Tight cut stretch jeans','','kuyichi,jeans,dark,tight','','','','','','','','','','','','','','','','','',11004,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b627d9607f0081ca57ad3d0b5eb16e4','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-2-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Dark Blue',0,0,'','W 30/L 32 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',70040,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b628a560b2f5e9b2b169a3fbdd607ef','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-11','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(8).jpg','icon_ico(8).jpg','front_z1(8).jpg','back_z2(8).jpg','detail1_z3(8).jpg','detail2_z4(8).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Schwarz',0,0,'','W 34/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',16000,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b628e6a8ffa98fea6f2ee9d708b1b23','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-6-1','','','','','Lässige Damenjeans von Kuyichi',92.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)_th.jpg','icon_ico(4)_ico.jpg','front_z1(4).jpg','back_z2(4).jpg','detail1_z3(4).jpg','detail2_z4(4).jpg','','','','','','','','',0,22,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 31/L 34 | Blau',0,0,'','W 31/L 34 | Blue','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',11001,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b62c2494de290bc5b2ef1046851ff19','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-2-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Super Blue',0,0,'','W 30/L 32 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',70030,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b62dc6bf5b7723743d514eb1b7a7f87','oxbaseshop','6b63f459c781fa42edeb889242304014',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1607-02-WHT-5-7','','','','','Leichtes, ärmelloses Träger-Longshirt aus Pimabaumwolle für heiße Sommertage',49.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(15)_th.jpg','icon_ico(15)_ico.jpg','front_z1(15)_z1.jpg','back_z2(15)_z2.jpg','detail1_z3(15)_z3.jpg','detail2_z4(15)_z4.jpg','','','','','','','','',0,1,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,ärmellos,träger,lässig,locker','','',0,0,'',0,0,'XL | White',0,0,'','XL | White ','','','','','','Cushy sleeveless long shirt from Pima cotton for hot summer days','','shirt,pima,sleeveless,suspenders,casual,cool','','','','','','','','','','','','','','','','','',10007,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b62ff52ab998e76a78354a2657691f3','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-8-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 32 | Smoke Gray',0,0,'','W 32/L 32 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',13002,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6311a1c0c6cf37ed879f95223f8fbe','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-7-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Smoke Gray',0,0,'','W 32/L 30 | Smoke Gray','','','','','','','','','','','','','','','','','','','','','','','','','',12002,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6340961bcab561725470297c7128e1','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-1-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Dark Blue | Bangle Blue',0,0,'','W 30/L 30 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',60040,0,0,0,0,0,'','','','',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b63456b3abeeeccd9b085a76ffba1a3','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3571','','','','Kuyichi Jeans CANDY','Eng geschnittene Stretch-Jeans',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(7).jpg','icon_ico(7).jpg','front_z1(7).jpg','back_z2(7).jpg','detail1_z3(7).jpg','detail2_z4(7).jpg','','','','','','','','',0,26,1,'','','0000-00-00','2009-12-17','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,eng','','',1,0,'Größe | Farbe',37,24,'',89.9,89.9,'Size | Color','','','','','','Kuyichi Jeans CANDY','Tight cut stretch jeans','','kuyichi,jeans,dark,tight','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b63722f5bd1be781395325e3825e95b','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-7-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Blau',0,0,'','W 32/L 30 | Blue','','','','','','','','','','','','','','','','','','','','','','','','','',12001,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6379a9e39321be9bec6b120ca2ae6a','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-2-5','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)(2)_th.jpg','icon_ico(12)(2)_ico.jpg','front_z1(12)_z1(2).jpg','back_z2(12)_z2(2).jpg','detail1_z3(12)_z3(2).jpg','detail2_z4(12)_z4(2).jpg','','','','','','','','',0,19,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'S | Clover',0,0,'','S | Clover ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',70050,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b638d6f1f0e86a0d5ecfc8c7d952711','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-1-6','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)v(1)_th.jpg','icon_ico(12)v(1)_ico.jpg','front_z1(12)v_z1(1).jpg','back_z2(12)v_z2(1).jpg','detail1_z3(12)v_z3(1).jpg','detail2_z4(12)v_z4(1).jpg','','','','','','','','',0,4,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'XS | Violet',0,0,'','XS | Violet ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',60060,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b639ae07ba1176e1d275e4eb83433fc','oxbaseshop','6b6ac464656c16c90d671721c93dc6ba',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1810-00-NOC-1-8','','','','','Raffiniertes Langarm-Shirt',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(16)(2)_th.jpg','icon_ico(16)(2)_ico.jpg','front_z1(16)_z1(2).jpg','back_z2(16)_z2(2).jpg','detail1_z3(16)_z3(2).jpg','detail2_z4(16)_z4(2).jpg','','','','','','','','',0,8,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,langarm','','',0,0,'',0,0,'XS | Nocturne',0,0,'','XS | Nocturne ','','','','','','Subtle long-arm shirt','','shirt,pima,long-sleeve','','','','','','','','','','','','','','','','','',60080,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b63b5c41efc492c3f7bbeeeea6937f9','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-3-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Blau',0,0,'','W 30/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',80010,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b63ed599fcfa07768dbfbd93991543b','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-8-4','','','','','Spitzenjeans in verschiedenen Waschungen',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(9)(1)_th.jpg','icon_ico(9)(1)_ico.jpg','front_z1(9)(2).jpg','back_z2(9)(2).jpg','detail1_z3(9)(2).jpg','detail2_z4(9)(2).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,gerade,hüftjeans','','',0,0,'',0,0,'W 32/L 32 | Dark Blue | Bangle Blue',0,0,'','W 32/L 32 | Dark Blue | Bangle Blue ','','','','','','Leading jeans for repeated washing','','kuyichi,jeans,dark,straight','','','','','','','','','','','','','','','','','',13004,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b63f459c781fa42edeb889242304014','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3583','','','','Stewart+Brown Organic Pima Edged Lengthen','Leichtes, ärmelloses Träger-Longshirt aus Pimabaumwolle für heiße Sommertage',49.9,0,0,0,0,0,69.9,'',0,'','','',NULL,'thumb_th(15)(5)_th.jpg','icon_ico(15)_ico.jpg','front_z1(15).jpg','back_z2(15).jpg','detail1_z3(15).jpg','detail2_z4(15).jpg','','','','','','','','',0,0,1,'','','0000-00-00','2009-12-17','2016-07-19 14:11:15',0,0,0,'','shirt,pima,ärmellos,träger,lässig,locker','','',1,0,'EU-Größe | Farbe',17,5,'',49.9,49.9,'EU-Size | Color','','','','','','Stewart+Brown Organic Pima Edged Lengthen','Cushy sleeveless long shirt from Pima cotton for hot summer days','','shirt,pima,sleeveless,suspenders,casual,cool','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6408460392303075a812294e8cda7c','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-4-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Blau',0,0,'','W 31/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',90010,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b641f37692410d714cf2b36ef426e2d','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-2-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Blau',0,0,'','W 30/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',70010,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b643f0635b575ff6c4a09f8518f403f','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-10-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Dark Blue',0,0,'','W 34/L 30 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',15004,0,0,0,0,0,'','','','',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b643fbdca947eb177327c906feabb56','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-5','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Schwarz',0,0,'','W 31/L 32 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',10000,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b64544755598696ea104fc915f73e09','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-12-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 34 | Dark Blue',0,0,'','W 34/L 34 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',17004,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b64e4d62652cb52af6dd6d3d347c344','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-8','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 32 | Schwarz',0,0,'','W 32/L 32 | Black ','','','','','','Tight cut stretch jeans','','','','','','','','','','','','','','','','','','','',13000,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b64eafc85111372f037906589cf43a2','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-4-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Smoke Gray',0,0,'','W 31/L 30 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',90020,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b65295a7fe5fa6faaa2f0ac3f9b0f80','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-12-1','','','','','Lässige Damenjeans von Kuyichi',109.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)(1)_th.jpg','icon_ico(4)(1)_ico.jpg','front_z1(4)(1).jpg','back_z2(4)(1).jpg','detail1_z3(4)(1).jpg','detail2_z4(4)(1).jpg','','','','','','','','',0,12,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 34/L 34 | Blau',0,0,'','W 34/L 34 | Blue ','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',17001,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b655979217fa6bfa2e9ee9e488d117e','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-12','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 34 | Schwarz',0,0,'','W 34/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',17000,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b655c85368376a8018991471e42aff7','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-4-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Dark Blue | Bangle Blue',0,0,'','W 31/L 30 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',90040,0,0,0,0,0,'','','','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b656541e0597988f1c10d94d805a150','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-2-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Dark Blue | Predded Green',0,0,'','W 30/L 32 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',70043,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b656e13b102aa6c58288a704f53b16c','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-3-6','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)v(3)_th.jpg','icon_ico(12)v(3)_ico.jpg','front_z1(12)v_z1(3).jpg','back_z2(12)v_z2(3).jpg','detail1_z3(12)v_z3(3).jpg','detail2_z4(12)v_z4(3).jpg','','','','','','','','',0,9,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'M | Violet',0,0,'','M | Violet ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',80060,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b658df8dddb9f924f2c0cf52c716d0a','oxbaseshop','6b6b09a02f3c78adb5771bce215ec265',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0901-35-352-4','','','','','Stretch-Jersey Longsleeve',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(14)(5)_th.jpg','icon_ico(14)(5)_ico.jpg','front_z1(14)_z1(5).jpg','back_z2(14)_z2(5).jpg','detail1_z3(14)_z3(5).jpg','detail2_z4(14)_z4(5).jpg','','','','','','','','',0,9,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,shirt,pima,langarm,longsleeve','','',0,0,'',0,0,'L | Schwarz',0,0,'','L | Black','','','','','','Stretch-Jersey Longsleeve','','kuyichi,shirt,pima,longsleeve','','','','','','','','','','','','','','','','','',90000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b659102f68ff29c96e72153c852806c','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-5-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Smoke Gray',0,0,'','W 31/L 32 | Smoke Gray','','','','','','','','','','','','','','','','','','','','','','','','','',10002,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b659450811fff23b791328dc6e6260f','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-4-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Dark Blue | Predded Green',0,0,'','W 31/L 30 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',90043,0,0,0,0,0,'','','','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b65af5069c9d525bb19106e565cf629','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-10-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Blau',0,0,'','W 34/L 30 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',15001,0,0,0,0,0,'','','','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b65c65f6dc3a692821776079686a9dd','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-4-5','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)(4)_th.jpg','icon_ico(12)(4)_ico.jpg','front_z1(12)_z1(4).jpg','back_z2(12)_z2(4).jpg','detail1_z3(12)_z3(4).jpg','detail2_z4(12)_z4(4).jpg','','','','','','','','',0,17,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'L | Clover',0,0,'','L | Clover ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',90050,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b65c82bfe8fa19865d560f8c1a905b4','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-1-2','','','','','Lässige Damenjeans von Kuyichi',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)sg(2)_th.jpg','icon_ico(4)sg(2)_ico.jpg','front_z1(4)sg(2).jpg','back_z2(4)sg(2).jpg','detail1_z3(4)sg(2).jpg','detail2_z4(4)sg(2).jpg','','','','','','','','',0,21,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 30/L 30 | Smoke Gray',0,0,'','W 30/L 30 | Smoke Gray ','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',10102,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b65cfe49d699c2c7faf2c1dbaa76639','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-3-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Dark Blue',0,0,'','W 30/L 34 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',80040,0,0,0,0,0,'','','','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b660e2ac4d79901d9367c490f4f7cf4','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-1-5','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)(1)_th.jpg','icon_ico(12)(1)_ico.jpg','front_z1(12)_z1(1).jpg','back_z2(12)_z2(1).jpg','detail1_z3(12)_z3(1).jpg','detail2_z4(12)_z4(1).jpg','','','','','','','','',0,12,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'XS | Clover',0,0,'','XS | Clover ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',60050,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b661dda79318ca64ca06e97e4fbcb0a','oxbaseshop','6b6ac464656c16c90d671721c93dc6ba',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1810-00-NOC-3-8','','','','','Raffiniertes Langarm-Shirt',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(16)(4)_th.jpg','icon_ico(16)(4)_ico.jpg','front_z1(16)_z1(4).jpg','back_z2(16)_z2(4).jpg','detail1_z3(16)_z3(4).jpg','detail2_z4(16)_z4(4).jpg','','','','','','','','',0,11,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,langarm','','',0,0,'',0,0,'M | Nocturne',0,0,'','M | Nocturne ','','','','','','Subtle long-arm shirt','','shirt,pima,long-sleeve','','','','','','','','','','','','','','','','','',80080,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b66409b4e2c7560ce7df4943fd42434','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-10-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Super Blue',0,0,'','W 34/L 30 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',15003,0,0,0,0,0,'','','','',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6676229f642918aea304b6e4881553','oxbaseshop','6b6ac464656c16c90d671721c93dc6ba',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1810-00-NOC-2-8','','','','','Raffiniertes Langarm-Shirt',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(16)(3)_th.jpg','icon_ico(16)(3)_ico.jpg','front_z1(16)_z1(3).jpg','back_z2(16)_z2(3).jpg','detail1_z3(16)_z3(3).jpg','detail2_z4(16)_z4(3).jpg','','','','','','','','',0,7,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,langarm','','',0,0,'',0,0,'S | Nocturne',0,0,'','S | Nocturne ','','','','','','Subtle long-arm shirt','','shirt,pima,long-sleeve','','','','','','','','','','','','','','','','','',70080,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b667c30791dc05dfc0223038beeff74','oxbaseshop','6b6b09a02f3c78adb5771bce215ec265',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0901-35-352-1','','','','','Stretch-Jersey Longsleeve',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(14)(2)_th.jpg','icon_ico(14)(2)_ico.jpg','front_z1(14)_z1(2).jpg','back_z2(14)_z2(2).jpg','detail1_z3(14)_z3(2).jpg','detail2_z4(14)_z4(2).jpg','','','','','','','','',0,19,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,shirt,pima,langarm,longsleeve','','',0,0,'',0,0,'XS | Schwarz',0,0,'','XS | Black','','','','','','Stretch-Jersey Longsleeve','','kuyichi,shirt,pima,longsleeve','','','','','','','','','','','','','','','','','',60000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b66d82af984e5ad46b9cb27b1ef8aae','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3572','','','','Kuyichi Jeans SUGAR','Spitzenjeans in verschiedenen Waschungen',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(9).jpg','icon_ico(9).jpg','front_z1(9).jpg','back_z2(9).jpg','detail1_z3(9).jpg','detail2_z4(9).jpg','','','','','','','','',0,14,1,'','','0000-00-00','2009-12-17','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,gerade,hüftjeans','','',1,0,'Größe | Farbe | Washing',5,24,'',89.9,89.9,'Size | Color | Washing','','','','','','Kuyichi Jeans SUGAR','Leading jeans for repeated washing','','kuyichi,jeans,dark,straight','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b66f4b02ad619cdadb7ea04b6c19cc2','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-5-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Dark Blue | Predded Green',0,0,'','W 31/L 32 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',10004,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b66f538ede23a41f0598a3bc38e8b52','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-4-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 30 | Dark Blue',0,0,'','W 31/L 30 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',90040,0,0,0,0,0,'','','','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b67919aa8f51c08c83dbb777d30900d','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-8-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 32 | Blau',0,0,'','W 32/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',13001,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b679ba1f246d4de2e569ce37a2cd666','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-5-5','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'','icon_ico(12)_ico.jpg','front_z1(12)_z1.jpg','back_z2(12)_z2.jpg','detail1_z3(12)_z3.jpg','detail2_z4(12)_z4.jpg','','','','','','','','',0,1,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'XL | Clover',0,0,'','XL | Clover ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',10005,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b67aa3f29f0c1d060935b2e98c2e5ba','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-3-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Dark Blue | Bangle Blue',0,0,'','W 30/L 34 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',80040,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b67d8455169e2a581e8dea40582745c','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-7-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Dark Blue | Bangle Blue',0,0,'','W 32/L 30 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',12004,0,0,0,0,0,'','','','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b681be87aaa048aabf7130dbe2068d8','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-7-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Dark Blue | Predded Green',0,0,'','W 32/L 30 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',12004,0,0,0,0,0,'','','','',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6845d4bc4d899ebb9310d12210ad30','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-2-6','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)v(2)_th.jpg','icon_ico(12)v(2)_ico.jpg','front_z1(12)v_z1(2).jpg','back_z2(12)v_z2(2).jpg','detail1_z3(12)v_z3(2).jpg','detail2_z4(12)v_z4(2).jpg','','','','','','','','',0,18,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'S | Violet',0,0,'','S | Violet ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',70060,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b68d6b7ef3ce97c28c9f6ce8f4476bf','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-9-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Super Blue',0,0,'','W 32/L 34 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',14003,0,0,0,0,0,'','','','',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b68f8516ba4d81bace5295830b7f5d6','oxbaseshop','6b63f459c781fa42edeb889242304014',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1607-02-WHT-2-7','','','','','Leichtes, ärmelloses Träger-Longshirt aus Pimabaumwolle für heiße Sommertage',49.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(15)(2)_th.jpg','icon_ico(15)(2)_ico.jpg','front_z1(15)_z1(2).jpg','back_z2(15)_z2(2).jpg','detail1_z3(15)_z3(2).jpg','detail2_z4(15)_z4(2).jpg','','','','','','','','',0,8,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,ärmellos,träger,lässig,locker','','',0,0,'',0,0,'S | White',0,0,'','S | White ','','','','','','Cushy sleeveless long shirt from Pima cotton for hot summer days','','shirt,pima,sleeveless,suspenders,casual,cool','','','','','','','','','','','','','','','','','',70070,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b692a410093a9c7772bcf56be5c1a8d','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-12-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(10).jpg','icon_ico(10).jpg','front_z1(10).jpg','back_z2(10).jpg','detail1_z3(10).jpg','detail2_z4(10).jpg','','','','','','','','',0,17,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 34 | Dark Blue | Predded Green',0,0,'','W 34/L 34 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',17004,0,0,0,0,0,'','','','',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b692f8831b65cafb2b518415559b380','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-11-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Dark Blue',0,0,'','W 34/L 32 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',16004,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b69664875491fc8ab51d15f8e94b63f','oxbaseshop','6b63f459c781fa42edeb889242304014',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1607-02-WHT-1-7','','','','','Leichtes, ärmelloses Träger-Longshirt aus Pimabaumwolle für heiße Sommertage',49.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(15)(1)_th.jpg','icon_ico(15)(1)_ico.jpg','front_z1(15)_z1(1).jpg','back_z2(15)_z2(1).jpg','detail1_z3(15)_z3(1).jpg','detail2_z4(15)_z4(1).jpg','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,ärmellos,träger,lässig,locker','','',0,0,'',0,0,'XS | White',0,0,'','XS | White ','','','','','','Cushy sleeveless long shirt from Pima cotton for hot summer days','','shirt,pima,sleeveless,suspenders,casual,cool','','','','','','','','','','','','','','','','','',60070,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b698c33118caee4ca0882c33f513d2f','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-1-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(10).jpg','icon_ico(10).jpg','front_z1(10).jpg','back_z2(10).jpg','detail1_z3(10).jpg','detail2_z4(10).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Dark Blue | Predded Green',0,0,'','W 30/L 30 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',60043,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b69cad3472fb2b07f89291f8e416e4d','oxbaseshop','6b63f459c781fa42edeb889242304014',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1607-02-WHT-3-7','','','','','Leichtes, ärmelloses Träger-Longshirt aus Pimabaumwolle für heiße Sommertage',49.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(15)(3)_th.jpg','icon_ico(15)(3)_ico.jpg','front_z1(15)_z1(3).jpg','back_z2(15)_z2(3).jpg','detail1_z3(15)_z3(3).jpg','detail2_z4(15)_z4(3).jpg','','','','','','','','',0,2,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,ärmellos,träger,lässig,locker','','',0,0,'',0,0,'M | White',0,0,'','M | White ','','','','','','Cushy sleeveless long shirt from Pima cotton for hot summer days','','shirt,pima,sleeveless,suspenders,casual,cool','','','','','','','','','','','','','','','','','',80070,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b69d2781fd557f7bcf90fd482b80406','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-9-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Smoke Gray',0,0,'','W 32/L 34 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',14002,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6a6aedca3e438e98d51f0a5d586c0b','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-8-4','','','','','Eng geschnittene Stretch-Jeans',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(7)(1)_th.jpg','icon_ico(7)(1)_ico.jpg','front_z1(7)(2).jpg','back_z2(7)(2).jpg','detail1_z3(7)(2).jpg','detail2_z4(7)(2).jpg','','','','','','','','',0,3,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,eng','','',0,0,'',0,0,'W 32/L 32 | Dark Blue',0,0,'','W 32/L 32 | Dark Blue ','','','','','','Tight cut stretch jeans','','kuyichi,jeans,dark,tight','','','','','','','','','','','','','','','','','',13004,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ac464656c16c90d671721c93dc6ba','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3584','','','','Stewart+Brown Lace Scoop Neck Tee','Raffiniertes Langarm-Shirt',59.9,0,0,0,0,0,79.9,'',0,'','','',NULL,'thumb_th(16)_th.jpg','icon_ico(16)_ico.jpg','front_z1(16)_z1.jpg','back_z2(16)_z2.jpg','detail1_z3(16)_z3.jpg','detail2_z4(16)_z4.jpg','','','','','','','','',0,0,1,'','','0000-00-00','2009-12-17','2016-07-19 14:11:15',0,0,0,'','shirt,pima,langarm','','',1,0,'EU-Größe | Farbe',51,5,'',59.9,59.9,'EU-Size | Color','','','','','','Stewart+Brown Lace Scoop Neck Tee','Subtle long-arm shirt','','shirt,pima,long-sleeve','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ad7c1835d1266f7abb4f0dfbe8d82','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-11-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Dark Blue | Predded Green',0,0,'','W 34/L 32 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',16004,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ae0323db1288421c104136a9549ac','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-9-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Dark Blue | Bangle Blue',0,0,'','W 32/L 34 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',14004,0,0,0,0,0,'','','','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ae37f452b1c3a9303b74629e34686','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-10','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Schwarz',0,0,'','W 34/L 30 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',15000,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b09a02f3c78adb5771bce215ec265','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3581','','','','Kuyichi Longsleeve Lani','Stretch-Jersey Longsleeve',29.9,0,0,0,0,0,49.9,'',0,'','','',NULL,'thumb_th(14)_th.jpg','icon_ico(14)_ico.jpg','front_z1(14)_z1.jpg','back_z2(14)_z2.jpg','detail1_z3(14)_z3.jpg','detail2_z4(14)_z4.jpg','','','','','','','','',0,0,1,'','','0000-00-00','2009-12-17','2016-07-19 14:11:15',0,0,0,'','kuyichi,shirt,pima,langarm,longsleeve','','',1,0,'EU-Größe | Farbe',49,5,'',29.9,29.9,'EU-Size | Color','','','','','','Kuyichi Longsleeve Lani','Stretch-Jersey Longsleeve','','kuyichi,shirt,pima,longsleeve','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b0a4fa6d17371ef5596fe363b9e04','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-11-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Smoke Gray',0,0,'','W 34/L 32 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',16002,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b0dcd9981f845b7f3c10b9ca8b0ee','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-5-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Super Blue',0,0,'','W 31/L 32 | Super Blue','','','','','','','','','','','','','','','','','','','','','','','','','',10003,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b2f91da0a75e421e76475a68929b7','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Schwarz',0,0,'','W 30/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',80000,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b42499614ce3bfbee01f6eaba2f30','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-12-4','','','','','Spitzenjeans in verschiedenen Waschungen',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(9)(2)_th.jpg','icon_ico(9)(2)_ico.jpg','front_z1(9)(3).jpg','back_z2(9)(3).jpg','detail1_z3(9)(3).jpg','detail2_z4(9)(3).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,gerade,hüftjeans','','',0,0,'',0,0,'W 34/L 34 | Dark Blue | Bangle Blue',0,0,'','W 34/L 34 | Dark Blue | Bangle Blue ','','','','','','Leading jeans for repeated washing','','kuyichi,jeans,dark,straight','','','','','','','','','','','','','','','','','',17004,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b6abed58b118ee988c92856b8b675','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-1-4','','','','','Eng geschnittene Stretch-Jeans',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(7)(2)_th.jpg','icon_ico(7)(2)_ico.jpg','front_z1(7)(3).jpg','back_z2(7)(3).jpg','detail1_z3(7)(3).jpg','detail2_z4(7)(3).jpg','','','','','','','','',0,32,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,eng','','',0,0,'',0,0,'W 30/L 30 | Dark Blue',0,0,'','W 30/L 30 | Dark Blue ','','','','','','Tight cut stretch jeans','','kuyichi,jeans,dark,tight','','','','','','','','','','','','','','','','','',60040,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b818e5d5f2136b260e47735579c98','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-6','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 34 | Schwarz',0,0,'','W 31/L 34 | Black ','','','','','','Tight cut stretch jeans','','','','','','','','','','','','','','','','','','','',11000,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b8404557b78376523740db7807138','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-2-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Dark Blue | Bangle Blue',0,0,'','W 30/L 32 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',70040,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6b9f89cb8decee837d1a4c60742875','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-6-4','','','','','Spitzenjeans in verschiedenen Waschungen',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(9)_th.jpg','icon_ico(9)_ico.jpg','front_z1(9)(1).jpg','back_z2(9)(1).jpg','detail1_z3(9)(1).jpg','detail2_z4(9)(1).jpg','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,gerade,hüftjeans','','',0,0,'',0,0,'W 31/L 34 | Dark Blue | Bangle Blue',0,0,'','W 31/L 34 | Dark Blue | Bangle Blue ','','','','','','Leading jeans for repeated washing','','kuyichi,jeans,dark,straight','','','','','','','','','','','','','','','','','',11004,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6bdd895cb7b419c87c838b479e7691','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-3-3','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Super Blue',0,0,'','W 30/L 34 | Super Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',80030,0,0,0,0,0,'','','','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6c129c62119185c7779987e7d8cd5c','oxbaseshop','6b63f459c781fa42edeb889242304014',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1607-02-WHT-4-7','','','','','Leichtes, ärmelloses Träger-Longshirt aus Pimabaumwolle für heiße Sommertage',49.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(15)(4)_th.jpg','icon_ico(15)(4)_ico.jpg','front_z1(15)_z1(4).jpg','back_z2(15)_z2(4).jpg','detail1_z3(15)_z3(4).jpg','detail2_z4(15)_z4(4).jpg','','','','','','','','',0,1,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,ärmellos,träger,lässig,locker','','',0,0,'',0,0,'L | White',0,0,'','L | White ','','','','','','Cushy sleeveless long shirt from Pima cotton for hot summer days','','shirt,pima,sleeveless,suspenders,casual,cool','','','','','','','','','','','','','','','','','',90070,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6c47c6c6ba8efe012dfb9fa7a862b2','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-6-4-3','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 34 | Dark Blue | Predded Green',0,0,'','W 31/L 34 | Dark Blue | Predded Green ','','','','','','','','','','','','','','','','','','','','','','','','','',11004,0,0,0,0,0,'','','','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6cd2b7fd16866d220ca4eff8c1387d','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-7-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 30 | Dark Blue',0,0,'','W 32/L 30 | Dark Blue  ','','','','','','','','','','','','','','','','','','','','','','','','','',12004,0,0,0,0,0,'','','','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6cd2c22befa44da8b028c709eee944','oxbaseshop','6b6b09a02f3c78adb5771bce215ec265',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0901-35-352-2','','','','','Stretch-Jersey Longsleeve',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(14)(3)_th.jpg','icon_ico(14)(3)_ico.jpg','front_z1(14)_z1(3).jpg','back_z2(14)_z2(3).jpg','detail1_z3(14)_z3(3).jpg','detail2_z4(14)_z4(3).jpg','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,shirt,pima,langarm,longsleeve','','',0,0,'',0,0,'S | Schwarz',0,0,'','S | Black','','','','','','Stretch-Jersey Longsleeve','','kuyichi,shirt,pima,longsleeve','','','','','','','','','','','','','','','','','',70000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6cd337100bfcaa1eaad7ec8117dcee','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-10-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Smoke Gray',0,0,'','W 34/L 30 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',15002,0,0,0,0,0,'','','','',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ce806581c57889364e88f92cf5992','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-10-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 30 | Dark Blue | Bangle Blue',0,0,'','W 34/L 30 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',15004,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ced6d81841cc17291b9e919666e67','oxbaseshop','6b6ac464656c16c90d671721c93dc6ba',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1810-00-NOC-5-8','','','','','Raffiniertes Langarm-Shirt',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(16)(1)_th.jpg','icon_ico(16)(1)_ico.jpg','front_z1(16)_z1(1).jpg','back_z2(16)_z2(1).jpg','detail1_z3(16)_z3(1).jpg','detail2_z4(16)_z4(1).jpg','','','','','','','','',0,20,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,langarm','','',0,0,'',0,0,'XL | Nocturne',0,0,'','XL | Nocturne ','','','','','','Subtle long-arm shirt','','shirt,pima,long-sleeve','','','','','','','','','','','','','','','','','',10008,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6cf1ed0c0b3e784b05b1c9c207d352','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-12-3','','','','','Lässige Damenjeans von Kuyichi',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)sb(1)_th.jpg','icon_ico(4)sb(1)_ico.jpg','front_z1(4)sb(1).jpg','back_z2(4)sb(1).jpg','detail1_z3(4)sb(1).jpg','detail2_z4(4)sb(1).jpg','','','','','','','','',0,1,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 34/L 34 | Super Blue',0,0,'','W 34/L 34 | Super Blue  ','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',17003,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6d0519ca4fb33b2f2bba668d96ba7a','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-2-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 32 | Smoke Gray',0,0,'','W 30/L 32 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',70020,0,0,0,0,0,'','','','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6d187d3f648ab5d7875ce863244095','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-6-3','','','','','Lässige Damenjeans von Kuyichi',92.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)sb_th.jpg','icon_ico(4)sb_ico.jpg','front_z1(4)sb.jpg','back_z2(4)sb.jpg','detail1_z3(4)sb.jpg','detail2_z4(4)sb.jpg','','','','','','','','',0,30,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 31/L 34 | Super Blue',0,0,'','W 31/L 34 | Super Blue','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',11003,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6d319c9692c487ff57031a6337b6c0','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-9-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Blau',0,0,'','W 32/L 34 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',14001,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6d34003f6cf441580188de28909555','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-9','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 32/L 34 | Schwarz',0,0,'','W 32/L 34 | Black ','','','','','','','','','','','','','','','','','','','','','','','','','',14000,0,0,0,0,0,'','','','',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6d8c187461b30e01e2ce0adaa50e91','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-3-2','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 34 | Smoke Gray',0,0,'','W 30/L 34 | Smoke Gray ','','','','','','','','','','','','','','','','','','','','','','','','','',80020,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6d966c899dd9977e88f842f67eb751','oxbaseshop','6b6099c305f591cb39d4314e9a823fc1',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1629-03-CLV-4-6','','','','','Langes Shirt mit kurzen Ärmeln und farbigem Aufdruck',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(12)v(4)_th.jpg','icon_ico(12)v(4)_ico.jpg','front_z1(12)v_z1(4).jpg','back_z2(12)v_z2(4).jpg','detail1_z3(12)v_z3(4).jpg','detail2_z4(12)v_z4(4).jpg','','','','','','','','',0,13,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,kurz','','',0,0,'',0,0,'L | Violet',0,0,'','L | Violet ','','','','','','Long shirt with short sleeves and colored printing','','shirt,pima,short','','','','','','','','','','','','','','','','','',90060,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6da1c656d89b5eeed486e355460d16','oxbaseshop','6b6b09a02f3c78adb5771bce215ec265',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0901-35-352-5','','','','','Stretch-Jersey Longsleeve',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(14)(1)_th.jpg','icon_ico(14)(1)_ico.jpg','front_z1(14)_z1(1).jpg','back_z2(14)_z2(1).jpg','detail1_z3(14)_z3(1).jpg','detail2_z4(14)_z4(1).jpg','','','','','','','','',0,1,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,shirt,pima,langarm,longsleeve','','',0,0,'',0,0,'XL | Schwarz',0,0,'','XL | Black','','','','','','Stretch-Jersey Longsleeve','','kuyichi,shirt,pima,longsleeve','','','','','','','','','','','','','','','','','',99000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6e0bb9f2b8b5f070f91593073b4555','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-12-2','','','','','Lässige Damenjeans von Kuyichi',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)sg(1)_th.jpg','icon_ico(4)sg(1)_ico.jpg','front_z1(4)sg(1).jpg','back_z2(4)sg(1).jpg','detail1_z3(4)sg(1).jpg','detail2_z4(4)sg(1).jpg','','','','','','','','',0,16,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 34/L 34 | Smoke Gray',0,0,'','W 34/L 34 | Smoke Gray ','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',17002,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6e2c7af07fd2b9d82223ff35f4e08f','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-6-2','','','','','Lässige Damenjeans von Kuyichi',92.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)sg_th.jpg','icon_ico(4)sg_ico.jpg','front_z1(4)sg.jpg','back_z2(4)sg.jpg','detail1_z3(4)sg.jpg','detail2_z4(4)sg.jpg','','','','','','','','',0,2,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 31/L 34 | Smoke Gray',0,0,'','W 31/L 34 | Smoke Gray','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',11002,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6eb34fcceb69efafddaeeedb81d9a4','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-5-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Dark Blue | Bangle Blue',0,0,'','W 31/L 32 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',10004,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ec35c47b097a0372a8838192c8de3','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-5-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Blau',0,0,'','W 31/L 32 | Blue','','','','','','','','','','','','','','','','','','','','','','','','','',10001,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ec8fba436a74b996707c894bacf43','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-1','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(8).jpg','icon_ico(8).jpg','front_z1(8).jpg','back_z2(8).jpg','detail1_z3(8).jpg','detail2_z4(8).jpg','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 30/L 30 | Schwarz',0,0,'','W 30/L 30 | Black ','','','','','','Tight cut stretch jeans','','','','','','','','','','','','','','','','','','','',60000,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ed4e3b19c32c7cd2d58e32c051831','oxbaseshop','531b537118f5f4d7a427cdb825440922',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-11-1','','','','','',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Blau',0,0,'','W 34/L 32 | Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',16001,0,0,0,0,0,'','','','',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6ee4ad0a02a725a136ca139e226dd5','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-1-3','','','','','Lässige Damenjeans von Kuyichi',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)sb(2)_th.jpg','icon_ico(4)sb(2)_ico.jpg','front_z1(4)sb(2).jpg','back_z2(4)sb(2).jpg','detail1_z3(4)sb(2).jpg','detail2_z4(4)sb(2).jpg','','','','','','','','',0,4,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 30/L 30 | Super Blue',0,0,'','W 30/L 30 | Super Blue ','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',10103,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6efaa522be53c3e86fdb41f0542a8a','oxbaseshop','531b537118f5f4d7a427cdb825440922',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0702-85-853-1-1','','','','','Lässige Damenjeans von Kuyichi',99.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(4)(2)_th.jpg','icon_ico(4)(2)_ico.jpg','front_z1(4)(2).jpg','back_z2(4)(2).jpg','detail1_z3(4)(2).jpg','detail2_z4(4)(2).jpg','','','','','','','','',0,15,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','jeans,anna,kuyichi,lässig,locker','','',0,0,'',0,0,'W 30/L 30 | Blau',0,0,'','W 30/L 30 | Blue ','','','','','','Cool lady jeans by Kuyichi','','jeans,anna,kuyichi,cool,casual','','','','','','','','','','','','','','','','','',10101,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6f0933802db44727dcefd88983afc5','oxbaseshop','6b6ac464656c16c90d671721c93dc6ba',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1810-00-NOC-4-8','','','','','Raffiniertes Langarm-Shirt',59.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(16)(5)_th.jpg','icon_ico(16)(5)_ico.jpg','front_z1(16)_z1(5).jpg','back_z2(16)_z2(5).jpg','detail1_z3(16)_z3(5).jpg','detail2_z4(16)_z4(5).jpg','','','','','','','','',0,5,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','shirt,pima,langarm','','',0,0,'',0,0,'L | Nocturne',0,0,'','L | Nocturne ','','','','','','Subtle long-arm shirt','','shirt,pima,long-sleeve','','','','','','','','','','','','','','','','','',90080,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6f5641f5a72fbfc8600041d0f50f64','oxbaseshop','6b66d82af984e5ad46b9cb27b1ef8aae',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','85-8573-846-11-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 34/L 32 | Dark Blue | Bangle Blue',0,0,'','W 34/L 32 | Dark Blue | Bangle Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',16004,0,0,0,0,0,'','','','',0,0,0,1,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6f776b68aa6b8cf8e0d3357d7215fe','oxbaseshop','6b63456b3abeeeccd9b085a76ffba1a3',0,'0000-00-00 00:00:00','0000-00-00 00:00:00','0801-85-874-5-4','','','','','',89.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','','','','','','','','','','','','',0,0,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','','','',0,0,'',0,0,'W 31/L 32 | Dark Blue',0,0,'','W 31/L 32 | Dark Blue ','','','','','','','','','','','','','','','','','','','','','','','','','',10004,0,0,0,0,0,'','','','',0,0,0,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('6b6f9f7dc5b17d9b555db96a92eeb7a7','oxbaseshop','6b6b09a02f3c78adb5771bce215ec265',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','0901-35-352-3','','','','','Stretch-Jersey Longsleeve',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th(14)(4)_th.jpg','icon_ico(14)(4)_ico.jpg','front_z1(14)_z1(4).jpg','back_z2(14)_z2(4).jpg','detail1_z3(14)_z3(4).jpg','detail2_z4(14)_z4(4).jpg','','','','','','','','',0,15,1,'','','0000-00-00','0000-00-00','2016-07-19 14:11:15',0,0,0,'','kuyichi,shirt,pima,langarm,longsleeve','','',0,0,'',0,0,'M | Schwarz',0,0,'','M | Black','','','','','','Stretch-Jersey Longsleeve','','kuyichi,shirt,pima,longsleeve','','','','','','','','','','','','','','','','','',80000,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('943ed656e21971fb2f1827facbba9bec','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3561','','','','Kuyichi Jeans MICK','Lässige Jeans mit Reißverschluß über der Hosentasche, geradem und engem Beinschnitt',109,0,0,0,0,0,0,'',0,'','','',NULL,'thumb_th.jpg','icon_ico.jpg','front_z1.jpg','back_z2.jpg','detail1_z3.jpg','detail2_z4.jpg','','','','','','','','',0,30,1,'','','0000-00-00','2009-12-04','2016-07-19 14:11:15',0,0,0,'','kuyichi,jeans,dunkel,lässig,frisch,gerade,locker','','',1,0,'Größe | Farbe',40,24,'',95,109,'Size | Color','','','','','','Kuyichi Jeans MICK','Casual jeans with a zipper over the pockets and straight, tight legs.','','kuyichi,jeans,dark,casual,fresh,straight,cool','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('adc5ee42bd3c37a27a488769d22ad9ed','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3102','','','','Neoprenanzug NPX VAMP','Preiswerter Neoprenanzug für Frauen - Semidry',179,0,0,0,0,0,229,'',0,'','','',NULL,'vamp_su9448_th_th.jpg','vamp_su9448_ico_ico.jpg','vamp_su9448_z1.jpg','','','','','','','','','','','',0,1,1,'','','0000-00-00','2010-12-09','2016-07-19 14:11:15',0,0,0,'','','','',1,0,'',0,0,'',179,0,'','','','','','','Wetsuit NPX VAMP','Semidry wetsuit for women','','wetsuit, suit, semidry, npx, neoprene, vamp, 2010','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','dc5ec524a9aa6175cf7a498d70ce510a',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('adc920f4cbfa739803058c663a4a00b9','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1304','','','','Kiteboard FLYBOARDS FLYWAVE 2010','Entworfen in Zusammenarbeit mit Wave-Guru Ruud Overwater',679,0,0,0,0,0,799,'',0,'','','',NULL,'','','flywave2010_bild1.jpg','','','','','','','','','','','',0,18,1,'','','0000-00-00','2010-12-09','2016-07-19 14:11:15',0,0,0,'','kiteboard, kite, board, flywave, flyboards','','',1,0,'',0,0,'',679,0,'','','','','','','Kiteboard FLYBOARDS FLYWAVE 2010','Designed in association with Dutch wave-guru Ruud Overwater, who has put over 6 years of wave riding experience into this board','','kiteboard, kite, board, flywave, flyboards','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','dc59459d4d67189182c53ed0e4e777bc',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('adcb9deae73557006a8ac748f45288b4','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1505','','','','Helm AHM 5000','Ein echter Allround-Helm',45,0,0,0,0,0,0,'',0,'','','',NULL,'','','helm_ahm_5000_1.jpg','','','','','','','','','','','',0,0,1,'','','2011-03-03','2010-12-09','2016-07-19 14:11:15',0,0,0,'','kiteboarding, kite, helm, protection, sicherheit','','',1,0,'',0,0,'',45,45,'','','','','','','Helmet AHM 5000','Plastic price without the plastic look and feel','','kiteboarding, kite, helmet, protection, sicherheit','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('b56164c54701f07df14b141da197c207','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2402','','','','Bindung LIQUID FORCE TRANSIT BOOT 2010','Bewährte Qualität in neuem Design',259,0,0,0,0,0,0,'',0,'','','',NULL,'','','liquid_force_transit_boot_2010_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','bindung, boot, liquid force, transit, 2010','','',1,0,'',0,0,'',259,0,'','','','','','','Binding LIQUID FORCE TRANSIT BOOT 2010','Proven quality in a new design','','bindung, boot, liquid force, transit, 2010','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,0,0,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('b56369b1fc9d7b97f9c5fc343b349ece','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1208','0012345600','00004567','coregts123','Kite CORE GTS','Die Sportversion des GT',879,0,0,0,0,0,0,'',0,'','','',NULL,'','','core_gts_1.jpg','','','','','','','','','','','',0,12,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','kite, core, gts, kiteboarding','','',1,0,'',0,0,'',879,879,'','','','','','','Kite CORE GTS','The sports version of the GT','','kite, core, gts, kiteboarding','','','','','','','','','','','oxarticle','','','','','','',0,3,0,0,0,0,'','','','adc566c366db8eaf30c6c124a09e82b3',0,5,2,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('b563ab240dc19b89fc0349866b2be9c0','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3585','','','','Kuyichi 1/2 Sleeve Shirt','Half-Sleeve Shirt',19.9,0,0,0,0,0,24.9,'',0,'','','',NULL,'','','30-360-back_p1_z_f_th_665.jpg','30-360-front_p2_z_665.jpg','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','sleeve, longsleeve, shirt','','',1,0,'',0,0,'',19.9,0,'','','','','','','Kuyichi 1/2 Sleeve Shirt','Half sleeved shirt','','sleeve, longsleeve, shirt','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('b56597806428de2f58b1c6c7d3e0e093','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1211','','','','Kite NBK EVO 2010','Die EVOlution geht weiter',699,0,0,0,0,0,0,'',0,'','','',NULL,'','','nkb_evo_2010_1.jpg','','','','','','','','','','','',0,10,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','kite, nbk, evo, kiteboarding','','',1,0,'',0,0,'',699,0,'','','','','','','Kite NBK EVO 2010','The EVOlution goes on','','kite, nbk, evo, kiteboarding','','','','','','','','','','','oxarticle','','','','','','',0,2,0,0,0,0,'','','','',0,5,1,4,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('b5666b6d4bcb67c61dee4887bfba8351','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1209','','','','Kite CORE RIOT XR','Der CrossRide Kite',879,0,0,0,0,0,1099,'',0,'','','',NULL,'','','core_riot_xr_1.jpg','','','','','','','','','','','',0,2,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','kite, core, riot, xr, kiteboarding','','',1,0,'',0,0,'',879,0,'','','','','','','Kite CORE RIOT XR','The CrossRide Kite','','kite, core, riot, xr, kiteboarding','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adc566c366db8eaf30c6c124a09e82b3',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('b56764137ca959da9541bb28c1987d6c','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1212','','','','Kite NBK REBEL 2010','Der ultimative all-terrain Freeride Kite Ihrer Träume',799,0,0,0,0,0,0,'',0,'','','',NULL,'','','nkb_rebel_2010_1.jpg','','','','','','','','','','','',0,18,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','kite, nbk, rebel, kiteboarding','','',1,0,'',0,0,'',799,0,'','','','','','','Kite NBK REBEL 2010','The ultimate all terrain Freeride Kite of your dreams','','kite, nbk, rebel, kiteboarding','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,4,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('b5685a5230f5050475f214b4bb0e239b','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2403','','','','Bindung LIQUID FORCE INDEX BOOT 2010','Neues Design des Index Boot für das Jahr 2010',159,0,0,0,0,0,0,'',0,'','','',NULL,'','','liquid_force_index_boot_2010_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','bindung, boot, liquid force, index, 2010','','',1,0,'',0,0,'',159,0,'','','','','','','Binding LIQUID FORCE INDEX BOOT 2010','New design of the Index BOOT for the year 2010','','binding, boot, liquid force, index, 2010','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('b56c560872da93602ff88c7267eb4774','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1210','','','','Kite NAISH PARK 2011','3-Strut-Concept - Freeride leicht gemacht',719,0,0,0,0,0,799,'',0,'','','',NULL,'','','naish_park_2011_1.jpg','','','','','','','','','','','',0,2,1,'','','0000-00-00','2010-12-15','2016-07-19 14:11:15',0,0,0,'','kite, naish, park, 2011, kiteboarding','','',1,0,'',0,0,'',719,0,'','','','','','','Kite NAISH PARK 2011','3-Strut-Concept - Freeride made simple','','kite, naish, park, 2011, kiteboarding','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','90a8a18dd0cf0e7aec5238f30e1c6106',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('d861ad687c60820255dbf8f88516f24d','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1502','','','','Pumpe CABRINHA INFLATION 2011','Zuverlässige Pumpe',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','cabrinha_inflation_pump_1.jpg','','','','','','','','','','','',0,20,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','pumpe, kite, tube, inflation','','',1,0,'',0,0,'',29.9,0,'','','','','','','Pump CABRINHA INFLATION 2011','Reliable pump','','pump, kite, tube, inflation','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','90a3eccf9d7121a9ca7d659f29021b7a',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('d86236918e1533cccb679208628eda32','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1503','','','','Smart Loop NAISH','Smart Loop mit Trimmleine für SLE \'09',105,0,0,0,0,0,0,'',0,'','','',NULL,'','','naish_smart_loop_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','trimmleine, smart, loop, naish','','',1,0,'',0,0,'',105,0,'','','','','','','Smart Loop NAISH','Smart Loop with a trim leash for SLE \'09','','','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','90a8a18dd0cf0e7aec5238f30e1c6106',0,0,0,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('d862c91305fe0d5e86f82122ae9e367c','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2501','','','','Set O\'BRIEN DECADE 2010','O\'Brien Decade Impact Base & Decade CT Boot 2010 im SET',679,0,0,0,0,0,799,'',0,'','','',NULL,'','','obrien_decade_impact_base__decade_ct_boot_2010_1.jpg','','','','','','','','','','','',0,7,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','kiteboard, kite, board, boots, set, 2010','','',1,0,'',0,0,'',679,0,'','','','','','','Set O\'BRIEN DECADE 2010','O\'Brien Decade Impact Base & Decade CT Boot 2010 im SET','','kiteboard, kite, board, boots, set, 2010','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('d8631f92ababb452139f222afb81cd36','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1303','','','','Kiteboard NAISH MOMENTUM','Das meistgefragte Board für Wakestyle und Freeride',539,0,0,0,0,0,0,'',0,'','','',NULL,'','','naish_momentum_2011_1.jpg','naish_momentum_2011_deck.jpg','naish_momentum_2011_bottom.jpg','','','','','','','','','',0,5,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','','','',1,0,'',0,0,'',539,0,'','','','','','','Kiteboard NAISH MOMENTUM','The most used board for wakestyle and freeride','','kiteboard, kite, board, momentum, performance, freeride','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','90a8a18dd0cf0e7aec5238f30e1c6106',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('d866060a82d29bc94db20bdfd0e73713','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2502','','','','Set O\'BRIEN VICE 2010','O\'Brien Vice & Vice CT Boot 2010 im SET',599,0,0,0,0,0,0,'',0,'','','',NULL,'','','obrien_vice__vice_ct_boot_2010_1.jpg','','','','','','','','','','','',0,18,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','kiteboard, kite, board, boots, set, 2010','','',1,0,'',0,0,'',599,0,'','','','','','','Set O\'BRIEN VICE 2010','O\'Brien Vice & Vice CT Boot 2010 in a SET','','kiteboard, kite, board, boots, set, 2010','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('d86e244c8114c8214fbf83da8d6336b3','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2102','','','','Wakeboard LIQUID FORCE SHANE 2010','Das PRO-Modell von Shane Bonifay',389,0,0,0,0,0,0,'',0,'','','',NULL,'','','lf_shane_1.jpg','lf_shane_deck_1.jpg','lf_shane_bottom_1.jpg','','','','','','','','','',0,2,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','wakeboarding, wake, board, liquid force, shane, bonifay','','',1,0,'',0,0,'',389,0,'','','','','','','Wakeboard SHANE','The professional model by Shane Bonifay','','wakeboarding, wake, board, liquid force, shane, bonifay','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,4,1,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('d86f775338da3228bec9e968f02e7551','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1504','','','','Kite Leinen VECTOR QUAD PRO','Starke Kite Leinen in verschiedenen Ausführungen',35.5,0,0,0,0,0,39.9,'',0,'','','',NULL,'','','vector_kitelinen_quad_pro_1.jpg','','','','','','','','','','','',0,25,1,'','','0000-00-00','2010-12-08','2016-07-19 14:11:15',0,0,0,'','kiteboarding, kite, kiteleinen, leinen, quad, pro','','',1,0,'',0,0,'',35.5,0,'','','','','','','Kite lines VECTOR QUAD PRO','Heavy kite lines in different editions','','kiteboarding, kite, kite lines, leashes, quad, pro','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,3,5,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc53d3c0ca2ae7c38bf51f3410da0bf8','oxbaseshop','dc581d8a115035cbfb0223c9c736f513',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552-1','','','','','Lässiges Herrenshirt mit Aufdruck',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0019_1_z4.jpg','img_0022_z5.jpg','img_0024_z6.jpg','','','','','','','','','',0,33,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','shirt, tiger, organic, men','','',0,0,'Größe | Farbe',0,0,'S | grau',0,0,'','S | gray','','','','','','Short sleeve shirt for men','','shirt, tiger, organic, men, grey, orange','','','','','','','','','','','oxarticle','','','','','','',1,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,3,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc5480c47d8cd5a9eab9da5db9159cc6','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1207','','','','Kite RRD PASSION 2009','Ein echter Allrounder',699,0,0,0,0,0,899,'',0,'','','',NULL,'','','rrd_passion_2009_1.jpg','','','','','','','','','','','',0,20,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','kiteboarding, kite, rrd, passion, 2009, ','','',1,0,'',0,0,'',699,0,'','','','','','','Kite RRD PASSION 2009','A real allrounder','','kiteboarding, kite, rrd, passion, 2009, ','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adca51c88a3caa1c7b939fd6a229ae3a',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc55b2b2e633527f9a8b2408a032f28f','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3504','','','','Kuyichi Gürtel JUNO','Gürtel schwarz, unisex',24.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','p1170203_1.jpg','p1170205_1.jpg','','','','','','','','','','',0,25,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','kuyichi, gürtel, schwarz, unisex, juno','','',1,0,'',0,0,'',24.9,0,'','','','','','','Kuyichi belt JUNO','Black belt, unisex','','kuyichi, belt, unisex, juno','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc57391739360d306c8dfcb3a4295e19','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1206','','','','Kite RRD PASSION 2010','Ein außergewöhnlicher \"Easy Performer\"',589,0,0,0,0,0,0,'',0,'','','',NULL,'','','rrd_passion_2010_1.jpg','','','','','','','','','','','',0,6,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','kite, rrd, passion, 2010','','',1,0,'',0,0,'',589,0,'','','','','','','Kite RRD PASSION 2010','An outstanding \"Easy Performer\"','','kite, rrd, passion, 2010','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adca51c88a3caa1c7b939fd6a229ae3a',0,0,0,4,6,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc581d8a115035cbfb0223c9c736f513','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552','','','','Kuyichi T-Shirt TIGER','Lässiges Herrenshirt mit Aufdruck',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0027_1.jpg','img_0030.jpg','img_0032.jpg','img_0019_1.jpg','img_0022.jpg','img_0024.jpg','','','','','','',0,78,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','shirt, tiger, organic, men','','',1,0,'Größe | Farbe',89,6,'',29.9,29.9,'Size | Color','','','','','','Kuyichi T-Shirt TIGER','Short sleeve shirt for men','','shirt, tiger, organic, men, grey, orange','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc5ae3d43f96269ed3c62172e383be40','oxbaseshop','dc581d8a115035cbfb0223c9c736f513',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3552-2','','','','','Lässiges Herrenshirt mit Aufdruck',29.9,0,0,0,0,0,0,'',0,'','','',NULL,'','','img_0027_1_z1.jpg','img_0030_z2.jpg','img_0032_z3.jpg','','','','','','','','','',0,44,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','shirt, tiger, organic, men','','',0,0,'',0,0,'S | orange',0,0,'','S | orange','','','','','','Short sleeve shirt for men','','shirt, tiger, organic, men, grey, orange','','','','','','','','','','','oxarticle','','','','','','',1,0,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc5b9cfeb5bd96fdbd9b4e43974661a1','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1201','','','','Kite FLYSURFER SPEED3','Die ultimative Flugmaschine',1599,0,0,0,0,0,1799,'',0,'','','',NULL,'','','2010_speed3_120_1.jpg','','','','','','','','','','','',0,3,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','kite, flysurfer, speed3','','',1,0,'',0,0,'',1599,0,'','','','','','','Kite FLYSURFER SPEED3','The ultimate flying machine','','kite, flysurfer, speed3','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','dc50589ad69b6ec71721b25bdd403171',0,0,0,3,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('dc5ffdf380e15674b56dd562a7cb6aec','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3503','','','','Kuyichi Ledergürtel JEVER','Ledergürtel, unisex',29.9,0,0,0,0,0,39.9,'',0,'','','',NULL,'','','p1170221_1.jpg','p1170222_1.jpg','','','','','','','','','','',0,15,1,'','','0000-00-00','2010-12-10','2016-07-19 14:11:15',0,0,0,'','kuyichi, leder, ledergürtel, unisex, used','','',1,0,'',0,0,'',29.9,0,'','','','','','','Kuyichi leather belt JEVER','Leather belt, unisex','','kuyichi, leather, leather belt, unisex, used','','','','','','','','','','','oxarticle','','','','','','',0,3,0,0,0,0,'','','a57c56e3ba710eafb2225e98f058d989','9434afb379a46d6c141de9c9e5b94fcf',0,0,1,2,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('ed6573c0259d6a6fb641d106dcb2faec','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2103','','','','Wakeboard LIQUID FORCE GROOVE 2010','Stylisches Wakeboard mit traumhafter Performance',329,0,0,0,0,0,399,'',0,'','','',NULL,'','','lf_groove_2010_1.jpg','lf_groove_2010_deck_1.jpg','lf_groove_2010_bottom_1.jpg','','','','','','','','','',0,9,1,'','','0000-00-00','2010-12-09','2016-07-19 14:11:15',0,0,0,'','wakeboarding, wake, board, liquid force, groove','','',1,0,'',0,0,'',329,329,'','','','','','','Wakeboard GROOVE','A stylish wakeboard with a fabtastic performance','','wakeboarding, wake, board, liquid force, groove','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('ed6a2b0b90cab3f60a2dfd1c91fceb77','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3402','','','','Neoprenschuh ION BALLISTIC SLIPPER 1.5','Der ultimative Schutz Ihrer Füße',44.9,0,0,0,0,0,59.9,'',0,'','','',NULL,'','','ion_ballistic_slipper_15_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-09','2016-07-19 14:11:15',0,0,0,'','neopren, schuh, schutz, kiteboarding, surfboarding, ion, slipper','','',1,0,'',0,0,'',44.9,0,'','','','','','','Neoprene shoe ION BALLISTIC SLIPPER 1.5','The ultimate protection for your feet','','neoprene, shoe, ballistic, slipper','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','90a0b84564cde2394491df1c673b6aa0',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('ed6a4182ae58874e4fdaa4775566af6c','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','2104','','','','Wakeboard LIQUID FORCE S4 2010','Das PRO-Modell von Phillip Soven',389,0,0,0,0,0,0,'',0,'','','',NULL,'','','lf_s4_1.jpg','lf_s4_deck_1.jpg','lf_s4_bottom_1.jpg','','','','','','','','','',0,11,1,'','','0000-00-00','2010-12-09','2016-07-19 14:11:15',0,0,0,'','wakeboarding, wake, board, liquid force, s4','','',1,0,'',0,0,'',389,0,'','','','','','','Wakeboard S4','The professional model by Phillip Soven','','wakeboarding, wake, board, liquid force, s4','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,0,0,1,3,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('f33d5bcc7135908fd36fc736c643aa1c','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1506','','','','KiteFix Kleber GLUFIX (30g)','Speziell für Kites entwickelter Klebstoff',12.49,0,0,0,0,0,0,'g',30,'','','',NULL,'glufix_z1a_th_th.jpg','glufix_z1a_ico_ico.jpg','glufix_z1a.jpg','','','','','','','','','','','',0,27,1,'','','0000-00-00','2011-03-24','2016-07-19 14:11:15',0,0,0,'','kite, kitefix, kleber, glufix','','',1,0,'',0,0,'',12.49,0,'','','','','','','KiteFix Glue GLUFIX (30g)','Specially developed for fixing kites','','kite, kitefix, glue, glufix','','','','','','','','','','','oxarticle','','','','','','',0,3,0,0,0,0,'','','','',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4f0cb3606e231c3fdb34fcaee2d6d04','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1204','','','','Kite LIQUID FORCE ENVY','Ziehe den Neid der anderen Kiter auf Dich',1019,0,0,0,0,0,0,'',0,'','','',NULL,'','','lf_envy_2010_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','kite, liquid force, envy','','',1,0,'',0,0,'',1019,0,'','','','','','','Kite LIQUID FORCE ENVY','Let the other kiters go green with envy','','kite, liquid force, envy','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4f2d8eee51b0fd5eb60a46dff1166d8','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1401','','','','Trapez ION SOL KITE 2011','Neues Damen Freestyle-Trapez mit einer schlank geschnittenen Outline',129,0,0,0,0,0,0,'',0,'','','',NULL,'','','ion_sol_kite_waist_2011_1.jpg','','','','','','','','','','','',0,3,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','trapez, hüfttrapez, sol kite','','',1,0,'',0,0,'',129,129,'','','','','','','Harness SOL KITE','A new ladies freestyle harness with a lean cut outline','','harness, hip harness, sol kite','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','90a0b84564cde2394491df1c673b6aa0',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4f73033cf5045525644042325355732','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3788','','','','Transportcontainer THE BARREL','Wasserdichter Container für nasse Neos, kühle Getränke oder Klamotten',24.95,0,0,0,0,0,0,'',0,'','','',NULL,'mikejucker_textilcontainer_2_th.jpg','','mikejucker_textilcontainer_1.jpg','','','','','','','','','','','',0,49,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','transport, tasche, fass, getränke, kleidung','','',1,1,'',0,0,'',24.95,0,'','','','','','','Transport container BARREL','Waterproof container for wetsuits, cool beverages or gear','','transport, bag, barrel, beverages, gear, clothes','','','','','','','','','','','oxarticle','','','','','','',0,1,0,0,0,0,'','','','3a9fd0ec4b41d001e770b1d2d7af3e73',0,0,0,3,5,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4f981b0d9e34d2aeda82d79412480a4','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3501','','','','Sonnenbrille TRIGGERNAUT AGENT ORANGE','Stylische Sonnenbrille',79,0,0,0,0,0,0,'',0,'','','',NULL,'','','sonnenbrille_triggernaut_agent-orange_45grad_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','brille, sonnenbrille, orange, agent','','',1,0,'',0,0,'',79,0,'','','','','','','Sun glasses TRIGGERNAUT AGENT ORANGE','Stylish sun glasses','','glasses, sun glasses, orange, agent','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,2,4,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4fc98f99e3660bd2ecd7450f832c41a','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','3101','','','','Neoprenanzug NPX ASSASSIN','Beste Bewegungsfreiheit kombiniert mit neustem Design',269,0,0,0,0,0,299,'',0,'','','',NULL,'npx_assassin_semidry_543_e3_2011_th_th.jpg','npx_assassin_semidry_543_e3_2011_ico_ico.jpg','npx_assassin_semidry_543_e3_2011_z1.jpg','','','','','','','','','','','',0,26,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','neopren, anzug, semidry, npx, assassin, 2011','','',1,0,'',0,0,'',269,269,'','','','','','','Wetsuit NPX ASSASSIN','Semidry wetsuit for men','','neoprene, suit, wetsuit, semidry, npx, assassin, 2011','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','dc5ec524a9aa6175cf7a498d70ce510a',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4fe052346b4ec271011e25c052682c5','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1205','','','','Kite CORE GT','Der ultimative Alleskönner mit viel Performance',699,0,0,0,0,0,799,'',0,'','','',NULL,'','','core2009_gt_1.jpg','','','','','','','','','','','',0,12,1,'','','0000-00-00','2010-12-06','2016-07-19 14:11:15',0,0,0,'','kite, core, gt, kiteboarding','','',1,0,'',0,0,'',699,699,'','','','','','','Kite CORE GT','The ultimate allrounder with loads of performance','','kite, core, gt, kiteboarding','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adc566c366db8eaf30c6c124a09e82b3',0,0,0,3,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('f4fe754e1692b9f79f2a7b1a01bb8dee','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1301','','','','Kiteboard RRD TOXIC WAVE2','Das unmögliche einfach machen...',509,0,0,0,0,0,599,'',0,'','','',NULL,'','','rrdtoxicwave2-deck.jpg','','','','','','','','','','','',0,3,1,'','','2011-03-03','2010-12-06','2016-07-19 14:11:15',0,0,0,'','','','',1,0,'',0,0,'',509,0,'','','','','','','Kiteboard RRD TOXIC WAVE2','Make the impossible easy...','','kiteboard, kite, board, rrd, toxic','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adca51c88a3caa1c7b939fd6a229ae3a',0,4,1,4,6,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('fad21eb148918c8f4d9f0077fedff1ba','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1202','','','','Kite LIQUID FORCE HAVOC','Gebaut für traumhafte Kite-Sessions',1189,0,0,0,0,0,0,'',0,'','','',NULL,'','','lf_havoc_2010_1.jpg','','','','','','','','','','','',0,5,1,'','','0000-00-00','2010-12-03','2016-07-19 14:11:15',0,0,0,'','kite, kiteboard, havoc, liquid, force','','',1,0,'',0,0,'',1189,0,'','','','','','','Kite LIQUID FORCE HAVOC','Built for fantastic kite sessions','','kite, kiteboard, havoc, liquid, force','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adc6df0977329923a6330cc8f3c0a906',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('fadc492a5807c56eb80b0507accd756b','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','1203','','','','Kite SPLEENE SP-X 2010','Das ultimative C-Kite-Feeling',1169,0,0,0,0,0,0,'',0,'','','',NULL,'','','spleene_spx_1.jpg','','','','','','','','','','','',0,0,1,'','','0000-00-00','2010-12-03','2016-07-19 14:11:15',0,0,0,'','kite, kiteboard, spleene, sp-x, 2010','','',1,0,'',0,0,'',1169,0,'','','','','','','Kite SPLEENE SP-X 2010','The ultimate c-kite feeling','','kite, kiteboard, spleene, sp-x, 2010','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','adca6aa4df3f95b6b46e28d4fc5855ba',0,0,0,1,2,'DAY',0,0,0,0,'0000-00-00 00:00:00',0,1),('fc71f70c3398ee4c2cdd101494087185','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','4001','','','','Stickerset MIX','Diverse Aufkleber, Auswahl erfolgt zufällig.',4.99,0,0,0,0,0,0,'',0,'','','',NULL,'stickerset_mix_2_th.jpg','','stickerset_mix.jpg','','','','','','','','','','','',0,99,1,'','','0000-00-00','2010-12-07','2016-07-19 14:11:15',0,0,0,'','aufkleber, sticker, mix','','',1,0,'',0,0,'',4.99,0,'','','','','','','Sticker set MIX','Various stickers, random assortment.','','label, sticker, mix','','','','','','','','','','','oxarticle','','','','','','',0,0,0,0,0,0,'','','','',0,0,0,2,4,'WEEK',0,0,0,0,'0000-00-00 00:00:00',0,1),('oiaa81b5e002fc2f73b9398c361c0b97','oxbaseshop','',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','10101','978386899153','','','Online-Shops mit OXID eShop','In diesem Buch erfahren die Benutzer des OXID eShop, wie sie ihren eigenen Online-Shop installieren, konfigurieren, mit Produkten bestücken und betreiben - inkl. verschiedener Zahlungs- und Versandarten sowie der Einbindung von Social Media-Funktionen.',0,0,0,0,0,0,0,'',0,'','','',7,'','','oxid_book_cover_1.jpg','','','','','','','','','','','',0,600,1,'','','0000-00-00','2012-04-25','2016-07-19 14:11:15',0,0,0,'','OXID, Buch, download, O\'Reilley','','',1,0,'',0,0,'',0,0,'','','','','','','Online shops with OXID eShop','In this book, users of OXID eShop learn how to install, to configure and run their own online store incl. different payment and delivery methods and social media implementations.','','OXID, book, download, O\'Reilley','','','','','','','','','','','','','','','','','',1,0,0,1,0,0,'','0','','oiaf6ab7e12e86291e86dd3ff891fe40',0,0,0,1,2,'WEEK',0,0,0,0,'0000-00-00 00:00:00',1,1);
 /*!40000 ALTER TABLE `oxarticles` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxattribute`
+--
+
+DROP TABLE IF EXISTS `oxattribute`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxattribute` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Attribute id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTITLE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXTITLE_1` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(128) NOT NULL DEFAULT '',
+  `OXPOS` int(11) NOT NULL DEFAULT '9999' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXDISPLAYINBASKET` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Display attribute`s value for articles in checkout',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Article attributes';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxattribute`
@@ -102,6 +432,24 @@ INSERT INTO `oxattribute` VALUES ('8a142c3e9cd961518.80299776','oxbaseshop','Des
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxcaptcha`
+--
+
+DROP TABLE IF EXISTS `oxcaptcha`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxcaptcha` (
+  `OXID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Captcha id',
+  `OXHASH` char(32) NOT NULL DEFAULT '' COMMENT 'Hash',
+  `OXTIME` int(11) NOT NULL COMMENT 'Validation time',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXID` (`OXID`,`OXHASH`),
+  KEY `OXTIME` (`OXTIME`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='If session is not available, this is where captcha information is stored';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxcaptcha`
 --
 
@@ -109,6 +457,66 @@ LOCK TABLES `oxcaptcha` WRITE;
 /*!40000 ALTER TABLE `oxcaptcha` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxcaptcha` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxcategories`
+--
+
+DROP TABLE IF EXISTS `oxcategories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxcategories` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Category id',
+  `OXPARENTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'oxrootid' COMMENT 'Parent category id',
+  `OXLEFT` int(11) NOT NULL DEFAULT '0' COMMENT 'Used for building category tree',
+  `OXRIGHT` int(11) NOT NULL DEFAULT '0' COMMENT 'Used for building category tree',
+  `OXROOTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Root category id',
+  `OXSORT` int(11) NOT NULL DEFAULT '9999' COMMENT 'Sorting',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active (multilanguage)',
+  `OXHIDDEN` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Hidden (Can be accessed by direct link, but is not visible in lists and menu)',
+  `OXSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTITLE` varchar(254) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Description (multilanguage)',
+  `OXLONGDESC` text NOT NULL COMMENT 'Long description (multilanguage)',
+  `OXTHUMB` varchar(128) NOT NULL DEFAULT '' COMMENT 'Thumbnail filename (multilanguage)',
+  `OXTHUMB_1` varchar(128) NOT NULL DEFAULT '',
+  `OXTHUMB_2` varchar(128) NOT NULL DEFAULT '',
+  `OXTHUMB_3` varchar(128) NOT NULL DEFAULT '',
+  `OXEXTLINK` varchar(255) NOT NULL DEFAULT '' COMMENT 'External link, that if specified is opened instead of category content',
+  `OXTEMPLATE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Alternative template filename (if empty, default is used)',
+  `OXDEFSORT` varchar(64) NOT NULL DEFAULT '' COMMENT 'Default field for sorting of articles in this category (most of oxarticles fields)',
+  `OXDEFSORTMODE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Default mode of sorting of articles in this category (0 - asc, 1 - desc)',
+  `OXPRICEFROM` double NOT NULL DEFAULT '0' COMMENT 'If specified, all articles, with price higher than specified, will be shown in this category',
+  `OXPRICETO` double NOT NULL DEFAULT '0' COMMENT 'If specified, all articles, with price lower than specified, will be shown in this category',
+  `OXACTIVE_1` tinyint(1) NOT NULL DEFAULT '0',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXDESC_1` varchar(255) NOT NULL DEFAULT '',
+  `OXLONGDESC_1` text NOT NULL,
+  `OXACTIVE_2` tinyint(1) NOT NULL DEFAULT '0',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXDESC_2` varchar(255) NOT NULL DEFAULT '',
+  `OXLONGDESC_2` text NOT NULL,
+  `OXACTIVE_3` tinyint(1) NOT NULL DEFAULT '0',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXDESC_3` varchar(255) NOT NULL DEFAULT '',
+  `OXLONGDESC_3` text NOT NULL,
+  `OXICON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Icon filename',
+  `OXPROMOICON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Promotion icon filename',
+  `OXVAT` float DEFAULT NULL COMMENT 'VAT, used for articles in this category (only if oxarticles.oxvat is not set)',
+  `OXSKIPDISCOUNTS` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Skip all negative Discounts for articles in this category (Discounts, Vouchers, Delivery ...) ',
+  `OXSHOWSUFFIX` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Show SEO Suffix in Category',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXROOTID` (`OXROOTID`),
+  KEY `OXPARENTID` (`OXPARENTID`),
+  KEY `OXPRICEFROM` (`OXPRICEFROM`),
+  KEY `OXPRICETO` (`OXPRICETO`),
+  KEY `OXHIDDEN` (`OXHIDDEN`),
+  KEY `OXSHOPID` (`OXSHOPID`),
+  KEY `OXSORT` (`OXSORT`),
+  KEY `OXVAT` (`OXVAT`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Article categories';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxcategories`
@@ -121,6 +529,24 @@ INSERT INTO `oxcategories` VALUES ('fada9485f003c731b7fad08b873214e0','fad2d80ba
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxcategory2attribute`
+--
+
+DROP TABLE IF EXISTS `oxcategory2attribute`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxcategory2attribute` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Category id (oxcategories)',
+  `OXATTRID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Attribute id (oxattributes)',
+  `OXSORT` int(11) NOT NULL DEFAULT '9999' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Creation time',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between categories and attributes';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxcategory2attribute`
 --
 
@@ -129,6 +555,27 @@ LOCK TABLES `oxcategory2attribute` WRITE;
 INSERT INTO `oxcategory2attribute` VALUES ('baf989ce5507da9ff933f51517511ad9','0f4fb00809cec9aa0910aa9c8fe36751','8a142c3f14ef22a14.79693851',0,'2016-07-19 14:11:15'),('baf1bce77ed84549dddc73263062e31d','0f4fb00809cec9aa0910aa9c8fe36751','6cf89d2d73e666457d167cebfc3eb492',1,'2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxcategory2attribute` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxconfig`
+--
+
+DROP TABLE IF EXISTS `oxconfig`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxconfig` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Config id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXMODULE` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Module or theme specific config (theme:themename, module:modulename)',
+  `OXVARNAME` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Variable name',
+  `OXVARTYPE` varchar(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Variable type',
+  `OXVARVALUE` blob NOT NULL COMMENT 'Variable value',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXVARNAME` (`OXVARNAME`),
+  KEY `listall` (`OXSHOPID`,`OXMODULE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shop configuration values';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxconfig`
@@ -141,6 +588,26 @@ INSERT INTO `oxconfig` VALUES ('8563fba1965a11df3.34244997','oxbaseshop','','blE
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxconfigdisplay`
+--
+
+DROP TABLE IF EXISTS `oxconfigdisplay`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxconfigdisplay` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Config id (extends oxconfig record with this id)',
+  `OXCFGMODULE` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Module or theme specific config (theme:themename, module:modulename)',
+  `OXCFGVARNAME` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Variable name',
+  `OXGROUPING` varchar(255) NOT NULL DEFAULT '' COMMENT 'Grouping (groups config fields to array with specified value as key)',
+  `OXVARCONSTRAINT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Serialized constraints',
+  `OXPOS` int(11) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `list` (`OXCFGMODULE`,`OXCFGVARNAME`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Additional configuraion fields';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxconfigdisplay`
 --
 
@@ -149,6 +616,42 @@ LOCK TABLES `oxconfigdisplay` WRITE;
 INSERT INTO `oxconfigdisplay` VALUES ('1ec4235c2aee774aa45d772875437919','theme:azure','sIconsize','images','',1,'2016-07-19 14:11:08'),('1563fba1bee774aec57c192086494217','theme:azure','sThumbnailsize','images','',2,'2016-07-19 14:11:08'),('1563fba1bee774aec599d56894094456','theme:azure','sCatThumbnailsize','images','',3,'2016-07-19 14:11:08'),('12642dfaa1dee77488b1b22948593071','theme:azure','sZoomImageSize','images','',4,'2016-07-19 14:11:08'),('12642dfaa1dee77487d0644506753921','theme:azure','aDetailImageSizes','images','',5,'2016-07-19 14:11:08'),('18a9473894d473f6ed28f04e80d929fc','theme:azure','bl_showCompareList','features','',6,'2016-07-19 14:11:08'),('18acb2f595da54b5f865e54aa5cdb967','theme:azure','bl_showListmania','features','',7,'2016-07-19 14:11:08'),('18a12329124850cd8f63cda6e8e7b4e1','theme:azure','bl_showWishlist','features','',8,'2016-07-19 14:11:08'),('18a23429124850cd8f63cda6e8e7b4e1','theme:azure','bl_showVouchers','features','',9,'2016-07-19 14:11:08'),('18a34529124850cd8f63cda6e8e7b4e1','theme:azure','bl_showGiftWrapping','features','',10,'2016-07-19 14:11:08'),('15342e4cab0ee774acb3905838384984','theme:azure','blShowBirthdayFields','display','',14,'2016-07-19 14:11:08'),('11296159b7641d31b93423972af6150b','theme:azure','iTopNaviCatCount','display','',15,'2016-07-19 14:11:08'),('6ec4235c2aee774aa45d772875437789','theme:azure','sManufacturerIconsize','images','',6,'2016-07-19 14:11:08'),('8563fba1bee774aec57c192086494897','theme:azure','sCatIconsize','images','',7,'2016-07-19 14:11:08'),('8563fba1bee774aec599d56894094987','theme:azure','sCatPromotionsize','images','',8,'2016-07-19 14:11:08'),('1ec42a395d0595ee7741091898848989','theme:azure','sDefaultListDisplayType','display','infogrid|line|grid',21,'2016-07-19 14:11:08'),('1ec42a395d0595ee7741091898848992','theme:azure','sStartPageListDisplayType','display','infogrid|line|grid',22,'2016-07-19 14:11:08'),('1ec42a395d0595ee7741091898848990','theme:azure','blShowListDisplayType','display','',20,'2016-07-19 14:11:08'),('1ec42a395d0595ee7741091898848474','theme:azure','iNewBasketItemMessage','display','0|1|2|3',17,'2016-07-19 14:11:08'),('1545423fe8ce213a06.20230295','theme:azure','aNrofCatArticles','display','',23,'2016-07-19 14:11:08'),('1ec42a395d0595ee7741091898848991','theme:azure','aNrofCatArticlesInGrid','display','',24,'2016-07-19 14:11:08'),('baf6cb6cc46c90434297cfa28a2465df','theme:flow','sIconsize','images','',1,'2016-07-19 14:11:08'),('f790332afda44f74b211dfe6ea5c08de','theme:flow','sThumbnailsize','images','',2,'2016-07-19 14:11:08'),('d1c29cb8ac480fa9009e0fbc10261721','theme:flow','sCatThumbnailsize','images','',3,'2016-07-19 14:11:08'),('a2504cf9ca9671f6c774f0d45ad29466','theme:flow','sZoomImageSize','images','',4,'2016-07-19 14:11:08'),('3f801f3816bb1d9b7088a12b9f337da5','theme:flow','aDetailImageSizes','images','',5,'2016-07-19 14:11:08'),('0db73f8d5dcf8276c482dacd5daf66eb','theme:flow','bl_showCompareList','features','',6,'2016-07-19 14:11:08'),('474b196f644a906313dfdbc65288fd89','theme:flow','bl_showListmania','features','',7,'2016-07-19 14:11:08'),('5e49cc06e3e5c35f6f5ec74612c264ea','theme:flow','bl_showWishlist','features','',8,'2016-07-19 14:11:08'),('9599dbc6486a7a239131100a7c142d23','theme:flow','bl_showVouchers','features','',9,'2016-07-19 14:11:08'),('842c098286d1d1ebcc7b68a25b858512','theme:flow','bl_showGiftWrapping','features','',10,'2016-07-19 14:11:08'),('f3d46784c4d2a7b3b40050d2d7031ee8','theme:flow','blShowBirthdayFields','display','',14,'2016-07-19 14:11:08'),('bf0fa8a27731fed993b7b8069229ae76','theme:flow','blShowFinalStep','display','',16,'2016-07-19 14:11:08'),('51e09817c2edba9d92d694bc6b986595','theme:flow','sManufacturerIconsize','images','',6,'2016-07-19 14:11:08'),('09362d856a2cf6b860ddea2616790e4e','theme:flow','sCatIconsize','images','',7,'2016-07-19 14:11:08'),('697b4dcf0e224f0d24667191818188ab','theme:flow','sCatPromotionsize','images','',8,'2016-07-19 14:11:08'),('4cb2db0fb45de2d1a86c19b22222c22a','theme:flow','sDefaultListDisplayType','display','infogrid|line|grid',21,'2016-07-19 14:11:08'),('8b3f2c69cc65bc263a2af3ed1a91b598','theme:flow','sStartPageListDisplayType','display','infogrid|line|grid',22,'2016-07-19 14:11:08'),('1cfe50763f3c707d58b540d9314bd795','theme:flow','blShowListDisplayType','display','',20,'2016-07-19 14:11:08'),('42edfa1d5d279cb471ac88fbb2571b1d','theme:flow','iNewBasketItemMessage','display','0|1|2|3',17,'2016-07-19 14:11:08'),('d11bdba26efdf81a6168b1730ac6b31e','theme:flow','aNrofCatArticles','display','',23,'2016-07-19 14:11:08'),('042f8ae08d29463046f30a6c92682da4','theme:flow','aNrofCatArticlesInGrid','display','',24,'2016-07-19 14:11:08'),('042f8ae08d29463046f30a6c92682da5','theme:flow','bl_showManufacturerSlider','display','',25,'2016-07-19 14:11:08'),('1cddb8f9d6dcfc647d3f8e8e66d28ee5','theme:flow','sFacebookUrl','footer','',0,'2016-07-19 14:11:08'),('14e1c130168c35e44e058718f08b89eb','theme:flow','sTwitterUrl','footer','',0,'2016-07-19 14:11:08'),('59925a9c6fba1426db91812d971b8a1f','theme:flow','sYouTubeUrl','footer','',0,'2016-07-19 14:11:08'),('0cc56c5f5be8f4183d44f6e678456841','theme:flow','sGoogleMapsAddr','contact','',0,'2016-07-19 14:11:08'),('4cb9f1fcbef84e96f77150b5516194ed','theme:flow','blUseGAPageTracker','googleanalytics','',0,'2016-07-19 14:11:08'),('403ecea6b4b7aa9b742b11a0433c0be0','theme:flow','sGATrackingId','googleanalytics','',0,'2016-07-19 14:11:08'),('a9984735e07c8c8ada727f7255e4a1a2','theme:flow','blGAAnonymizeIPs','googleanalytics','',0,'2016-07-19 14:11:08'),('e8e773778b8fe80ef49f89a22584ed07','theme:flow','sLogoFile','logo','',0,'2016-07-19 14:11:08'),('5468524f725c809e5c604afd9f763814','theme:flow','blUseGAEcommerceTracking','googleanalytics','',0,'2016-07-19 14:11:08'),('1f7ed56af44c407cf2fb6063ed360b6e','theme:flow','sLogoWidth','logo','',0,'2016-07-19 14:11:08'),('c9e2fa62943ae6406ab5f9a3786d51cd','theme:flow','sLogoHeight','logo','',0,'2016-07-19 14:11:08'),('0cb126e10d47c6521d792a3068d90f06','theme:flow','sFaviconFile','favicons','',1,'2016-07-19 14:11:08'),('e4d52bea45d7958415bed457567e55d5','theme:flow','sFavicon16File','favicons','',2,'2016-07-19 14:11:08'),('72484c39caa4952023960368c9436eb1','theme:flow','sFavicon32File','favicons','',3,'2016-07-19 14:11:08'),('c93289d885ca7b141b438319f81a3df3','theme:flow','sFavicon48File','favicons','',4,'2016-07-19 14:11:08'),('9cfc9f8b749d97f7957a3149c2d7b9a0','theme:flow','sFavicon64File','favicons','',5,'2016-07-19 14:11:08'),('c85b0c087412d5509d24dcea15ac407d','theme:flow','sFavicon128File','favicons','',6,'2016-07-19 14:11:08'),('f0295f3826d540606f06c97a1c3f526f','theme:flow','sFavicon512File','favicons','',7,'2016-07-19 14:11:08'),('9f2da8e5403dd68e59e16002e963f074','theme:flow','sFaviconMSTileColor','favicons','',8,'2016-07-19 14:11:08'),('2cc9f3ea370184978ac815596a156400','theme:flow','sEmailLogo','logo','',3,'2016-07-19 14:11:08'),('f790377ecb7915a7544b7b013a19507f','theme:flow','sBlogUrl','footer','',0,'2016-07-19 14:11:08'),('fc1ba136326a9473ac249859b0419671','theme:flow','sGooglePlusUrl','footer','',0,'2016-07-19 14:11:08'),('7ae9b19d317dc73374f4f366bcd79849','theme:flow','blUseBackground','background','',1,'2016-07-19 14:11:08'),('a58604fa12c801587ff2765451605fde','theme:flow','sBackgroundColor','background','',2,'2016-07-19 14:11:08'),('1c7e564dbce9e258e2080b75b6efac55','theme:flow','sBackgroundPath','background','',3,'2016-07-19 14:11:08'),('11c59dff7bd1bbffda1f3a2acf8875f2','theme:flow','sBackgroundRepeat','background','no-repeat|repeat-x|repeat-y|repeat',4,'2016-07-19 14:11:08'),('0d1563b50e9d90fceff9b18ad95b5598','theme:flow','sBackgroundPosHorizontal','background','left|right|center',5,'2016-07-19 14:11:08'),('91ebc7cacfcb006cdf06b3afab3e68a5','theme:flow','sBackgroundPosVertical','background','top|bottom|center',6,'2016-07-19 14:11:08'),('b9aeb7409052836e6fa4925507389a84','theme:flow','sBackgroundSize','background','cover|contain|normal',7,'2016-07-19 14:11:08'),('c6e2a0faf1dd9c8edcab602bc3eb1979','theme:flow','blBackgroundAttachment','background','',8,'2016-07-19 14:11:08'),('7b7f24babda3f6f9966bab24664ac1d9','theme:flow','blUseGoogleTS','googlets','',1,'2016-07-19 14:11:08'),('d32fef4b817367ddd93712a5b6f4880a','theme:flow','sGoogleVendorId','googlets','',2,'2016-07-19 14:11:08'),('4c500ae122fd28a5e19bea014a95006b','theme:flow','sGoogleShoppingAccountId','googlets','',4,'2016-07-19 14:11:08'),('59128ae70e846d3aeb4faf08a8e0cc9e','theme:flow','sPageLanguage','googlets','',5,'2016-07-19 14:11:08'),('1f9b97e606be26eaa3990cecb144dc4a','theme:flow','sShoppingCountry','googlets','',6,'2016-07-19 14:11:08'),('e004bf676429020f6cd5e3781c24bbd4','theme:flow','sShoppingLanguage','googlets','',7,'2016-07-19 14:11:08'),('223fccfb136d6337f943fa263c1bf2d5','theme:flow','sShippingDaysOnStock','googlets','',8,'2016-07-19 14:11:08'),('fc2d4177ca6e5594987f5d0cd5701760','theme:flow','sShippingDaysNotOnStock','googlets','',9,'2016-07-19 14:11:08'),('f47de955b128f96bf58e949cec431408','theme:flow','sDeliveryDaysOnStock','googlets','',10,'2016-07-19 14:11:08'),('47843eae6e1ab6518652fb003891a867','theme:flow','sDeliveryDaysNotOnStock','googlets','',11,'2016-07-19 14:11:08'),('9760bfcd17f5dbd30e261c045711d3ed','theme:flow','blSliderShowImageCaption','images','',9,'2016-07-19 14:11:08'),('93de3805c1e330ff33a568550e2414d9','theme:flow','blFullwidthLayout','display','',10,'2016-07-19 14:11:08'),('994aff028981fc19681f0db08a80f7f5','theme:flow','blFooterShowHelp','footer','',1,'2016-07-19 14:11:08'),('e676ec37632a4e1b1d30cc839c06614f','theme:flow','blFooterShowLinks','footer','',2,'2016-07-19 14:11:08'),('4e1cb3a18e477ef6bd4ed6e3a1719d3c','theme:flow','blFooterShowGuestbook','footer','',3,'2016-07-19 14:11:08'),('0cd598f56d0a74e8c4e4d75a961960f4','theme:flow','blFooterShowNewsletter','footer','',4,'2016-07-19 14:11:08'),('8838d89730016811eab0e0e5d71c52d1','theme:flow','blFooterShowNewsletterForm','footer','',5,'2016-07-19 14:11:08'),('c9ef60e5f343d3cdf0747f33cb942624','theme:flow','blEmailsShowProductPictures','emails','',1,'2016-07-19 14:11:08'),('e0fb9345d9a85a86e62d485bfc354432','theme:flow','blFooterShowNews','footer','',6,'2016-07-19 14:11:08');
 /*!40000 ALTER TABLE `oxconfigdisplay` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxcontents`
+--
+
+DROP TABLE IF EXISTS `oxcontents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxcontents` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Content id',
+  `OXLOADID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Id, specified by admin and can be used instead of oxid',
+  `OXSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXSNIPPET` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Snippet (can be included to other oxcontents records)',
+  `OXTYPE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Type: 0 - Snippet, 1 - Upper Menu, 2 - Category, 3 - Manual',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active (multilanguage)',
+  `OXACTIVE_1` tinyint(1) NOT NULL DEFAULT '0',
+  `OXPOSITION` varchar(32) NOT NULL DEFAULT '' COMMENT 'Position',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXCONTENT` text NOT NULL COMMENT 'Content (multilanguage)',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXCONTENT_1` text NOT NULL,
+  `OXACTIVE_2` tinyint(1) NOT NULL DEFAULT '0',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXCONTENT_2` text NOT NULL,
+  `OXACTIVE_3` tinyint(1) NOT NULL DEFAULT '0',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXCONTENT_3` text NOT NULL,
+  `OXCATID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL COMMENT 'Category id (oxcategories), used only when type = 2',
+  `OXFOLDER` varchar(32) NOT NULL DEFAULT '' COMMENT 'Content Folder (available options at oxconfig.OXVARNAME = aCMSfolder)',
+  `OXTERMVERSION` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Term and Conditions version (used only when OXLOADID = oxagb)',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  UNIQUE KEY `OXLOADID` (`OXLOADID`),
+  KEY `cat_search` (`OXTYPE`,`OXSHOPID`,`OXSNIPPET`,`OXCATID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Content pages (Snippets, Menu, Categories, Manual)';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxcontents`
@@ -161,6 +664,21 @@ INSERT INTO `oxcontents` VALUES ('8709e45f31a86909e9f999222e80b1d0','oxstdfooter
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxcounters`
+--
+
+DROP TABLE IF EXISTS `oxcounters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxcounters` (
+  `OXIDENT` char(32) NOT NULL COMMENT 'Counter id',
+  `OXCOUNT` int(11) NOT NULL COMMENT 'Counted number',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXIDENT`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Shop counters';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxcounters`
 --
 
@@ -169,6 +687,40 @@ LOCK TABLES `oxcounters` WRITE;
 INSERT INTO `oxcounters` VALUES ('oxOrder',1,'2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxcounters` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxcountry`
+--
+
+DROP TABLE IF EXISTS `oxcountry`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxcountry` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Country id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active',
+  `OXTITLE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXISOALPHA2` char(2) NOT NULL DEFAULT '' COMMENT 'ISO 3166-1 alpha-2',
+  `OXISOALPHA3` char(3) NOT NULL DEFAULT '' COMMENT 'ISO 3166-1 alpha-3',
+  `OXUNNUM3` char(3) NOT NULL DEFAULT '' COMMENT 'ISO 3166-1 numeric',
+  `OXVATINPREFIX` char(2) NOT NULL DEFAULT '' COMMENT 'VAT identification number prefix',
+  `OXORDER` int(11) NOT NULL DEFAULT '9999' COMMENT 'Sorting',
+  `OXSHORTDESC` varchar(128) NOT NULL DEFAULT '' COMMENT 'Short description (multilanguage)',
+  `OXLONGDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Long description (multilanguage)',
+  `OXTITLE_1` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(128) NOT NULL DEFAULT '',
+  `OXSHORTDESC_1` varchar(128) NOT NULL DEFAULT '',
+  `OXSHORTDESC_2` varchar(128) NOT NULL DEFAULT '',
+  `OXSHORTDESC_3` varchar(128) NOT NULL DEFAULT '',
+  `OXLONGDESC_1` varchar(255) NOT NULL,
+  `OXLONGDESC_2` varchar(255) NOT NULL,
+  `OXLONGDESC_3` varchar(255) NOT NULL,
+  `OXVATSTATUS` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Vat status: 0 - Do not bill VAT, 1 - Do not bill VAT only if provided valid VAT ID',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXACTIVE` (`OXACTIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Countries list';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxcountry`
@@ -181,6 +733,23 @@ INSERT INTO `oxcountry` VALUES ('2db455824e4a19cc7.14731328',0,'Anderes Land',''
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxdel2delset`
+--
+
+DROP TABLE IF EXISTS `oxdel2delset`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxdel2delset` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXDELID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shipping cost rule id (oxdelivery)',
+  `OXDELSETID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Delivery method id (oxdeliveryset)',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXDELID` (`OXDELID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between Shipping cost rules (oxdelivery) and delivery methods (oxdeliveryset)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxdel2delset`
 --
 
@@ -189,6 +758,37 @@ LOCK TABLES `oxdel2delset` WRITE;
 INSERT INTO `oxdel2delset` VALUES ('5be44bc9261862fc4.78617917','1b842e734b62a4775.45738618','oxidstandard','2016-07-19 14:11:15'),('4ba44c7251a587071.83952129','1b842e73470578914.54719298','oxidstandard','2016-07-19 14:11:15'),('4ba44c72528a26008.03376396','1b842e7352422a708.01472527','oxidstandard','2016-07-19 14:11:15'),('4ba44c7252d6d5785.89997750','1b842e738970d31e3.71258327','1b842e732a23255b1.91207750','2016-07-19 14:11:15'),('4ba44c7252d6d5785.89997751','1b842e738970d31e3.71258328','1b842e732a23255b1.91207751','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxdel2delset` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxdelivery`
+--
+
+DROP TABLE IF EXISTS `oxdelivery`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxdelivery` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Delivery shipping cost rule id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active',
+  `OXACTIVEFROM` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active from specified date',
+  `OXACTIVETO` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active to specified date',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXADDSUMTYPE` enum('%','abs') NOT NULL DEFAULT 'abs' COMMENT 'Price Surcharge/Reduction type (abs|%)',
+  `OXADDSUM` double NOT NULL DEFAULT '0' COMMENT 'Price Surcharge/Reduction amount',
+  `OXDELTYPE` enum('a','s','w','p') NOT NULL DEFAULT 'a' COMMENT 'Condition type: a - Amount, s - Size, w - Weight, p - Price',
+  `OXPARAM` double NOT NULL DEFAULT '0' COMMENT 'Condition param from (e.g. amount from 1)',
+  `OXPARAMEND` double NOT NULL DEFAULT '0' COMMENT 'Condition param to (e.g. amount to 10)',
+  `OXFIXED` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Calculation Rules: 0 - Once per Cart, 1 - Once for each different product, 2 - For each product',
+  `OXSORT` int(11) NOT NULL DEFAULT '9999' COMMENT 'Order of Rules Processing',
+  `OXFINALIZE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Do not run further rules if this rule is valid and is being run',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSHOPID` (`OXSHOPID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Delivery shipping cost rules';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxdelivery`
@@ -201,6 +801,30 @@ INSERT INTO `oxdelivery` VALUES ('1b842e734b62a4775.45738618','oxbaseshop',1,'00
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxdeliveryset`
+--
+
+DROP TABLE IF EXISTS `oxdeliveryset`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxdeliveryset` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Delivery method id',
+  `OXSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active',
+  `OXACTIVEFROM` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active from specified date',
+  `OXACTIVETO` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active to specified date',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXPOS` int(11) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Creation time',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSHOPID` (`OXSHOPID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Delivery (shipping) methods';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxdeliveryset`
 --
 
@@ -209,6 +833,41 @@ LOCK TABLES `oxdeliveryset` WRITE;
 INSERT INTO `oxdeliveryset` VALUES ('oxidstandard','oxbaseshop',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','Standard','Standard','','',10,'2016-07-19 14:11:08'),('1b842e732a23255b1.91207750','oxbaseshop',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','Beispiel Set1: UPS 48 Std.','Example Set1: UPS 48 hours','','',30,'2016-07-19 14:11:15'),('1b842e732a23255b1.91207751','oxbaseshop',1,'0000-00-00 00:00:00','0000-00-00 00:00:00','Beispiel Set1: UPS 24 Std. Express','Example Set2: UPS Express 24 hours','','',30,'2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxdeliveryset` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxdiscount`
+--
+
+DROP TABLE IF EXISTS `oxdiscount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxdiscount` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Discount id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active',
+  `OXACTIVEFROM` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active from specified date',
+  `OXACTIVETO` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active to specified date',
+  `OXTITLE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXTITLE_1` varchar(128) NOT NULL,
+  `OXTITLE_2` varchar(128) NOT NULL,
+  `OXTITLE_3` varchar(128) NOT NULL,
+  `OXAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Valid from specified amount of articles',
+  `OXAMOUNTTO` double NOT NULL DEFAULT '999999' COMMENT 'Valid to specified amount of articles',
+  `OXPRICETO` double NOT NULL DEFAULT '999999' COMMENT 'Valid to specified purchase price',
+  `OXPRICE` double NOT NULL DEFAULT '0' COMMENT 'Valid from specified purchase price',
+  `OXADDSUMTYPE` enum('%','abs','itm') NOT NULL DEFAULT '%' COMMENT 'Discount type (%,abs,itm)',
+  `OXADDSUM` double NOT NULL DEFAULT '0' COMMENT 'Magnitude of the discount',
+  `OXITMARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Free article id, that will be added as a discount',
+  `OXITMAMOUNT` double NOT NULL DEFAULT '1' COMMENT 'The quantity of free article that will be added to basket with discounted article',
+  `OXITMMULTIPLE` int(1) NOT NULL DEFAULT '0' COMMENT 'Should free article amount be multiplied by discounted item quantity in basket',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSHOPID` (`OXSHOPID`),
+  KEY `OXACTIVE` (`OXACTIVE`),
+  KEY `OXACTIVEFROM` (`OXACTIVEFROM`),
+  KEY `OXACTIVETO` (`OXACTIVETO`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Article discounts';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxdiscount`
@@ -221,6 +880,29 @@ INSERT INTO `oxdiscount` VALUES ('9fc3e801d40332ae4.08296552','oxbaseshop',0,'20
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxfiles`
+--
+
+DROP TABLE IF EXISTS `oxfiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxfiles` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'File id',
+  `OXARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article id (oxarticles)',
+  `OXFILENAME` varchar(128) NOT NULL COMMENT 'Filename',
+  `OXSTOREHASH` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Hashed filename, used for file directory path creation',
+  `OXPURCHASEDONLY` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT 'Download is available only after purchase',
+  `OXMAXDOWNLOADS` int(11) NOT NULL DEFAULT '-1' COMMENT 'Maximum count of downloads after order',
+  `OXMAXUNREGDOWNLOADS` int(11) NOT NULL DEFAULT '-1' COMMENT 'Maximum count of downloads for not registered users after order',
+  `OXLINKEXPTIME` int(11) NOT NULL DEFAULT '-1' COMMENT 'Expiration time of download link in hours',
+  `OXDOWNLOADEXPTIME` int(11) NOT NULL DEFAULT '-1' COMMENT 'Expiration time of download link after the first download in hours',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Creation time',
+  PRIMARY KEY (`OXID`),
+  KEY `OXARTID` (`OXARTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Files available for users to download';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxfiles`
 --
 
@@ -231,6 +913,27 @@ INSERT INTO `oxfiles` VALUES ('oiaad7812ae7127283b8fd6d309ea5d5','oiaa81b5e002fc
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxgbentries`
+--
+
+DROP TABLE IF EXISTS `oxgbentries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxgbentries` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Entry id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXCONTENT` text NOT NULL COMMENT 'Content',
+  `OXCREATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Creation time',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is active',
+  `OXVIEWED` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether the entry was checked by admin',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXUSERID` (`OXUSERID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Guestbook`s entries';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxgbentries`
 --
 
@@ -238,6 +941,26 @@ LOCK TABLES `oxgbentries` WRITE;
 /*!40000 ALTER TABLE `oxgbentries` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxgbentries` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxgroups`
+--
+
+DROP TABLE IF EXISTS `oxgroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxgroups` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Group id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active',
+  `OXTITLE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXTITLE_1` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(128) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(128) NOT NULL DEFAULT '',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXACTIVE` (`OXACTIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='User groups';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxgroups`
@@ -250,6 +973,26 @@ INSERT INTO `oxgroups` VALUES ('oxidblacklist',1,'Blacklist','Blacklist','','','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxinvitations`
+--
+
+DROP TABLE IF EXISTS `oxinvitations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxinvitations` (
+  `OXUSERID` char(32) COLLATE latin1_general_ci NOT NULL COMMENT 'User id (oxuser), who sent invitation',
+  `OXDATE` date NOT NULL COMMENT 'Creation time',
+  `OXEMAIL` varchar(255) COLLATE latin1_general_ci NOT NULL COMMENT 'Recipient email',
+  `OXPENDING` mediumint(9) NOT NULL COMMENT 'Has recipient user registered',
+  `OXACCEPTED` mediumint(9) NOT NULL COMMENT 'Is recipient user accepted',
+  `OXTYPE` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Invitation type',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  KEY `OXUSERID` (`OXUSERID`),
+  KEY `OXDATE` (`OXDATE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='User sent invitations';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxinvitations`
 --
 
@@ -257,6 +1000,31 @@ LOCK TABLES `oxinvitations` WRITE;
 /*!40000 ALTER TABLE `oxinvitations` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxinvitations` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxlinks`
+--
+
+DROP TABLE IF EXISTS `oxlinks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxlinks` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Link id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active',
+  `OXURL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Link url',
+  `OXURLDESC` text NOT NULL COMMENT 'Description (multilanguage)',
+  `OXURLDESC_1` text NOT NULL,
+  `OXURLDESC_2` text NOT NULL,
+  `OXURLDESC_3` text NOT NULL,
+  `OXINSERT` datetime DEFAULT NULL COMMENT 'Creation time (set by user)',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSHOPID` (`OXSHOPID`),
+  KEY `OXINSERT` (`OXINSERT`),
+  KEY `OXACTIVE` (`OXACTIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Links';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxlinks`
@@ -269,6 +1037,27 @@ INSERT INTO `oxlinks` VALUES ('ce342e8acb69f1748.25672556','oxbaseshop',1,'http:
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxlogs`
+--
+
+DROP TABLE IF EXISTS `oxlogs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxlogs` (
+  `OXTIME` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Creation time',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXSESSID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Session id',
+  `OXCLASS` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Logged class name',
+  `OXFNC` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Logged function name',
+  `OXCNID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Active category id (oxcategories)',
+  `OXANID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Active article id (oxarticles)',
+  `OXPARAMETER` varchar(64) NOT NULL DEFAULT '' COMMENT 'Template name or search param',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores logs from actions processing';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxlogs`
 --
 
@@ -276,6 +1065,32 @@ LOCK TABLES `oxlogs` WRITE;
 /*!40000 ALTER TABLE `oxlogs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxlogs` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxmanufacturers`
+--
+
+DROP TABLE IF EXISTS `oxmanufacturers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxmanufacturers` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Manufacturer id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is active',
+  `OXICON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Icon filename',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXSHORTDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Short description (multilanguage)',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSHOWSUFFIX` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Show SEO Suffix in Category',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shop manufacturers';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxmanufacturers`
@@ -288,6 +1103,28 @@ INSERT INTO `oxmanufacturers` VALUES ('90a8a18dd0cf0e7aec5238f30e1c6106','oxbase
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxmediaurls`
+--
+
+DROP TABLE IF EXISTS `oxmediaurls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxmediaurls` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Media id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article id (oxarticles)',
+  `OXURL` varchar(255) NOT NULL COMMENT 'Media url or filename',
+  `OXDESC` varchar(255) NOT NULL COMMENT 'Description (multilanguage)',
+  `OXDESC_1` varchar(255) NOT NULL,
+  `OXDESC_2` varchar(255) NOT NULL,
+  `OXDESC_3` varchar(255) NOT NULL,
+  `OXISUPLOADED` int(1) NOT NULL DEFAULT '0' COMMENT 'Is oxurl field used for filename or url',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Stores objects media';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxmediaurls`
 --
 
@@ -295,6 +1132,40 @@ LOCK TABLES `oxmediaurls` WRITE;
 /*!40000 ALTER TABLE `oxmediaurls` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxmediaurls` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxnews`
+--
+
+DROP TABLE IF EXISTS `oxnews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxnews` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'News id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is active',
+  `OXACTIVEFROM` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active from specified date',
+  `OXACTIVETO` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Active to specified date',
+  `OXDATE` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Creation date (entered by user)',
+  `OXSHORTDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Short description (multilanguage)',
+  `OXLONGDESC` text NOT NULL COMMENT 'Long description (multilanguage)',
+  `OXACTIVE_1` tinyint(1) NOT NULL DEFAULT '0',
+  `OXSHORTDESC_1` varchar(255) NOT NULL DEFAULT '',
+  `OXLONGDESC_1` text NOT NULL,
+  `OXACTIVE_2` tinyint(1) NOT NULL DEFAULT '0',
+  `OXSHORTDESC_2` varchar(255) NOT NULL DEFAULT '',
+  `OXLONGDESC_2` text NOT NULL,
+  `OXACTIVE_3` tinyint(1) NOT NULL DEFAULT '0',
+  `OXSHORTDESC_3` varchar(255) NOT NULL DEFAULT '',
+  `OXLONGDESC_3` text NOT NULL,
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSHOPID` (`OXSHOPID`),
+  KEY `OXACTIVE` (`OXACTIVE`),
+  KEY `OXACTIVEFROM` (`OXACTIVEFROM`),
+  KEY `OXACTIVETO` (`OXACTIVETO`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shop news';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxnews`
@@ -307,6 +1178,25 @@ INSERT INTO `oxnews` VALUES ('9a9468c5c4f739821e9aa340fd3715c8','oxbaseshop',1,'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxnewsletter`
+--
+
+DROP TABLE IF EXISTS `oxnewsletter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxnewsletter` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Newsletter id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title',
+  `OXTEMPLATE` mediumtext NOT NULL COMMENT 'HTML template',
+  `OXPLAINTEMPLATE` mediumtext NOT NULL COMMENT 'Plain template',
+  `OXSUBJECT` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Subject',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Templates for sending newsletters';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxnewsletter`
 --
 
@@ -315,6 +1205,32 @@ LOCK TABLES `oxnewsletter` WRITE;
 INSERT INTO `oxnewsletter` VALUES ('oxidnewsletter','oxbaseshop','Beispiel Newsletter','<!DOCTYPE HTML>\r\n<html>\r\n  <head>\r\n      <title>OXID eSales Newsletter</title>\r\n  </head>\r\n\r\n  <body bgcolor=\"#ffffff\" link=\"#355222\" alink=\"#18778E\" vlink=\"#389CB4\" style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n\r\n    <div width=\"600\" style=\"width: 600px\">\r\n\r\n        <div style=\"padding: 10px 0;\">\r\n            <img src=\"[{$oViewConf->getImageUrl(\'logo_email.png\', false)}]\" border=\"0\" hspace=\"0\" vspace=\"0\" alt=\"[{ $shop->oxshops__oxname->value }]\" align=\"texttop\">\r\n        </div>\r\n        \r\n        <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n            Hallo [{ $myuser->oxuser__oxsal->value|oxmultilangsal }] [{ $myuser->oxuser__oxfname->value }] [{ $myuser->oxuser__oxlname->value }],\r\n        </p>\r\n        \r\n        <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n            wie Sie sehen können, funktioniert unser Newsletter richtig gut.\r\n        </p>\r\n\r\n        <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n            Nicht nur, dass wir hier Ihre Adresse ausgeben können:\r\n        </p>\r\n\r\n        <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; padding-left: 20px;\">\r\n            [{ $myuser->oxuser__oxaddinfo->value }]<br>\r\n            [{ $myuser->oxuser__oxstreet->value }]<br>\r\n            [{ $myuser->oxuser__oxzip->value }] [{ $myuser->oxuser__oxcity->value }]<br>\r\n            [{ $myuser->oxuser__oxcountry->value }]<br>\r\n            Telefon: [{ $myuser->oxuser__oxfon->value }]<br>\r\n        </p>\r\n\r\n        <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n            sondern wir können noch viel mehr!<br><br>\r\n            Sie wollen diesen Newsletter nicht mehr erhalten? Kein Problem - klicken Sie einfach <a href=\"[{ $oViewConf->getBaseDir() }]index.php?cl=newsletter&amp;fnc=removeme&amp;uid=[{$myuser->oxuser__oxid->value}]\" style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\" target=\"_blank\">hier</a>.<br>\r\n        </p>\r\n\r\n        [{if isset($simarticle0) }]\r\n            <h3 style=\"font-weight: bold; margin: 20px 0 7px; padding: 0; line-height: 35px; font-size: 12px;font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; border-bottom: 4px solid #ddd;\">\r\n                Ein Ähnlicher Artikel zu Ihrer letzten Bestellung:\r\n            </h3>\r\n\r\n            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width: 100%; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd;\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td valign=\"top\" style=\"padding-right: 25px;\">\r\n                            <a href=\"[{$simarticle0->getLink()}]\"><img alt=\"[{ $simarticle0->oxarticles__oxtitle->value }]\" src=\"[{$simarticle0->getThumbnailUrl()}]\" border=\"0\" hspace=\"0\" vspace=\"0\"></a>\r\n                        </td>\r\n                        <td valign=\"top\">\r\n                            <h4 style=\"font-size: 14px; font-weight: bold; margin: 0 0 15px;\">[{ $simarticle0->oxarticles__oxtitle->value }]</h4>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n                                [{ $simarticle0->oxarticles__oxshortdesc->value }]\r\n                            </p>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 0;\">\r\n                                <b>Statt <s>[{ $simarticle0->getFTPrice()}]</s></b>\r\n                                jetzt nur <span style=\"font-size: 14px;\"><b>[{ $simarticle0->getFPrice() }] [{ $mycurrency->sign}]</b></span>\r\n                                <br><br>\r\n                                <a href=\"[{$simarticle0->getLink()}]\">mehr Infos</a>\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        [{/if}]\r\n        \r\n        [{if isset($simarticle1) }]\r\n            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n                Auch das hier ist ein ähnlicher Artikel zu Ihrer letzten Bestellung:\r\n            </p>\r\n            \r\n            <h3 style=\"font-weight: bold; margin: 10px 0 7px; padding: 0; line-height: 35px; font-size: 12px;font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; border-bottom: 4px solid #ddd;\">\r\n                Top Angebot der Woche\r\n            </h3>\r\n\r\n            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width: 100%; padding-bottom: 10px; margin-bottom: 20px;  border-bottom: 2px solid #ddd;\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td valign=\"top\" style=\"padding-right: 25px;\">\r\n                            <a href=\"[{$simarticle1->getLink()}]\"><img alt=\"[{ $simarticle1->oxarticles__oxtitle->value }]\" src=\"[{$simarticle1->getThumbnailUrl()}]\" border=\"0\" hspace=\"0\" vspace=\"0\"></a>\r\n                        </td>\r\n                        <td valign=\"top\">\r\n                            <h4 style=\"font-size: 14px; font-weight: bold; margin: 0 0 15px;\">[{ $simarticle1->oxarticles__oxtitle->value }]</h4>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n                                [{ $simarticle0->oxarticles__oxshortdesc->value }]\r\n                            </p>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 0;\">\r\n                                Jetzt nur <span style=\"font-size: 14px;\"><b>[{ $simarticle1->getFPrice() }] [{ $mycurrency->sign}] !!!</b></span>\r\n                                <br><br>\r\n                                <a href=\"[{$simarticle1->getLink()}]\">mehr Infos</a>\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        [{/if}]\r\n\r\n        [{if isset($simarticle2) }]\r\n            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n                Und zuletzt nochmal ein ähnlicher Artikel zu Ihrer letzten Bestellung:\r\n            </p>\r\n\r\n            <h3 style=\"font-weight: bold; margin: 10px 0 7px; padding: 0; line-height: 35px; font-size: 12px;font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; border-bottom: 4px solid #ddd;\">\r\n                Schnäppchen!\r\n            </h3>\r\n\r\n            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width: 100%; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd;\">\r\n                <tbody>\r\n                    <tr>\r\n                        <td>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n                                Jetzt gibt es unseren Bestseller <a href=\"[{$simarticle2->getLink()}]\">[{ $simarticle2->oxarticles__oxtitle->value }]</a> in der günstigen Sonderausgabe exklusiv bei OXID!<br>\r\n                            </p>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px;\">\r\n                                <a href=\"[{$simarticle2->getToBasketLink()}]&amp;am=1\">Gleich bestellen</a>!\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        [{/if}]\r\n\r\n\r\n        [{if isset($articlelist) }]\r\n\r\n            <h3 style=\"font-weight: bold; margin: 10px 0 7px; padding: 0; line-height: 35px; font-size: 12px;font-family: Arial, Helvetica, sans-serif; text-transform: uppercase; border-bottom: 4px solid #ddd;\">\r\n                Ausgesuchte Artikel aus unserem Shop extra für diesen Newsletter:\r\n            </h3>\r\n        \r\n            [{foreach from=$articlelist item=product}]\r\n                <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"left\" style=\"width: 220px; margin-right: 15px; margin-bottom: 10px; border: 1px solid #ccc; padding: 10px;\">\r\n                    <tr>\r\n                        <td align=\"center\">\r\n                            <a href=\"[{$product->getLink()}]\" class=\"startpageProduct\"><img vspace=\"0\" hspace=\"0\" border=\"0\" alt=\"[{ $product->oxarticles__oxtitle->value }]\" src=\"[{$product->getThumbnailUrl()}]\"></a>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 5px;\">\r\n                                <b>[{ $product->oxarticles__oxtitle->value }]</b>\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td height=\"20\">\r\n                            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 5px;\">\r\n                                Jetzt nur <b>[{ $product->getFPrice() }] [{ $mycurrency->sign}]</b>\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td height=\"20\">\r\n                            <a href=\"[{$product->getLink()}]\" class=\"startpageProductText\" style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 5px;\">mehr Infos</a><br>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            [{/foreach}]\r\n        [{/if}]\r\n\r\n        <div style=\"clear: both; height: 3px;\">&nbsp;</div>\r\n        \r\n        <div style=\"border: 1px solid #3799B1; margin: 30px 0 15px 0; padding: 12px 20px; background-color: #eee; border-radius: 4px 4px 4px 4px; linear-gradient(center top , #FFFFFF, #D1D8DB) repeat scroll 0 0 transparent;\">\r\n            <p style=\"font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 0; padding: 0;\">\r\n                [{ oxcontent ident=\"oxemailfooter\" }]\r\n            </p>\r\n        </div>\r\n\r\n    </div>\r\n\r\n  </body>\r\n</html>','OXID eSales Newsletter\r\n\r\nHallo, [{ $myuser->oxuser__oxsal->value|oxmultilangsal }] [{ $myuser->oxuser__oxfname->getRawValue() }] [{ $myuser->oxuser__oxlname->getRawValue() }],\r\n\r\nwie Sie sehen können, funktioniert unser Newsletter-Modul richtig gut.\r\n\r\nNicht nur, dass wir hier Ihre Adresse ausgeben können:\r\n\r\n[{ $myuser->oxuser__oxaddinfo->getRawValue() }]\r\n[{ $myuser->oxuser__oxstreet->getRawValue() }]\r\n[{ $myuser->oxuser__oxzip->value }] [{ $myuser->oxuser__oxcity->getRawValue() }]\r\n[{ $myuser->oxuser__oxcountry->getRawValue() }]\r\nTelefon: [{ $myuser->oxuser__oxfon->value }]\r\n\r\nsondern wir können noch viel mehr!\r\n\r\nSie wollen diesen Newsletter nicht mehr erhalten? Kein Problem - klicken Sie einfach hier:\r\n[{$oViewConf->getBaseDir()}]index.php?cl=newsletter&fnc=removeme&uid=[{ $myuser->oxuser__oxid->value}]\r\n\r\n[{if isset($simarticle0) }]\r\n   Ein Ähnlicher Artikel zu Ihrer letzten Bestellung ist:\r\n \r\n    [{ $simarticle0->oxarticles__oxtitle->getRawValue() }] \r\n Statt [{ $simarticle0->getFTPrice()}] jetzt nur [{ $simarticle0->getFPrice() }] [{ $mycurrency->name}]\r\n[{/if}]\r\n\r\n[{if isset($articlelist) }]\r\n  Ausgesuchte Artikel aus unserem Shop extra für diesen Newsletter: \r\n     [{foreach from=$articlelist item=product}]  \r\n        [{ $product->oxarticles__oxtitle->getRawValue() }]   Jetzt nur [{ $product->getFPrice() }] [{ $mycurrency->name}]\r\n    [{/foreach}] \r\n[{/if}]           \r\n     \r\n','Newsletter subject','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxnewsletter` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxnewssubscribed`
+--
+
+DROP TABLE IF EXISTS `oxnewssubscribed`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxnewssubscribed` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Subscription id',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXSAL` varchar(64) NOT NULL DEFAULT '' COMMENT 'User title prefix (Mr/Mrs)',
+  `OXFNAME` char(128) NOT NULL DEFAULT '' COMMENT 'First name',
+  `OXLNAME` char(128) NOT NULL DEFAULT '' COMMENT 'Last name',
+  `OXEMAIL` char(128) NOT NULL DEFAULT '' COMMENT 'Email',
+  `OXDBOPTIN` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Subscription status: 0 - not subscribed, 1 - subscribed, 2 - not confirmed',
+  `OXEMAILFAILED` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Subscription email sending status',
+  `OXSUBSCRIBED` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Subscription date',
+  `OXUNSUBSCRIBED` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Unsubscription date',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  PRIMARY KEY (`OXID`),
+  UNIQUE KEY `OXEMAIL` (`OXEMAIL`),
+  KEY `OXUSERID` (`OXUSERID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='User subscriptions';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxnewssubscribed`
@@ -327,6 +1243,25 @@ INSERT INTO `oxnewssubscribed` VALUES ('0b742e66fd94c88b8.61001136','oxdefaultad
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxobject2action`
+--
+
+DROP TABLE IF EXISTS `oxobject2action`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2action` (
+  `OXID` char(32) COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXACTIONID` char(32) COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Action id (oxactions)',
+  `OXOBJECTID` char(32) COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Object id (table set by oxclass)',
+  `OXCLASS` char(32) COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Object table name',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXACTIONID` (`OXACTIONID`,`OXCLASS`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='Shows many-to-many relationship between actions (oxactions) and objects (table set by oxclass)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxobject2action`
 --
 
@@ -335,6 +1270,25 @@ LOCK TABLES `oxobject2action` WRITE;
 INSERT INTO `oxobject2action` VALUES ('89140907d6498b8f7c28bb88b8b36242','b5639c6431b26687321f6ce654878fa5','f4fc98f99e3660bd2ecd7450f832c41a','oxarticle','2016-07-19 14:11:15'),('87a0575f1af1002847bb4de36398851a','d51545e80843be666a9326783a73e91d','oxidadmin','oxgroups','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxobject2action` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxobject2article`
+--
+
+DROP TABLE IF EXISTS `oxobject2article`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2article` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Cross-selling Article id (oxarticles)',
+  `OXARTICLENID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Main Article id (oxarticles)',
+  `OXSORT` int(5) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXARTICLENID` (`OXARTICLENID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between cross-selling articles';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxobject2article`
@@ -347,6 +1301,29 @@ INSERT INTO `oxobject2article` VALUES ('6ea57f1978072707e79be88576875d3b','6b63f
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxobject2attribute`
+--
+
+DROP TABLE IF EXISTS `oxobject2attribute`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2attribute` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXATTRID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Attribute id (oxattributes)',
+  `OXVALUE` char(255) NOT NULL DEFAULT '' COMMENT 'Attribute value (multilanguage)',
+  `OXPOS` int(11) NOT NULL DEFAULT '9999' COMMENT 'Sorting',
+  `OXVALUE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXVALUE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXVALUE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXATTRID` (`OXATTRID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between articles and attributes';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxobject2attribute`
 --
 
@@ -355,6 +1332,28 @@ LOCK TABLES `oxobject2attribute` WRITE;
 INSERT INTO `oxobject2attribute` VALUES ('58de4827b7c54de6c2b318016b48efe4','dc5ae3d43f96269ed3c62172e383be40','9438ac75bac3e344628b14bf7ed82c15','orange',0,'orange','','','2016-07-19 14:11:15'),('d8842e3cb3567e562.26057815','d8842e3cb356356f4.93820547','8a142c3f0a792c0c3.93013584','Wanduhr',9999,'Wall clock','','','2016-07-19 14:11:15'),('d8842e3cb35681eb1.55581384','d8842e3cb356356f4.93820547','8a142c3f0e2cf1a34.78041155','Kunststoff',9999,'plastic','','','2016-07-19 14:11:15'),('d8842e3cb356854d5.98403201','d8842e3cb356356f4.93820547','8a142c3f14ef22a14.79693851','Home,Büro',9999,'Home,Office','','','2016-07-19 14:11:15'),('58d27a0949649ca064d1e9fcbfc80ae1','dc53d3c0ca2ae7c38bf51f3410da0bf8','9438ac75bac3e344628b14bf7ed82c15','grau',0,'gray','','','2016-07-19 14:11:15'),('d8842e3cb3567c010.42997902','d8842e3cb356356f4.93820547','8a142c3ee0edb75d4.80743302','Zeiger',9999,'hand','','','2016-07-19 14:11:15'),('d8842e3cb35675756.41352910','d8842e3cb356356f4.93820547','8a142c3e9cd961518.80299776','Futuristisch',9999,'futuristic','','','2016-07-19 14:11:15'),('9432e75d30084ce323125be8810481bb','943e2a5c3ef0c0ac4e1fa4eafafd21c0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f16ff4a7789b3ed8c344637e8606d','9432acb245a38aa9ff11194bc6c44b09','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a045997f3165253f75f9d924e2069','943dedbe77f90bab8066e82dea971ad0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f63309c3a5aa8cccc7a7e5f044ca3','943228b4034ba0176d4abd33c407835b','943e7f5d33e9a78d4b71906270e3d0c6','Blau',0,'','','','2016-07-19 14:11:15'),('9435d7a16d89aabb557f767d47b2d6a7','94321a6fde657c332c2498e8e879ac4e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b649315771f5c40216bd88102ec91','9436f4c1270a15043867ec108f4fecd1','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('94399a40e386109530355e419ec246c1','9434bc68a257c6b48dcb2d17583ec26e','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('94349ac34b8a5624355887ff48abfdbf','94367a8c92aac45c9819471406666741','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('943c641bd60d182e9e23dfea7f57eb04','9433aa4ebb2492a43e0eee2ac37c1a20','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('943c5124f947774b31443690051bdee7','9434af54595b0289a0c1be378658b870','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('943678f09f1cf5dbb444eb05f26f3e02','9436ab2facfdd3cc77788db2fbc541ff','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('94348ac84457cc6477a1c5ac7fa2ab9e','943af86811e409e24bf23ea890372e0c','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('943b03a8eb181f2c836886a19efd90bb','94362e1fa2ceadc0d8e41224b86c3337','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('9432e43834c7ee5f92f1139cca2db911','943f35872db490c195ab7ad909b2a76d','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('94365b0bb089153087f7cf3e0182b649','9437cac1c268e65708c718cd010082e2','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('943944dc695140c17c48db7ed8677c87','94399e2b360f5f816599377e9a823f9d','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('94362688b11ada7e4ba23289f2c7841c','9436fb5519cde9fcf9ad8e129d6f497b','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('943d717d45c8ac775a41a9127a06e87b','943e8d85ca35edf44d4cb82ed9b39252','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('943abb57051e88db973a2a7e1d20bca2','943b7939581b6da345c859c705584325','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('943ade860df84b330d14cc37c6d278ba','9434775008f1be4ad50cb5035462ae54','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('943cb3b12d163974d3965e2d4c04e78d','943d0f6369e67c5f48b07779eefaada9','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('943fd6c4884032ff0a34675135fbef63','9434791108c40e7ef10513b0c2a9ef23','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('9437168817bd7d7be1fc7c359fe1c201','943b03bcc203c4c6f9d88fe9e497afe2','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('943d9c7e435cd7c53ac12c3d3fd2db21','9436334f2b6b204e3583390f71a972f9','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('943e4f05372c422ea680d0a0b32bc863','943365f0410b6dab5f108811ae427f04','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('9431eef81b5410e73540e3844e61dea2','943c39675227fe4aa0871ee0087f1f72','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('94344bc8798f81148eac0904c459d388','9435f323cb400781588c17aed80735c1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('9438944794d4fde2d4dc0ee0adeb9f38','943d24e2b4c0719fdeff80270c8c9102','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('943dd7e74d7f97d340b1cce9cc2b8086','9436cd067c692676309cf3f68378370c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('9433a4aa3166171f21a5c1ff93f4f35d','94307f9a2af44616982b29b690ee17c5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('9435066ff8738bad29ed95a84b2bc2ab','9432d7d454006fcb2865adf4905ef661','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('943806d748a0110af563a429d2ea3857','943bfeae6811f2d45a30cdec21266e1f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('94387466efeceb67dae91463283bdd74','943b20a2f8143755418299a333134e22','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('94338b11187079dfbe646301ef5aa1b1','943b70bac6c0b93c3d204e9285f8bb87','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('943fc259490d40601ae6fe30168a8c3c','9437bef013ea86333e0c3abc60e1388e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('943894e4af996121ff579d021750903d','943f410459bf451eec1123295dfdf68e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('943a6441dfa08b0ba6d7f4f13c7712f8','943d739dada9741652e72ee8f64a298d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('9434ce0c8c5731a1dd796d351e4cf14d','9430e11ff68e4e48afb6e1454757426d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('943045413b7eb315f4d824d79bb43db4','943d48ae76f9a6a0d764662075e7297a','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('94386b9892362b16d250693528da4c19','94317a693628406c997d583e8764d4df','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('943ddcee089b757f6da1cc4bc3da338c','9434025a62c368aab1b6a93fddf70502','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('943a36ef2a6fee62d3940c78af4e64a2','943c3b539821a0c521daba03e14e832f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('943d5ffc1f390e1c2e104bfbf84b2dbd','94322da8382f29667c944a1c0687423c','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('943d711b2bdfaf24b25cabac9acff3e2','9432a233299e29188e7dea4951b183b6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('943fba94f63fc45e54d25c111e4eb3bd','94395608b46b5dfcd62486e4b991fa57','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('9436455c9a651a808464052b781a29a8','943d4890f58fd44b5bf0e7220b18199a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('94368dbf166dcfaac751c4f041f4fdd6','9431292f5cacc2ebceab0a628077df5e','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('9435020f66e7e5cd74fd1ac904734d27','943b73d3c7b9ed16dd1f10e50b8afd77','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('943ae7b64f2168679f86e5e2cf96308d','9430a4050ee25eed05f71ab2b55174f4','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('943b60ff7e2f4aa6bb59b6975330782f','9431919f952d4fcc33beca6d23fb616b','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('94345038c1f09480f6c686d1108bb88c','943f314ab24e387c8c4656ef7e51ae2c','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('943d9f6d4677a8466e914900d44bd825','943ea594792b71f12224b0f2a3b3ea3d','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('943ce50d5bccfa27756d05ce7b22b233','9439bb821977b21c69696dc29b8cedb3','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('94325a2962e85fbb23d1ef08e3288176','9437b142ece8f7f271ba499ced30197d','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('943010886d8db2553815663a593419bc','9437201082540a0b8e2eb63a8ecde14a','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943247c77772511697a1f4e1417b7931','943058ec033612e14e9d2bf640eaaa14','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('943361a5a559c03643f9a08d7984c168','943517e70414c748227be7bfecfe9a99','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('9439d61c30f4c27d1f68eb0754d6b12d','943ff48d86703804630d055f38be4082','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('943cf8892803f67e20f79652cb31de7d','943eb78a110b065f5b22332f26fd3fe0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('943e2db0fc81eaa3535ce0f2973f3ef1','94305af0b891f13e562b280ea25b00bc','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('943b61c84b4494b931a0ce2a49360f33','9436359aee406a209fd43d299ab1fa6b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('94377979d7c47cf6ca38ea1a5d92f8d9','9437ac8e182054f9d97c96aa7870d965','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('94350fe76489d3dde785ea16339d4d3c','9435b569170bd17134be7f3e34d33357','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('9436b3e98b2afde3cd0b0dbf07c19d82','943a443f09aa49ad4983ae7f25d41d4e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('943a4b2916f13204337f406fa797619a','9437e96a9de8229abf167cf7145459c6','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('9430db07c0da3188703788fb11776a49','9436601bab70072162631234c94ecb56','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('943bb227e7c0f1995f004aee02213bc6','943e8262ad153c3d706ff0200a5000a8','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('943897915c4f398f76dd9bd7860abffe','943a93576183a2887bfd0c5beed0bb27','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('943633401009cd13a7c412b312cc911d','943036a6b440ad2d34690c8f0c43562b','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('943fb3f1a8410156cb991a72d924fecf','943de81bb0b93af856fddf7c6229fc43','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('943b8dc3820e07beff40285ad5c67cf8','94396658745d8fc053bdf54ffecdd7ca','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('9432df2de8a66a5ab1ce6439b83b6e4a','943033eae258ec258927a141190e93f6','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('9434b5727d237a14887db650aa665b11','943744ddcb40306d7c9264748851c8d0','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('9435dd4c192285954c21862aed0bb19a','943cafdf47dc4c479c26966b381da907','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('9438f79a8924433e845543d35b41bdbe','943a80d1a3351ac68d6cb868e27dbcb9','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('943ea8af3500e17ff7aa02535e5df59c','94391752f2a83af9b5402095d702f7e0','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('94347f357fa9648d7b31781c3e446b1e','9437de98d7d0eff96017b2294c6a13bd','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('9438acc4a5d2b2ccc114589544c06d08','943ce345bd1f145e542f862e78f8517b','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('943a9d8b88dc3d8d6fc376f9d7e9553c','9430b7b57eded8f1be45613cc3a87514','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('94342d21c30e85641b77ea44b24bc776','9438e62446da1e1440fe7430d1f68684','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('94305db5cc3965dd96a293ddced6923b','9439757c9278c72762271f83cc9b62c9','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('943d65242003a2b57b11a67c8955ee76','9430eaf12a313d40c4b518deea907412','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('943e5b2ee0060269d395abc2a86116dd','943b44e9d8ebb848a5a7a4e4b0251220','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('943cf656eed3c1c6c2d847d234a674c8','94346469a0dedc05608c2cac4ad3baa5','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('943d3b44831498422ebe4d7f60b0c635','94304230c22364710817cf77c4a280b4','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('943a90204d80d331edb17935442ea86d','943dedbe77f90bab8066e82dea971ad0','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 28',0,'','','','2016-07-19 14:11:15'),('943b59b6074f27f621482144129c26c4','94321a6fde657c332c2498e8e879ac4e','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 28',0,'','','','2016-07-19 14:11:15'),('943ccee3b80cfa5b6a0ceeaec6a27c70','943be896bb70ce276589ac4f1eb4a9aa','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943286a1ac4c084640002c080fa505bf','943be896bb70ce276589ac4f1eb4a9aa','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('943e5f62a213616add87c54f646f670a','943fb18eec512073c0760491ff28c0b6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94339be2c24856ddbe6124cec0f5e5bf','943fb18eec512073c0760491ff28c0b6','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('9432d946e072d11949d05795548eac46','94368246edb8fa6adc94c577167c1b2e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432307f62c9d4e0eaafaf105341c931','94368246edb8fa6adc94c577167c1b2e','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('943976321ffae04277c98fc00cd165d9','943cc79949dca4728fe609e4e89aa1e7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438aa3c019c35c4ab24b00947bbf108','943cc79949dca4728fe609e4e89aa1e7','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('94358c31e8e5879f375971bb6bdc64dd','9433aca7ac384e6410bd85b9e09b7cfd','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9438f1253aeef8728fc92420ffd32348','9433aca7ac384e6410bd85b9e09b7cfd','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('9435b5fce70273acb8157e7a22b5ad2c','94370488b1d881044c48fecfe1fc5e6a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943f511bab89725277ee1e5026a93762','94370488b1d881044c48fecfe1fc5e6a','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('943a2be6b0c6920d4503f8cc14fa6d2c','943651834a7b39f0eaa85c7ffa76258d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434da07ec704a306c0019ee12bb26da','943651834a7b39f0eaa85c7ffa76258d','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('943a3fcf5ea327eff35ae87afb21b23c','9434e8c71bebb6849b668598f3191cd6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d8ca32e3e8ba495ba53ed2350bece','9434e8c71bebb6849b668598f3191cd6','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('943f0435033b02b3ccec24ff9a654746','943a240574f19877dafa6abb47de62f0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f14a65058f0a6b6d0444c54d89a33','943a240574f19877dafa6abb47de62f0','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('9434c0dd0aca351c0139e9357fa1a89d','9431e4a78c971999e13220997e6e6691','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943576408d47a1c2cf4941cb21db55b8','9431e4a78c971999e13220997e6e6691','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('9433ef840c076d26480a4bb2df468200','943b408c0fa0125631afa4392148ff79','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9431ae7c603947a366fb5e3456ec032c','943b408c0fa0125631afa4392148ff79','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('943479bc5966cbb8a846e37c41509623','943439cf9f93782260ad25b7df450881','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9431874c3369f12edeba0a61bc4966f4','943439cf9f93782260ad25b7df450881','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('94376c3f0b7f1756019c13b7b988c5fe','94318198fe1b2c7e42a1f4c346845b75','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b70ea484957ecf26352379dd49366','94318198fe1b2c7e42a1f4c346845b75','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('9439ca4aee818b75442f5e1170169a6b','943de7773c6e7ce2d7289c208b4c1eaa','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94396b3f588775ba5599fd0893585560','943de7773c6e7ce2d7289c208b4c1eaa','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('943d9e7be09ab6e7fe3c105ea6754ee9','9432a61cd4234ab7ddaec11e8ec74937','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436985f915c9e4c5bdfe1f8a642db79','9432a61cd4234ab7ddaec11e8ec74937','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('9437a836e66e295bd8423d074eb16bb7','94382d833401079766080c61898befe6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94344a704737abe80dc4b600ac5848d4','94382d833401079766080c61898befe6','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('9435a3a66d49afbc9de5cdd3b2c5ccc4','943620c9ab061320ff0861f8c7fd035a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94348925168ef9dc451f11270e9a948f','943620c9ab061320ff0861f8c7fd035a','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('94395327557509b922857684e9b4bfbe','9433b13d27244fa0de7a8735d3525b8b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943edfc091c7117447d468123010f170','9433b13d27244fa0de7a8735d3525b8b','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('943fdee9220921466ca00e2694ffd579','943842ea8bb5312dbc4a4c2195d651e0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436349b1c36892e3f1512d6773bac10','943842ea8bb5312dbc4a4c2195d651e0','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('94360647924521aa8afabfed24fea8b4','943fe5d6f6de70804f635429268811ca','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94387fbc90a51d9c6055215f99ae2643','943fe5d6f6de70804f635429268811ca','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('943d17ce4e55e6b83376a9959bda94ef','94363c4eb37e0cdc1850dfca573cc8b5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943cb64c84d150400f23f6c412eaae60','94363c4eb37e0cdc1850dfca573cc8b5','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('9433fad4fde3bf1dc9338b2639f31e6f','9435bdb261f1ca254b7a3f8543ba8340','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94309be842b04f1fbd904724145fbbd3','9435bdb261f1ca254b7a3f8543ba8340','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('9432f9d2af54e3b68e5b39ed86ad5352','9439205027e21570c19d669de635b5f2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c86004f5c13ba45c1dfa48054a6e1','9439205027e21570c19d669de635b5f2','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('943354a248f2cedd75929db0dfc93d6f','9431ad535a4c428fb6110ac31ee3c50d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943442e6661c937dfe70dd4c7117622c','9431ad535a4c428fb6110ac31ee3c50d','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('94320fc6794a3007eaf9eee4961a454a','94348a00c8aad9a94fd336d8a3002153','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94353853886b36b7637d010348550086','94348a00c8aad9a94fd336d8a3002153','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('9436edd7c3f4ab399430a1b8fc6c57ab','943af9e7ad521185cda9d30874b0b86e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94321c7f79970a8d4731214c8bf912c0','943af9e7ad521185cda9d30874b0b86e','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('943a5c24f8f344eaf612f0787eed1b6c','943143a54f5e06eb5c018b9be7575997','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9438f8964b20d9310883ad68837eda67','943143a54f5e06eb5c018b9be7575997','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('943488e0d0bf928e4950103cf4c8f687','94388be83220adafa84b8f8564575965','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438c241dd3ce5fd041da797761c4647','94388be83220adafa84b8f8564575965','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('943a9d3ad8161daf603ff1bd4652a01c','943546b3db66d056ebe4ddc3127ad892','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943bf7c7d66c19da9ffeb03ed73694d1','943546b3db66d056ebe4ddc3127ad892','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('9430c89e5e8853a2debdf2517184898d','9430494fc97064067ac9cbb76fdb4ef9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94316aca81309b4b2346fa24b9b5b41d','9430494fc97064067ac9cbb76fdb4ef9','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('9434e4ab484a4684120c4bbc627e3f94','943aff78afbb0d1ba7d8cacae69bb279','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9431e32a200b96d6b11afa7743ea987c','943aff78afbb0d1ba7d8cacae69bb279','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('943a9c5cbe2f14ad4a1f4f314625ac1a','943b2091d6b0263f863bec366d476f42','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c20289120867fe53b7391170a1577','943b2091d6b0263f863bec366d476f42','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('9430dcefb4f4880d13dcbbc437fe0fe6','9430c8a2c407ad6021a7a0300dad79bb','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943bed812efe49ceb4dc596c92baab79','9430c8a2c407ad6021a7a0300dad79bb','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('943b65e2efe5fd27c2b3f52bac4a9c65','943ecbf17528ef51137073c918ec6c11','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438895ad5604176a34ed1f18b52777b','943ecbf17528ef51137073c918ec6c11','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('9435ed3b4a5128ee79cd864e3efc965c','94382679b485d892e65163efdc78d5ef','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94314dd91ed6dd472e949cc650bec745','94382679b485d892e65163efdc78d5ef','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('94309d8b5ddabb09eb63d125d0264da4','943f4e5f6bd9f5217acc12946c3cbee5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434a69a0a12daf5ed30c181e2b9b08a','943f4e5f6bd9f5217acc12946c3cbee5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('9436179a1de579ac4db010750dce422b','943b2e66a3a4248ab40a28442c568313','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9433258eed238f3dc7ae51331e369a67','943b2e66a3a4248ab40a28442c568313','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('94339bc68607799023f887b47774a149','943e796f40b6529a2ae422df8a46a42b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943901115aee32933edf8b48da2a0bc6','943e796f40b6529a2ae422df8a46a42b','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('9435d06c4782a139de7fd4670c8e6897','9437465d06c3db7cea5d0b21ac684533','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9431a984a1a11049214df898d06a3fbc','9437465d06c3db7cea5d0b21ac684533','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('94370597f84a3689890ab467ba7da981','9438a4c7faef47cdcd489e53d24c050b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438e0e039cf6639226e70ab7f9d7ae3','9438a4c7faef47cdcd489e53d24c050b','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('943568a95951a478c02869fea18d6ac5','943b5e22f39bc2a7414f799ddaad0d77','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943290ad9ab5b51baf0528ae51cdb239','943b5e22f39bc2a7414f799ddaad0d77','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('943b6375dd04f9685776d9a8244aeb70','9438f18fb92150e2874dbc3e6f85e37e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c5eec04edb6d5a552fafc7dd1cca7','9438f18fb92150e2874dbc3e6f85e37e','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('9432c262284bc1fd1852d985d14eacdc','9435e1b4276e859ff74b51cd5e5b3a29','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94348ef2f4b518173ed2d5e7bebc2b43','9435e1b4276e859ff74b51cd5e5b3a29','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('9433a3e44c1ea62f5c89d8bea1e78828','9435b91618354f5c6e3c3950d0413491','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d39494ab66307f0e24aa47e3d7265','9435b91618354f5c6e3c3950d0413491','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('943398574ffbae126e53d18b799a9579','94332f6dfc19e8051837471112d37c7a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a414eb6cc978e846c2348295002f1','94332f6dfc19e8051837471112d37c7a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('943a4651089f4adeb251baf00232e12f','943012763c30ad76768fedca35fe8cf4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94343e0d1d5dd9f5c852d078de1ea09b','943012763c30ad76768fedca35fe8cf4','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('9432a5bd37891ca3dc1409d204e5fdc5','94356ad589138a7521b28c559cad0183','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430121112e8da666dddda352d811e62','94356ad589138a7521b28c559cad0183','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('9433a2ddc35fc37717fb1f7bd16eb946','943231aaf751bd361282d7349d6499d7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bdf27eefb50c1fd1ec6bdcbd8dc96','943231aaf751bd361282d7349d6499d7','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('943af58602b72275ba8414ba2f67de4a','9436892deba464ca00eea637e5ad71ab','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430b0e5ad261aefff8a4028a4d8bae4','9436892deba464ca00eea637e5ad71ab','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('943f4b256510c0f9ac80856c5c0d857e','9430ec185f3a83a15bbaa7e1890af344','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434fc90a8be148f59bdcd2cf57253ea','9430ec185f3a83a15bbaa7e1890af344','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('943ceb697bbe7d162d850f4946081628','9434f2747a749446583ef4abcda51f83','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436a351e47be7f7f0f1553ff04ea3fe','9434f2747a749446583ef4abcda51f83','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('94357f7979d6d227bd3189bf7a4e0619','943f609240d1bc0dacb7cdd5f2bf2d68','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436107c49050e6b32a0a1d8ae45ace8','943f609240d1bc0dacb7cdd5f2bf2d68','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('943ab2cd4c55d6ab3d3f1d5b43bca601','943396112b3b2861a3c4af8fc81f72b4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b64c32f85ec0af4c73238ab9a6c53','943396112b3b2861a3c4af8fc81f72b4','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('94387235c1dd126ce02da7d383f75c2a','943d0f4f7574b8e4669fccd596fce117','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b116474ad39e24bcd0268b2360370','943d0f4f7574b8e4669fccd596fce117','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('9432fd599d8ecfb95aa4b68f28cb26ea','943c0eed5f0deb85125a0531578cad29','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437359d6d2793da2ff0044db9d1cb33','943c0eed5f0deb85125a0531578cad29','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('943f90f954c20fcfe2d9f0efb84df7fd','9439d5e6d3f708893a583246847f38a4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bcfd6982969eb83951840443a1eea','9439d5e6d3f708893a583246847f38a4','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('9430a3c536ba0af5828abe59cff93461','9434f4fd96f50bec5036ab7487a6bb38','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9439047bbbdbbe57bc12b17c849b9ea9','9434f4fd96f50bec5036ab7487a6bb38','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('94351a0aa581afa14a7b7a2c89e4b505','943d005416d08611cf7490db00648981','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a850fe57cbb4b99c5cb089891a7e2','943d005416d08611cf7490db00648981','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('94374c58da6a8f3a08613e143804c67b','943e122d22f0bef8d389e0da9a46ad8e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435ba33cc5fbe6fc86b6edb736a0a27','943e122d22f0bef8d389e0da9a46ad8e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('94312f512d0b591f90b6fb774bb2699f','943e03dce96a8a6cc4af8905322bcd32','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436a168081f8f431a916b72cd6f348f','943e03dce96a8a6cc4af8905322bcd32','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('943e6151c9bdd10ec9602795d7e139c3','943e8642206d726307817c0c5c2a1169','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9439eeccba9908f52148f7a88ae657a6','943e8642206d726307817c0c5c2a1169','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('94315c6a976ec3311fdd893e0774504e','943650343923b44bb0228da8e5ca23ef','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b933ef4497c3647734643e08af361','943650343923b44bb0228da8e5ca23ef','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('943aa2b45722045cbe0cd16e5892b403','9431043fbbeebe95d244164f111a1ce2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d5e255005fa4a80d1f7a4430fc4f4','9431043fbbeebe95d244164f111a1ce2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('9434ab8e5eba652d7a449907d8cae5b7','943269ca876d75e4549f021c4d70e5b0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9433b0a61d212f760b1e4bf371e473c9','943269ca876d75e4549f021c4d70e5b0','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('94362f171c6cf90a4bb70f82cc41b333','943388f233f324ae3bedae69275885a7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94385a71c53514313ccfb6ef3bb4767d','943388f233f324ae3bedae69275885a7','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('9438419b22c1270ec58e9d56000ecbff','943127e5c100d6a5b6abc2ffe4747c82','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c9f81af58d2a047c58816239bd2d3','943127e5c100d6a5b6abc2ffe4747c82','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('94347e88e7eb80a70bf7c4aebddc2a24','943ea1c61b5cc1077608faf399367dd8','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94301354cd4d42764ad7c97a5a42cb6b','943ea1c61b5cc1077608faf399367dd8','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('94362ae11ba538f383803149fedb3859','9433c24053378e70a943a2fadf29d69e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943f76cdde93660518ccd266e50b042e','9433c24053378e70a943a2fadf29d69e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('943bbed5ec250e61b10d7b07defeb6ee','94355a0fc1b1591fbb4b748bc6d1c20e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94326af480e6eeda7d3b09ea30668508','94355a0fc1b1591fbb4b748bc6d1c20e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('9430eae606a7c6187bad8f3ace04c8ea','943b23ba1da821152f86182a9a97a63d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9439aedab115cf2f8cc12a62e85de511','943b23ba1da821152f86182a9a97a63d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('943fcb31c76fd302fde4cec62c7cfc8f','9432ec6d6d6a05c41572c42cac2acdb3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c5ba32677d3e6310e36ced3acfff5','9432ec6d6d6a05c41572c42cac2acdb3','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('943b1fbff2822fdaa287ae837a27b76a','943ea3a4faf72c78809066c4904ccf43','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94355cb7b566f78efc403fcf6570a88c','943ea3a4faf72c78809066c4904ccf43','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('943f49c360c3f583be07da81509232d2','9432fa43dc7a11223194be8564136bf6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c1751e5855bfaa9fab9e9346ff23d','9432fa43dc7a11223194be8564136bf6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('943460cf80c1addf5b1de8feea210bae','94371d042521eb8730f584ddd2e87369','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b5d952433ae8d984bbe2a13120b14','94371d042521eb8730f584ddd2e87369','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('94389cd72d53a6300d69d53e3f37f20b','943e0240a418e1c719ecc68efbcac526','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943be041a5657c36482598387d0e66c1','943e0240a418e1c719ecc68efbcac526','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('943bbeb5f44c87d7c0e54be6f3271546','943236476b75f202db59bb4979d6ecfd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e758dcc517e77d67fd5d762ee8b7f','943236476b75f202db59bb4979d6ecfd','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('943ed941124f59a3b7afc02ef0a05e52','943e8c3c773fe8be779ff6d06ad14869','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a53513b30230d8498bd8b313414b5','943e8c3c773fe8be779ff6d06ad14869','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('9434988cc3e243bd9dee7d3a760f5993','9433d49b1bca09de92add943f5971f7d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943ec17dba2f9ed46723205184d9f8ac','9433d49b1bca09de92add943f5971f7d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('94322aa285ea74b4eba093829c1d6c9e','94313bba4ebb8050635228fc53770784','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943afcf7a6ff6d4f25fada3a8fd8ab25','94313bba4ebb8050635228fc53770784','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('943e30f101796e2bd9abf67bb42a75b9','9438264b70c7b64a64d2ed1097f980ec','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94320b5f5c21ba883cfb29b1a1dc388f','9438264b70c7b64a64d2ed1097f980ec','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('94307901543fae2df7735c204a8954ac','94359cab966efb346260ff0068c2f1e2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943dd60bee5a21965fb3bb3a606f25ad','94359cab966efb346260ff0068c2f1e2','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('9439643afc420b678e36b2e3b4c25fc4','9437a512a08ed77304898402450a21be','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434bbb0bd8fbc50632a439441cca570','9437a512a08ed77304898402450a21be','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('943c99143bd1b2cfa0a44420cda6f7cd','943d463f5c49275c7e9f9f29dd24a427','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436636c60bfc7906fc54ccd23c5ceb9','943d463f5c49275c7e9f9f29dd24a427','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('943afc8217f5fe3e1c6428bddc8132a3','9438ff99088d0c0dc9315615be9fd82f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d486cf0a68ce1df1140804b256459','9438ff99088d0c0dc9315615be9fd82f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('943ef5ba790b17a12701ca497825f442','943fe821547f8222df72ac7e5ac7c35a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c12b03aefbdfa2288cefdaee8bb8d','943fe821547f8222df72ac7e5ac7c35a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('943d3d31751c589d6c2f1f2220c44307','943395b207c1e4f4ac60c9231e1169a7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9439b6b87e5d1219038efc6f20000ffc','943395b207c1e4f4ac60c9231e1169a7','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('9438535655399dee3d1b1a5241fa7153','943cc409d638962e59d3b50eee5cf183','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943124a7192974976c5f4b7b3b2c45c5','943cc409d638962e59d3b50eee5cf183','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('943c33b69fa156e817526742176c8e79','943b4f22569230d733154e27bba9513a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a9fbd33bb3d77eacd7011dc7d68e3','943b4f22569230d733154e27bba9513a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('943b6b59df056d615a90395d941b4495','94312ae3cd316beb8c6fd765b2344e93','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94375ad56ab24feb371787a131e40088','94312ae3cd316beb8c6fd765b2344e93','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('9434d5e1db29e34848f87d57798a20f4','943a1f1aa57e8aeb222c618dc979442f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d25dabf68ba75df2515ea5bb8990c','943a1f1aa57e8aeb222c618dc979442f','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('943c5cc0fe93e7a118846ad7bedd1552','943ae242f35444ebfa8968b1371c448e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437eb2cb1c052f0438c70a8090f269e','943ae242f35444ebfa8968b1371c448e','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('94336a21a942107dade78dc309c38ef0','9432d19d5b9329645b7bc29c6f1262ac','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943daa1ac0652771b3fb470db45bda8b','9432d19d5b9329645b7bc29c6f1262ac','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('94377c402b2b104de6d5564c2f2db293','9432a870e04534f0cffb3230bda12701','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d53c0ae1c3c3f18bf43dcdd40a1cc','9432a870e04534f0cffb3230bda12701','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('943127ebf29a2b82f5ed5200b7995b7b','943e73c72b85ab256ec7ce16c9bb208a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9439831f675172fc6b5f13330da378f0','943e73c72b85ab256ec7ce16c9bb208a','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('943aec54999758b073175b4a5b3bc6b8','943b019aaef0605b5ec39868e875dc68','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e05fde6a6c75bf825614ef5812fea','943b019aaef0605b5ec39868e875dc68','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('943840d60f1d963467c3c6ee97160e69','943782db5d2501c7638e2b1ac0d3e172','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a09623aa907d65191884f6b1a2b8e','943782db5d2501c7638e2b1ac0d3e172','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('9434fc09e27e22e7de939804b1630b53','94305feff065ff514c7b8e0030e3780e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f73dcee569364de840046c27629e3','94305feff065ff514c7b8e0030e3780e','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('943c88745efd3922b2cbc68297a8a1bd','94380711293ef09fefd09aa3eb0ac7e7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94397d88aaeed646fa8da1cbce2763d4','94380711293ef09fefd09aa3eb0ac7e7','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('943cace8ae27ddb8aff5e42c734e624e','9438931283b90ef22cdda83813576ecc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943500f8a8a3c9f10d0b056f0f2a1530','9438931283b90ef22cdda83813576ecc','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943c94eb2f98f917b3562d374f2572c6','943c6d0bb3ce71b4150bf509ee6b2271','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94319d61a667d22c987bea214c5ed523','943c6d0bb3ce71b4150bf509ee6b2271','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943f450e5682e9283f5abf30dc1ece20','943205460fe0c0649b76901769d97451','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432cbbcf71c83589d92f244fb8471b7','943205460fe0c0649b76901769d97451','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('943ae6cd8d8409dc099aba099c8ae394','9430b249f42cc34d527942025d1c5f84','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94397d8f6768cc6c32ef356a2a7febfb','9430b249f42cc34d527942025d1c5f84','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('943a4d6406473ed9df2b88ef68bf859f','943428f9147db64b767c004369d4f85e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ff61ab7eebf1c1f90f141435f5338','943428f9147db64b767c004369d4f85e','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('9432cb1c915e11292f4605bbb32df802','9431fd176c6621488aed1ab0323dee5a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94336a6f6eba44e704d834ddc0092b89','9431fd176c6621488aed1ab0323dee5a','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('943bfd4ca26bdd4fd49767e4f2ae49d6','943e82653e5728a7967b4551d141d47c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b7878a51e65d83ee460c825fd5ed4','943e82653e5728a7967b4551d141d47c','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('9432f7277489becd10b0ef8af0817529','9434c8de2f5d97e5f6847ba50d610e59','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943fa7335fe66a57f2e0988d31d44b49','9434c8de2f5d97e5f6847ba50d610e59','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('94313c3a17178276677a1a6b513b774d','9435e395eae4dd127252e45130a87493','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943493ea8779ac6edc5b94f8b3271b09','9435e395eae4dd127252e45130a87493','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('943182540ca529bdf3e80cb9310643c1','943376a2933a69477e1a59016ed5ae98','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943ce0626703b4220ea4ea70331f8203','943376a2933a69477e1a59016ed5ae98','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('9438058f8f0abf1077f906c39586af00','943009b6ce75bea615ed67f40d8c4507','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943cd0e53a31cdbcbe931436cdf67628','943009b6ce75bea615ed67f40d8c4507','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('943282b59ff4225da901d31f304a7be2','943610392f4a0a5c57800723e685bdb0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943223a6c4ff834ca5c6efcb542384e3','943610392f4a0a5c57800723e685bdb0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('94310717a710527137cd97de38ea9696','943ab78b701b1b3a287df82c5b6ed95f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c3ac142919f7cf1ffcdbbfcd85c6f','943ab78b701b1b3a287df82c5b6ed95f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('943639e423121d1567cbbc7659aabe62','9436ecdf30b9ba6b03dfc5a547773573','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9435459c6fceb4741d623bf26a355739','9436ecdf30b9ba6b03dfc5a547773573','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('94399b9ab2cd722f42ffcfcd0decd6ae','943956d4814e589264943db822d4341b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f57ba88ade5984bb5c62fda0d3b79','943956d4814e589264943db822d4341b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('9435e740e633502c402c315cfed69cf9','9439c50ff26b4b27e243b8f2d531592a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9431abc73653220d1094da3da5390c1a','9439c50ff26b4b27e243b8f2d531592a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('943e2f767d58d91d22d17a18c396e96d','94353e7f1fe4724e94ba767e6da63123','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ac22d0915f902b518c7be82913992','94353e7f1fe4724e94ba767e6da63123','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('943d633c117846ab6d4e34c9a836d72c','943848dbf71f0fe339d2623615226542','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c62f3b829b240b14e5a0e978943f1','943848dbf71f0fe339d2623615226542','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('94382912936c33f28cfd3e2396d62e8d','943768beab6ea74b8bd490371d0c1afa','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943439c32c7a0b672e45fe309f792449','943768beab6ea74b8bd490371d0c1afa','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('9434b9e5ed7ae335eee78bc3d17d0933','9438320c53e6b61b655a1afda9b74e2e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943f78b31c9e65e99df810504fad215c','9438320c53e6b61b655a1afda9b74e2e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('943d0ce3dec9260a972791beec29627d','943a9d88cebab85ed55d48f1992d7c45','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943904ed06b1ce33fa530e6192118642','943a9d88cebab85ed55d48f1992d7c45','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('9431df5411a5b88cbb4988b1471b525f','94356e5e48e0ae435dada7058732695c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9433b2f16d4ca6a42679d1d1b9ea7778','94356e5e48e0ae435dada7058732695c','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('943f7866b29a79bd1dbaa7d2678d9968','943d092155cc940a9257eb8cc9039501','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e32824d886df413714270fdb58817','943d092155cc940a9257eb8cc9039501','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('943fa7d02bd371c5d7b13a1b599565d6','943a2e629717da995f59e5a875340544','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436b34958644f490c1422bf8a1c8c88','943a2e629717da995f59e5a875340544','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('94328b934498da482a06249de9f979e5','943e1ba783da94e1a34ddf3c2447f97d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943cae10e7a663cbeb1629de51e1185c','943e1ba783da94e1a34ddf3c2447f97d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('943b702f4e91a48c79cc64225e3f941d','943b2fd2eb4e6384489407ce7cc08414','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94372c747bb7d4fb3cb9ab34b88149a2','943b2fd2eb4e6384489407ce7cc08414','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('9434a4eb0f91589ed41081fd7b11818d','943de165013543d8f37a15f3a2b08741','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94357684197c11d55336949f58813aff','943de165013543d8f37a15f3a2b08741','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('94384bec3fda1832b9d0d89ec21c4dca','943cee64874deea84cfd592e12ef788c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94375a356bb69b8dc9ea133902e1fe47','943cee64874deea84cfd592e12ef788c','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('943a9b04a75c2f11e4fc114ed252b107','9435a4e95b0d8fb0da2b352664b8f27e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94322d29352ac6b52a5ce7200065852d','9435a4e95b0d8fb0da2b352664b8f27e','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('94337712a394d6f06019c9a776d93b80','943ae2ce439e43612297d5c067469f2d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94341dff1701a83e14ddb90349b2b9ce','943ae2ce439e43612297d5c067469f2d','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('94343fe2af28fadeaf74ba7b0d079a81','94315e70f43d24cd54fdeac565473028','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c52101c9f98b6b08a08f5fd96f54a','94315e70f43d24cd54fdeac565473028','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('943995113b7cbb08f43379cc698ff69a','9436800ef09a18c17cb3eefd00d8a3df','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943fcc191a49e738bb917039185c11b6','9436800ef09a18c17cb3eefd00d8a3df','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('9438d27a87923d4c3b91fb80438dab29','94396dc1aed2cc00cce3ff15bd7bdfe7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b62fb0678a8fa8ed08b060b9dd133','94396dc1aed2cc00cce3ff15bd7bdfe7','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('9431881069b5d423d4b5ca192e3ac102','943056c65be7c65a56df674f958cb5e3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94318118de0a10a98f3bd41963979338','943056c65be7c65a56df674f958cb5e3','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('943891c9d60aca61bba768370288061b','94339d563ba0d4ea8c9eac79fc3d823f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430cce481474fdc81ae6eb62ef8722c','94339d563ba0d4ea8c9eac79fc3d823f','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('9438ff5b8e238916b45d0168f13a465f','943d2df388d10a05f9c92d2830e79758','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436d242c61b1516a6caa7cce3630d6d','943d2df388d10a05f9c92d2830e79758','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('943214a8ae24c5c67411d3d457d3b24a','943008e44a4e07f219dcd713c7a6d286','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432a8e0a8ca5747902bba130daa6068','943008e44a4e07f219dcd713c7a6d286','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('943d28811f726a5823a6f4dd54e437b3','9430f87eba48621bf8c1d3de312093a3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943dbcc8a34ebff4f91d59f4b4742cab','9430f87eba48621bf8c1d3de312093a3','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('943fdf4c24b5100ff8fb581e15c70e34','94348d7b7139667cf22cf39123241988','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f1c602ae09a042a222909c8f944aa','94348d7b7139667cf22cf39123241988','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('9434a02d8602f72d6a7f87250305d290','9430d2abdc868d28b8f07339f214a9b3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434df6fb6da5062867cbe6e7a2ef86c','9430d2abdc868d28b8f07339f214a9b3','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('9439dd2bed360f089c39eb80e027adbd','943216b3caad6f7110b14ae14cb419c2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94381e90031668d2ab2fd5e7adc40498','943216b3caad6f7110b14ae14cb419c2','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('9433a6373e802f297f539cebad134e03','943fb4bba3641aa8b8858b43cd331992','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943f265875c74e4cd7ec48d96c49b2b5','943fb4bba3641aa8b8858b43cd331992','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('943f72ee017afcbbfc1c8cae682a398c','943f89678ce0b64103b34be0ec280834','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f3e40e9b17e028b2fe9c40422bd21','943f89678ce0b64103b34be0ec280834','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('9438547bcdc9176abe44491b3e501200','9434299a1260ef333281aff4d2f47931','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e1c5d7b1a9e45281062238a3d4f0d','9434299a1260ef333281aff4d2f47931','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('9432d41a811da3dc7c5a6b4f254594d4','9436a4c87457f3679282eebc9456611f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943bfbba430db6070d635618fc77db6e','9436a4c87457f3679282eebc9456611f','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('943b5ee0b45b6835c0b4ac889ac1962d','943d1c54112ef521cc246a636ebaa508','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943be7bf14019553d15117d7bc92fd8b','943d1c54112ef521cc246a636ebaa508','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('9431cbd0aa22c7e73219a90e92d1df35','9430a3959ce3e994b1a114e2a947ceef','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94306ab42b9340384f0a711bc4849e32','9430a3959ce3e994b1a114e2a947ceef','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('9437f0a38c8073719e6e4ec5c25d99e2','943a602588963c2fdded9718f23f8aa6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94310f01efe8de9f2e0e7f7ad413f9ec','943a602588963c2fdded9718f23f8aa6','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('943632f6f2b990c31a1474777a511bd4','943471191a5e3eed40093a5800cce3f2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943fef0075bcdcc64820b781e8cd24d0','943471191a5e3eed40093a5800cce3f2','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('9432f52bd8bd9a431a06dbc763978238','943dd33a1632d54b0352663983b5262b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a05079cc7606cd1a65c6933eedf72','943dd33a1632d54b0352663983b5262b','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('943355ae91ec00ddc99b5a566e644714','94366da9b897f259e54974e2ad31ea08','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436a3cc0bd9381f65c5c246653a24ef','94366da9b897f259e54974e2ad31ea08','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('943b129e19cc280047da6ab5c649f072','943588f290a0262aa575b1e567a83fc8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b936bd82491d5854ee38090452137','943588f290a0262aa575b1e567a83fc8','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('943a7b6b8fe4cc6ac1173066eb6c37c0','9434e085f8d462c24e9bce8bf1e6dd17','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94330f7a581d62b9854d28faf5381b38','9434e085f8d462c24e9bce8bf1e6dd17','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('9431a3f13cbe25992085b4a2d3a4394b','943f965105c2b5190bfc96f071863619','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94324a8aadc99a8bc790a5ad1b6db48b','943f965105c2b5190bfc96f071863619','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('9431b154c4178f3b609ca8551e719c3e','943b9e52e1be6418ec31e061364a911a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434f249ffb3374dd3c29a941c6a5a75','943b9e52e1be6418ec31e061364a911a','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('94338670853bdc8b37644a622a8323a4','943ae9c949c6e84d475e0b4d556052f3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943679985360b0326f12f0e83c99fad5','943ae9c949c6e84d475e0b4d556052f3','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('9430593219957558bda299c5a9349327','94301656c8fb242fc42f1a76da373828','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d6bfcec39951d5306d354106d9d11','94301656c8fb242fc42f1a76da373828','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('943ef4b973b1c156f549acfcf1faed04','9432f86457bc05a225ac7542d7373b5d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d9fea909ccff7c7da66b18d227f51','9432f86457bc05a225ac7542d7373b5d','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('9430809f1511d26d92e739441f5ef09c','94350fddbd0aa35afd8423a863b628b6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436a442f243f465aba0ed5bb1b562d7','94350fddbd0aa35afd8423a863b628b6','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('94313d9fce9946a6ca6223538427429e','943f4aaf7612b20028bf231291f667e1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943ce2042df776a0aba7fa5c6b5480b2','943f4aaf7612b20028bf231291f667e1','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('943c273afd1265670fe46750c556c0fa','943765725ead77e0a2abf5ddd33b6129','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94340da2de46cde0f05359ca6d93dffa','943765725ead77e0a2abf5ddd33b6129','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('9434b52e80b84039653e8f8fca831726','9430665efb5b9e5b298a3036cc7d80ac','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94391961a5e3f1497a118f08286b8808','9430665efb5b9e5b298a3036cc7d80ac','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('943b28d2690a1ec361e578d15ccfe8af','943506a7a9ebdf7b8e45c2eb52f3ef11','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 28',0,'','','','2016-07-19 14:11:15'),('943aeaa4c50594bd44fb6921bc13578c','943fdf7360949750cfcfca6e45387ae9','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('94366abfbecfe7ff3f30f28ff250a625','94389c87381c537a5932d772365deadd','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('943064e17b7b4ef82b7849243fd5cd93','9439bd49ec66e39f95885049834e49ce','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('943b0012252558b8ced8edb13d5a0caf','9437f23dbe41b44b8195c87843daaa82','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('94352ee8e31b4e0c597b5714426bc664','9430ef2a56a00432548394f58fb44a30','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('943f4c0c447bebc60fbf92aa9a3fe82a','9431cae39f5f7e46441c61e9c3ec3ec2','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('9431ada9a76de0ffdb3491ef33945def','943c889f2fce268c42c19be24a43bb0e','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('94310d659ee8ed0645c40284c91ef523','943e787839402245db8d2f91486075cf','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('943fc36c6d08c898107c6296c6bf79a9','943c6bd20987bfad1f1aef5880e07bb3','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('943905520627d006fecef8edab1e281f','943d7b98513df2c5e116ce34306211ba','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('9434e420b95b6b73429483a64c25b32e','9430387b3974c5565255b86b74ad541d','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('94323de844869acbc57ae44e70cd8110','943aae38ee609595929d2a4898ed2b40','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('943d3c3c14d7e8069984e7c9829caaa5','943f97f1538d6a7b43a8ec673438b31b','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('94383cc6a725f08abe2ddc47992965a3','943c65e37644e1391699a36c96e5c311','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('943d8346a4a59ca1c1a9e671a46a3766','94394a03b7c861dbbded128dbde29027','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('94316cbe9f7353d720d4a8565d8dabc4','943b6dbb8f3579a308ba04f9a551e1a5','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('9435b9fbf29f2dde5acacd23df07127e','943a21307836219852a3915463d8da8c','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('943ef3e2d6bbd7ae9ee9253f0425a7af','9433ed335bf696f213b7c111cad88520','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('943e185c1fa15d952438080ede18010c','94382aba3ce7851818b1e422e662f438','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('943a7a1ab3dd1fdbce903e8c302e682f','943db55a9a9d7ed09260411bd02f6735','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('9435197b19e8f67030aef6f857facf3f','94307ab092a838a87cb96ea3e981504e','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('943e40879233d2b6b38a0226e9cddc5b','943831829523eab6816537a93182e628','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('94387b73c59b8870740f94c24137b3d1','943b224a97fabd865708797e3c7b2df5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('94326ae1a8bc83dd0c941c72cc632054','94376058060ac32bc2f2be8a85e528dc','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('94358d563862db2c635beb687a45677e','943ef9652a61afd31014ff6e6a617c16','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('9436dda94dc084ca75cb6116c6cc9978','943ad8f88f4ed2188ffe4620f51c7ebe','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('9435ac92e21c5ad0b30d1bda77542a25','943e6b830397ad91968187347a1c806c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('94322be5e93e0048df71c417e1339c64','9431fa6d56ec9082652a66ddf9330589','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('943c4829d94afba6a8e5c33537374a39','943bffea6c18c3917897f9baf86478ca','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('943390872ceec24bb840f7d5c9d52f72','943a90ba0d1252241fe9d2dcc47337f5','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('943954971ba737edfaff659ce1985b9f','943c8410f20c31521f9bf300c60cdacd','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('9435bd1bd4240595287142cbae33975f','9435c1645fbad7c2f70d7c31c7de0b00','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('9431a0782383ce3ee5216e425630a5bd','9439b0ae1a87a88f57f526a0aff3e282','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('943fbfe764f3dc1d2e3d14699e8290c1','94308e59f360c2b5152a2344eb65723e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('943eee249d7909c4bfe2aa907f6f39a6','9433760e4cf2851d8e23bf79a317d9ae','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('943db1a6d10a6701f61a679a0422f2d9','943ab8d27315e413ddfb5438049d0846','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('9436c2347c59262f5bc8e875a1d7d5b3','9436360921cb3d08503c63087db7e654','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('943919468ee371fc64e2769b90c2f8c8','9436750dd0976a343bb5d3c762e73859','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('9435eee79e00fc5be115723168033ca9','943bc5eec2d17859a3a596436594cc09','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('943e9ef124832e1b1476adfc4964422d','943a8e962ea41a5c192f35b6a93105d5','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('9433f68022d703485ebf78cdb8f0da5d','9434d1248c46691d6e17f3a4c052f3ad','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('94392cf7ca7a8d8ecbea1fa51c482209','943e1dc5d39f3be9143a5b537a361098','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('9437567fbab208485e7286866db79e39','9436872c3084c8ffda226866fcfb557b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('943436efe7b178669cf6232969861395','94332b8035f8c2eac90aa9dfd131d546','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('94353cdde8a7bd10477ef4bf42e41f4f','943119886aff92b81ec8548118e07c87','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('94371de9aff49c8a48135063151956ec','94352781a7dbbc4de6651086673f1792','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('9439ec56a6b6f528109eae69c7b73aa4','943d95206ff7895238ffe7800e82562b','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('9430730559ef7367aae090030fa0b49d','943b7e272cf61cce31bcd51469566d67','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('943e37167a80f11d5e19bdf4a29ca1f4','943c82c8b9986249718f30471a393112','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('94391be2b9ae01bef80b643ef1cb7964','943b6f52961e0951941ad457c7b5bda0','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943e2825e813ee96d255c7adf242bd6a','9432fce1dba3fad2745f3fdef91ed1bf','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('94362d2c066ea04dafd400f5d11a4268','943848076c1f54d4cb6129a16153d325','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('94387e338456bb459572b5a7c26db058','943b307db5aa8c166271ff6b2e1117a6','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('943fc78f5864b196cb7838f3630e512f','943addf553eff31b62843a215bfba677','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('943b32f9daa79eb50ef5215e1e881d1a','943e27e1f0691571ffd1d065dee091dc','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('94383a3800ca6b80f59571d84bb87b6f','943b96b325dc17282ea0c02f4fe97b67','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('9432c8f33fdd48cdaa7e3baff8ab5edd','94361c608fc16b4d0c7d70e789f1cff9','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('943f7059036a29d4976c78bf3bc7dc63','9430fb7b9c2cd4f4208a96d75ced6587','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('94330494c513ab0d2a0a1fdcb76dd919','943c78421f46c79771a5f99912b7179f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('9435cffa15992362c9e58f7d1f8f1eb1','943891bc42635c0ac87556590c319add','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('943688a93fe1c4dfc4b0a3826ea55adf','943185385934e96b66203cb1023d0676','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('943c97bf854a394effa35add0a98dae7','9431c2f6b769dd11a36c720a51a2c66e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('9434a11fdb968757a79d0b98190ca62f','943d4466c1a307cd2b9ffc419a6d708a','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('94354c18ac5a6f6e0cd0c051a80cc56f','9436eff8730f4881aa05df3948def04d','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('943dd621bb2be8faecfaee1da3f28caa','943f0ef1521f3c167f7405fb64253e4f','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('943bc0b2d5d88354d5ee8528b01a3bba','9434d0520e32e6532970fee2ac0ed0bc','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('943c7c6356fa5166503cdc7a858d2563','9439e899eab716046ec03cff32fa66ec','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('94313f443cd9375d91a9830b73e4d97b','9433f4a87374741d6e0a42d9d9784797','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('9436fffe93fdc3dfad5f2b50337aa340','9435cf4347fc79123967f9666c7af44f','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('94364750f6ebd5e61ac0ee4d591b9ba2','9432997d9e41d01ed8eeb61fb3e72a81','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('943f9b9c38fc8c4d2b7c8d6aa2dbe684','94375b0e21e6e1932de8712007fcb8a6','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('943280cf97016395e984a5c129319f5e','94363575ffd43bc0fb3f041ee2291d6d','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('9432d84ce6546446d43dab4d820c2ab1','943fd44858698332982ce333790ee248','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('94381af10617986ed1d042afcf85f474','9430e883fdcfec85128d5ea242fc4dd0','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('94303cfbf99e6a0065e0525bca1c21d4','9435769fc2f556c56d08851453b5351c','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('943e49f736af98c1d68d7385b537ada0','943b747df598a7286eeb8a2df140e87f','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('943e53b83c2c9a3c2fb31cfcf402da8e','94322471eec7c989e600b1c472da7248','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('943829872f892416c9af37e1df1510d6','9432c0b66d2d8bb52104a7bad584496d','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('943861189831fffe8918b8ccda9b5c72','943a35d961eed1337cd2aeaa1b877e3d','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('943a1335c4cf7060795aca5449cc433f','9435ba43027a92daa5ee912bb5631755','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('94371d0df8bb9c555d265c3bb8286f9c','943506a7a9ebdf7b8e45c2eb52f3ef11','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a72f9b776f861b6332d300c03b82b','943fdf7360949750cfcfca6e45387ae9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94368f2e6b5d528dceab934d4f52bd3a','94389c87381c537a5932d772365deadd','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94375625bae638ecd2f714bbe14e2dc6','9439bd49ec66e39f95885049834e49ce','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b8a43725399b222cdc6503d42fad2','9437f23dbe41b44b8195c87843daaa82','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437ebed496e40cd8a73b52ce5f29a04','9430ef2a56a00432548394f58fb44a30','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94395345aeb78f548b02cc878294f1c5','9431cae39f5f7e46441c61e9c3ec3ec2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c984b6aac948bdce7e01d47b93f2a','943c889f2fce268c42c19be24a43bb0e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436cd4a06138cd4d05915b5862b105d','943e787839402245db8d2f91486075cf','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94362d98205af15c78b4bba17ab496d0','943c6bd20987bfad1f1aef5880e07bb3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943de6e4fe39ab482800907c78efe520','943d7b98513df2c5e116ce34306211ba','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943479146cfa754ddcfa29c87e3ffc94','9430387b3974c5565255b86b74ad541d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437148f58b7e6eadccdf392f779e6ca','943aae38ee609595929d2a4898ed2b40','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d900e17fe3dbc8abd62bb8c85176b','943f97f1538d6a7b43a8ec673438b31b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9431ff6f2159d7ffe98fbc5ae214e31e','943c65e37644e1391699a36c96e5c311','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c3ca56d8e9361893bc73b03baf8af','94394a03b7c861dbbded128dbde29027','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a1f9fc77a08fbd998410a7039d0ca','943b6dbb8f3579a308ba04f9a551e1a5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943790f64d0719fe819735a9d305d241','943a21307836219852a3915463d8da8c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ebe5ed6431f764b028b06007fac33','9433ed335bf696f213b7c111cad88520','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434e57af51cb64e25826175588922b3','94382aba3ce7851818b1e422e662f438','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430b2104cc4436462c5f717805b50d3','943db55a9a9d7ed09260411bd02f6735','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c3737de542382b549d22a6ebb73b3','94307ab092a838a87cb96ea3e981504e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435a99a1f0c853fe3d75834438046a8','943831829523eab6816537a93182e628','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94338577162485f2efaba9ac675bb6f6','943b224a97fabd865708797e3c7b2df5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a5a575ea2981f3ddc4875893904d3','94376058060ac32bc2f2be8a85e528dc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943630664282812ba1e72db17765eda9','943ef9652a61afd31014ff6e6a617c16','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432ad8052efba7d00e0ea943671ef15','943ad8f88f4ed2188ffe4620f51c7ebe','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943502a9c53cd7d1ecc8fa335235257f','943e6b830397ad91968187347a1c806c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943aa6d32701f1e34d3fb9c92b1d1716','9431fa6d56ec9082652a66ddf9330589','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9439b34c1d9efff18433f744df272489','943bffea6c18c3917897f9baf86478ca','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94318d6f08761ee8598ea73b69e67b53','943a90ba0d1252241fe9d2dcc47337f5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a7a4521369a0a2e97886674b7cd09','943c8410f20c31521f9bf300c60cdacd','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94309dc9491d24e56da2601e6cac43d1','9435c1645fbad7c2f70d7c31c7de0b00','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430e0dfa9aec69a6dddf890ac06c5a1','9439b0ae1a87a88f57f526a0aff3e282','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435ba4a52353c0449983c7e066a0ae8','94308e59f360c2b5152a2344eb65723e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9431ded95ffd83d039a3f5ea0abe2bc9','9433760e4cf2851d8e23bf79a317d9ae','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943da2faad008cf42b7c4c5c6267e8e1','943ab8d27315e413ddfb5438049d0846','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d3c8c952e4b6ffe42e1ad808d336e','9436360921cb3d08503c63087db7e654','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943bc3a4215ec6d19ac994df11e488ef','9436750dd0976a343bb5d3c762e73859','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ccd1c33eb7677d0dca0408e210ba8','943bc5eec2d17859a3a596436594cc09','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434ad6a495871fed7e9b1a332fe6c21','943a8e962ea41a5c192f35b6a93105d5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943cc28e29add88e9770f6796dc6be30','9434d1248c46691d6e17f3a4c052f3ad','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94395555a396cec06319a93635925a52','943e1dc5d39f3be9143a5b537a361098','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d5dd23673192aea72cb2b38066210','9436872c3084c8ffda226866fcfb557b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c807bffebad833febb2f252eb007d','94332b8035f8c2eac90aa9dfd131d546','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94322c9a4ba74d55bf5059987eeba785','943119886aff92b81ec8548118e07c87','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437785e729c7091f4f2312d16d7a6c1','94352781a7dbbc4de6651086673f1792','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9431ead028abaf6072ca5e8f6db8dff1','943d95206ff7895238ffe7800e82562b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f332207d18c8971b6dd057654752a','943b7e272cf61cce31bcd51469566d67','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9433f2ffc894f22410461cede58b9b20','943c82c8b9986249718f30471a393112','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ccca8590498f5683b8841e571f5a7','943b6f52961e0951941ad457c7b5bda0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9433f57e58a489d0a98e8689e16c720f','9432fce1dba3fad2745f3fdef91ed1bf','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b9ef7e3fa6a230d63bb4b8a1cf0f9','943848076c1f54d4cb6129a16153d325','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e084b512b60c60c29b888c571a930','943b307db5aa8c166271ff6b2e1117a6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436c59172c36f36d42fb9288fe6ae9c','943addf553eff31b62843a215bfba677','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432be2b43da162fb349149d681c4a93','943e27e1f0691571ffd1d065dee091dc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c782d6a2523174fe79332ae2b9a76','943b96b325dc17282ea0c02f4fe97b67','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435370f7ed572dcbc48a5336802389d','94361c608fc16b4d0c7d70e789f1cff9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94364bf64bcfd7fcbef08936b33d81d3','9430fb7b9c2cd4f4208a96d75ced6587','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435b60fd1b93cf0faceb2fb84005ac6','943c78421f46c79771a5f99912b7179f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b937ae72f384e360322efed55a498','943891bc42635c0ac87556590c319add','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430d073c0535d94d7242a1d1f594067','943185385934e96b66203cb1023d0676','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9439d260f7137e15bc0838a13f74b215','9431c2f6b769dd11a36c720a51a2c66e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943725d0ff1a9fdad59bedd47382b3bf','943d4466c1a307cd2b9ffc419a6d708a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e4f3085a7daa73a67094e29af1d86','9436eff8730f4881aa05df3948def04d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94321d36b977b58b9f2c363665297af6','943f0ef1521f3c167f7405fb64253e4f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943695de45f1c50c3f540e8a5c4ad201','9434d0520e32e6532970fee2ac0ed0bc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a7706f43d33f530223cbc05287476','9439e899eab716046ec03cff32fa66ec','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430bd289e859aee04795b8197e38c17','9433f4a87374741d6e0a42d9d9784797','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94368e37f4afdf77e8525d5aba74ca6b','9435cf4347fc79123967f9666c7af44f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437ec334cd767fe375f8f7aef9616d3','9432997d9e41d01ed8eeb61fb3e72a81','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94347c21f68b92b821c733e9a5c820bf','94375b0e21e6e1932de8712007fcb8a6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435def422c885b200dd18305d31e8c6','94363575ffd43bc0fb3f041ee2291d6d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a8fc0760a74d763050ec29e579139','943fd44858698332982ce333790ee248','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434c43b7082162481a78cd810a5ecbc','9430e883fdcfec85128d5ea242fc4dd0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ac5c950b5b14fd92fb3716ea7c20a','9435769fc2f556c56d08851453b5351c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94328f4f2e42c735bc909d5a109f87d3','943b747df598a7286eeb8a2df140e87f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e55590cf5170c00b86bae7beafa72','94322471eec7c989e600b1c472da7248','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a3e7e1b51763c0ef095ea0592ab51','9432c0b66d2d8bb52104a7bad584496d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94380a75cd40b982fbba4b2e09c6b2d7','943a35d961eed1337cd2aeaa1b877e3d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430aa73098ebe4364cd4e083f68222d','9435ba43027a92daa5ee912bb5631755','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ca9c7f081213e6ba25b48a09b1c97','943bdcbb76ff2782e3f68503ac6c5eb0','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 28',0,'','','','2016-07-19 14:11:15'),('943e3ca29eb3de969be9995502ed155a','943bdcbb76ff2782e3f68503ac6c5eb0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943cd61ae30127170ae96f39592c145c','9438ed469b8457a665e8eedacb962326','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('943903a9ab884cd76f1f483bc348cd0e','9438ed469b8457a665e8eedacb962326','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a835e77bf78437a788aaca04c7755','9438d17ad924a9af46f0327c2ad22850','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('943b7a033a4dfc33aed432abb18b4e30','9438d17ad924a9af46f0327c2ad22850','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c05776c75e9d14d536bc09c5d0c8d','94358ee8468c9f661bc7241f7fc3fcaa','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('943f293cb19fe707bd9492ff95610f3b','94358ee8468c9f661bc7241f7fc3fcaa','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94386c243bfe5aeb4bbd8bf96af81e30','943b8a088cdd5232b6c33604ab7bbdca','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('94339c2464c37a6464c984be20f5e51a','943b8a088cdd5232b6c33604ab7bbdca','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943191dd0599e1e5fe0ffc1b25e985c7','9433fc3a68c142a5ba5c42fc67b37733','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('943134c847483b4c9571d0da610314b9','9433fc3a68c142a5ba5c42fc67b37733','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943cb5668344a9a200cfe5c611f3c425','94399456547e5f015b9c326f9075d1af','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('94306d27094eb12b90cc49eabb7bce1f','94399456547e5f015b9c326f9075d1af','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94341d015df765863a955c58b4e07173','943183daff1cee9d2ed2aef0b6e01c9d','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('943a0d4594ad0ce656d439c643eb0140','943183daff1cee9d2ed2aef0b6e01c9d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943fde2dfe5d4587aacec1011f65d29f','9436e093467d7b1bda6b03a153b6c0cb','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('943407dd893de47899955fe8f030eef9','9436e093467d7b1bda6b03a153b6c0cb','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943be5957cfe767f04a6372e51319291','943c6f7dab70a8cf59ab6d1132ca1884','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('943dff2a285b25fc0cef526af7e96b17','943c6f7dab70a8cf59ab6d1132ca1884','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d168563798c58561985c2c22a45fc','9434c95850eae0d34e19aa7a7679d0c8','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('943272af2c20f0f750c381e853746be5','9434c95850eae0d34e19aa7a7679d0c8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94308c8c8a5b15bcf43635f13e031207','943974b31a454a22d4a9d0d31495cc2e','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('9431a4ffd120369c8a122229eb49ab04','943974b31a454a22d4a9d0d31495cc2e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9433ff5b2086acba393b839695f3e237','9437c1d7ed377f47c5d4f347b81f093d','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('943ba6d23b3be4d13296ac747d8ecad8','9437c1d7ed377f47c5d4f347b81f093d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943df72de6c38b0c0ec0a6f6030329a5','9438bbdf28d91d66badcb6c4d182155c','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('943cc58efe03c66435c368ae9973102e','9438bbdf28d91d66badcb6c4d182155c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94358205f0efde15d54d35cab1fc8371','943bb70c061857fb1cfa4cae9cc85fe5','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('9434da24d834154a3a3dcce09f84db3f','943bb70c061857fb1cfa4cae9cc85fe5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943faa1808f7ea32617038d2582bc3df','94365f199a3e017bda06131257be11d3','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('94311dbe0031b6c3af6e9d37a87f5d7e','94365f199a3e017bda06131257be11d3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94372ef76545206a0c95c9a606366ba2','943ceba39da4597ef5ddaeb1dfe4ad89','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('943409fba4ad45873bc0e2751619baae','943ceba39da4597ef5ddaeb1dfe4ad89','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e55e1c7bab03b953f1dc099ac166c','94338051781adab53f118e23cb8b1179','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('94364cac6e5ff00f59253fe8784f0b29','94338051781adab53f118e23cb8b1179','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943ee0835558283f3c35b345514e3c92','943755dfe564be88ecef04ea12909fea','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('9436d30a11ad4f2a6e6ec62df7479689','943755dfe564be88ecef04ea12909fea','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943189fa5ee73eee18ee2f1870bd8ec3','943e6790210598e4e5855c9c1f733e64','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('94369a2e17da15b5c71ab6ca06242979','943e6790210598e4e5855c9c1f733e64','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943138d30dcd3d78e31daaa534877c15','9431c9b692a84515ea6b86ed2c465b9c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('94371152e65aaca3494ea5d4849a6435','9431c9b692a84515ea6b86ed2c465b9c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9437593650804b5ab3a90576716792fd','9432c85add6a8d9b103c9c6551b424e1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('94306a8111c98c781ad3b696676bf1a7','9432c85add6a8d9b103c9c6551b424e1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a512a1ff4928467170c91ef836276','943d4f978e92fe6a1378a65b05371a82','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('943b9a77658ab6dc7d243b342fa0d7df','943d4f978e92fe6a1378a65b05371a82','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bfac448cc9c27cea874d4772550cc','9437905c335829012665ccc79a528879','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('94308cd7840cd87ee0fd6170ee4d8214','9437905c335829012665ccc79a528879','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9435a9fbcb347ef0b5ab273a4b4efe8b','943d8b3e73c46066d65254e45298243f','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('943402678d327472890084c17db14ae5','943d8b3e73c46066d65254e45298243f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943caab1a4acd3bece536649d379d0d0','9433a80a08f8683ae65e6098628b7c33','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('943dc9bcc3d88b87a797e3c7ad633291','9433a80a08f8683ae65e6098628b7c33','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432466403bb8d298c14236bdf82bc34','943ece147bbd731d982e9297a146c553','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('943dfcba17c410b048a2f03d27625335','943ece147bbd731d982e9297a146c553','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94347efa59b30365aa15ca7fc27c5e2b','943a21b772965d06534bc106108fed23','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('943db237f85bcf1378e108076bce6b2d','943a21b772965d06534bc106108fed23','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943799193b526e969182cb9e4b06488d','943a2d1f1d6953f2e078b3256c31553d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('943e6040965a51b91c938faa1c8dda01','943a2d1f1d6953f2e078b3256c31553d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bd1d95414b433691838e9a59f97a4','94337900bd740d08041f30aebc56255d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('943d19e1cefe45e2f15ceac03ae45331','94337900bd740d08041f30aebc56255d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943fde4005cab26b5f92af771001b3bb','9431e65cd5db6183ec7d2743d368e9b3','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('9430cfc857e714ef12c63410f7fc2e11','9431e65cd5db6183ec7d2743d368e9b3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434de0f50a8757e0732ddae5bd75098','943169a1079c430943c16d85dc878f28','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('9430238d62090d6cfd90d896794a9b37','943169a1079c430943c16d85dc878f28','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943f1ba3f8996a8a292b3b70d5cc1204','9436a1a68442dbb7c8f111585c19c554','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('94319470ad6cb7a43fe979ee69e40c50','9436a1a68442dbb7c8f111585c19c554','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9430de06e2b73fd5f8672d0b6eb6e576','943d20a12a0efd8d0dc91d546a617bcc','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('943c4eeb8531c272e3d3d696fa671199','943d20a12a0efd8d0dc91d546a617bcc','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943ec885c08934dc2746ba3b36fb6bdd','943d75312f96b46d2e9ef6708d0ee557','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('94336c87e494e946f42612d37e52d736','943d75312f96b46d2e9ef6708d0ee557','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943443921488ad4cb2e8df263dc93a5e','943cbef115c49ddf16709781f150d2b4','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('943e295cb8c5b3d3e2f7f8c3176dbcaa','943cbef115c49ddf16709781f150d2b4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94328547b076b44348e6032dd8d5994c','943de14381e6685e58667588641013f3','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('94351ac427502499e965f44bbbd9e7cc','943de14381e6685e58667588641013f3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a9bddeeb71c0f807e36cd78232dd6','943eb8cbcdd8843112f0155c9ca0c1e7','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('943990c519baea8a56feff57a31d2a98','943eb8cbcdd8843112f0155c9ca0c1e7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432d49035fa42d3e4cbf969afa7b658','94367f7a36bb2aafb9a3f0d631431d25','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('943530c5afa991d9e95c093a68d14087','94367f7a36bb2aafb9a3f0d631431d25','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9433e93d54eeb7591140e3765efd7416','943501fcd97464ff274b59f214c5881b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('94302c4e6977476e183c08e456bc42b9','943501fcd97464ff274b59f214c5881b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943766bc2c73747eb7f8375787fcfadf','943c4c30b848006fc7fcb81f26fc3d7d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('943f0edbe896f2be307d38a1ba05b69a','943c4c30b848006fc7fcb81f26fc3d7d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94322bccb6621281b240274de0c711b5','9430e529a70aa1b60a82b42e2b7267f2','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('9433efcfbd95ca75a38d64f8e60878ab','9430e529a70aa1b60a82b42e2b7267f2','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943229b8013708756f7fc0ad8c0148eb','9439f9322254ff0e92396d097b4fd514','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('94379f4ec2a4975594c7f50b78c4895a','9439f9322254ff0e92396d097b4fd514','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a9ba3073235269d9ce55e4927a5ea','94330d3ddea2020e0cfa1a35421010db','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('9439c44a63c5ad8bb55d7378de009f6e','94330d3ddea2020e0cfa1a35421010db','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943797bd34338095ab30ccfb8fb699ed','94379bae8d1456d95b1d9581af44b440','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('943fd2cf8d12484258e17897c52bde99','94379bae8d1456d95b1d9581af44b440','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94300c07abf90e5e4558c71fef5efdfb','943db3c34bda27e0cf8e52e914414576','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('943e049295ed6732ce7ff9523542518b','943db3c34bda27e0cf8e52e914414576','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9439dea297cf2fd01eb090ccbe34301b','943134d57688410ec7388c1b0e9b8d9f','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('9432c89cc66d43248ca43605b018a14f','943134d57688410ec7388c1b0e9b8d9f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438ce1a1834f08a48a3712e7da4b5b1','9438acde1d3bf1a7b7c32b1ed04964fd','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('9436d5131a42595fd27f5ed4a9ab6f29','9438acde1d3bf1a7b7c32b1ed04964fd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943dfbccd16ad0673ee0f2d80649a5a0','94340daecbd2119b43739c6ae922ac00','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('943304ff946df341fb74bac846e6c6ae','94340daecbd2119b43739c6ae922ac00','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b4b798893293694ffafb2f5c86128','94390bb4e0b64a313455e5425d282f6e','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('9434e55be00e2d7cb0ebf71f149865eb','94390bb4e0b64a313455e5425d282f6e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943eff18cfa12dfed305f6fd835f945b','9431ba5fafc3cf1ec20ccbc8a4870be7','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943972742afe1c1aadfcee05dde4bed1','9431ba5fafc3cf1ec20ccbc8a4870be7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94324c0cf7116be29d55159951815eb4','9438ea46ed9fa9d96b68172413d90fb5','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('9433b0a53c256a6b492c12cdb56711d0','9438ea46ed9fa9d96b68172413d90fb5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b975c9c0fb34379fd1ddb7e700560','9434f28bbe2e7e81d731638b08bb9559','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('943831308d7d6af759e120fd7e1022f0','9434f28bbe2e7e81d731638b08bb9559','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e3695dbe165b80db2c18711372c3e','943fbdb763e005101128b473c01ba054','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('94333c94783c4bfec98ea8cd4d5d0730','943fbdb763e005101128b473c01ba054','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9437ec89acc5a09e46ba15f418bacf90','94358628279a9e1a55788e16b82ac83e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('94300fe7bb17d7e23431a373dd4efcf2','94358628279a9e1a55788e16b82ac83e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9435f2554b431d68cd17c07238f02f07','943a8167a029c9a155628257884d8d9c','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('943476e4a4857fac9036f3dbda1f8530','943a8167a029c9a155628257884d8d9c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94337a9aaa3dec27818d49fe29063bb0','94396b6bc9dc1c9667ce2ea8b764f25b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('94315fc9b273fa99f177044f833f9241','94396b6bc9dc1c9667ce2ea8b764f25b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9430a541de9afbf8b0240725a8648ad3','94324cdb851f8125fb991e91c794f4bd','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('943175c88aee2ff45211544c487f1f82','94324cdb851f8125fb991e91c794f4bd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438b15a78cc6e498edb93b9fe19f9fd','943b0cf67b86567fbd2c4e4b7deaf700','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('94354413492cacd7a768680ee497048d','943b0cf67b86567fbd2c4e4b7deaf700','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943fe57c5df8bd2a32d5ab70ae94aa42','9439904e0a4f01725aef48d10b245824','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('9435a82b4edea529162f681bdfd60dea','9439904e0a4f01725aef48d10b245824','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943737a5f03f0b6a67e5eba20f0e2439','943d1515c30bf3ee5c183386e15c78d2','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('9439a0b456f164311e462434436fa613','943d1515c30bf3ee5c183386e15c78d2','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9439bbdff262778bee6adaae6788998a','94308adc326b615cbaf67801313fdc12','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('943b2aef5767dcb0e6347ab83110696b','94308adc326b615cbaf67801313fdc12','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943360ad2b3f74908ff4cd6d6efc0f0b','943c7ffd4aa253e307c28411daa1c3d9','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('943253e7b9f6789550e9a31032246087','943c7ffd4aa253e307c28411daa1c3d9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94325fb67fdfbc0d96a291e4068bb91a','943a0788b861bf7f98455d313e069933','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('94345086dccf6343a78fbdd89d7019ed','943a0788b861bf7f98455d313e069933','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9437c846c42654db6ab12f434fd6ac45','94333ad576da3fac8ea1b1da01062baf','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('94312f3f109fa6975da0a6aff7c35b77','94333ad576da3fac8ea1b1da01062baf','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e864cf72352eabef44a867fff8cd8','9437b6af608e83c173b7f405def0d352','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('943b0e97de2a545369f834c8bca17f5c','9437b6af608e83c173b7f405def0d352','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943801b16a3c646997ce221347a76043','943696f8690f82bcf858c6d1c1f2ecad','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('9432bb1f88826db4a807871ac780d840','943696f8690f82bcf858c6d1c1f2ecad','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943008c34489e2de76b4e993fe93d976','94325238274beb2c5b36d050da8b330f','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('9436c2c20bf73fd99a020fe2ef7e6184','94325238274beb2c5b36d050da8b330f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94317b998af3e609b4e3fd3b3e717bec','943e31576d54e037a3c2f65804bf73f7','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('943150da372f4d0387321fd044b06265','943e31576d54e037a3c2f65804bf73f7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a784b92b8f894fc767b25ab365304','943800c928d2a389c1ac3bd46dfdceb2','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('9435a47c6671f67d77477f242e7f6cec','943800c928d2a389c1ac3bd46dfdceb2','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9435684fa5ff57ace868c3b7cdcd244b','943f0307c57085e98bd36f3fda05bdb6','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('94336bd71ade1620576fcf3cf9cd6af1','943f0307c57085e98bd36f3fda05bdb6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c361611ae2e8bb7d863540f403044','943fdaa0f367ba8c5f0a94657bfe30b2','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('943018596d45cd17bcd736851ef41af0','943fdaa0f367ba8c5f0a94657bfe30b2','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e3af3255873766ee2818020ded37b','943787451351a33c45dd5ffddbd25f16','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('94332b3e3e9824933dca714020815a3e','943787451351a33c45dd5ffddbd25f16','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94376cf3ffc8e01436048f84971d61c1','943876c506c11d0962ac292261812ab6','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('943684295faabdd2c2a91e2c2e265c07','943876c506c11d0962ac292261812ab6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d52502d249915c70fedd629b15e0e','9430d9f96053ae7677ed6a3651ce63b6','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('9433fd806dcfeb99f058235b1df4b205','9430d9f96053ae7677ed6a3651ce63b6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d9d735ef4ee6c5ca9d93751c10e8f','943d9a8adb0cb1d7a65e6e236346d61e','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('9430fdef18058a87cf19fd0b95a83432','943d9a8adb0cb1d7a65e6e236346d61e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9433421d2f26df43b7bd7b24c5c75b43','9433ff10078f70df03681e54a2852acf','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('943eac901f4896eabee6d0a7a40b13bd','9433ff10078f70df03681e54a2852acf','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94361f9b7942303682e9f62a42747443','943b656382f4d1e1342c24cd0ee48a7f','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('943117b9328bf1343202e153e2122d5b','943b656382f4d1e1342c24cd0ee48a7f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432e03fa415cf251f2af68908cb4117','94379f3f419664c6479e6f99dbfce561','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('943f6db7a88b55816e349ae18b32dcf8','94379f3f419664c6479e6f99dbfce561','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94376646ed6bfb8a79ec71f46a3e912e','943593de88c59299d6ef09cc01e14ee9','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('943398b2dda22850fcb8de87c0c469f3','943593de88c59299d6ef09cc01e14ee9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a69ad9fc26be5b0222366d564cc0d','943c8e68d7c16877f9db2e7adbb043c4','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('9431eda5d77775ce130a95effc3e65c2','943c8e68d7c16877f9db2e7adbb043c4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943404e8b3f754acc85d10dbd3032d17','943c83a2fbdfaf77c2652e7cf9ad7cb9','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('9430a7ffe8d39edd331a9c24509bc74b','943a5a67145f460b9eb11a082b261535','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 28',0,'','','','2016-07-19 14:11:15'),('9439518140e1506e76c7ff853270874d','943e335902ad91fcf48725d87c5ad0f4','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('94324a8f994add83eb0f370c99c094e1','9434fb681d2b29238f569996dfa91fbc','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('943336a8f1be2a8b65112694a0c896a6','9438e88ae2f1f27c734a4b99abf8e19f','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('943b93d25c32e11706f4beda72487854','94320957eb23a4039ce06dee4d823fa7','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('943de7edd3eb14d450a953f4b7760d45','943ef11c043560fda5ab26c676d2b4b7','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('943494b77973c37d7089ab83fd9e688e','943f0b4f48f70554aba6df096cf77ecc','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('9437b11fdcff747772c18591c60e8287','94397c0c1152a58da8883fdeb64baa18','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('943a2b442ab065a015c8d1c0d1bb2655','9434ee1d3e73483080df89db9a5b8505','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('943f168cbc43ccf3c6ee1fa1018753ac','9437b909c98dc79dbea0d421a39f347b','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('943ef13aa77764316b8fc2edcf7c11f3','94303a968fd25b5f455ca5df067e503f','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('943795c72a180ec7e23f005ef762bd78','943436f17950bdc207cc11924621ffd4','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('943f5ec61271f4c08ee634cbfe611807','9434631b472ce1870c8584095b6ea189','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('943fd048d0881fbb0441d05f35938625','943c2424d95eb52c5436cd37742123ca','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('9432e4226bf54756884b981499c511b4','943546e6b03cba76e643c710d5ecdba7','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('9430eed16a72b5ccec170bc91a1106df','943aabbe53af0f2370aa57a7baddb3f2','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('9432029fddb22948b5d770bd952921f5','94316bb4e4f8855d6c876e8cc137bc6f','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('943607f4de9be5dc59a67e0d2e64b413','943b268e1bad07c3da0144f98c3b1f93','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('94363da688f7dc001e2b530193d63ee7','943ca21c6f04bc1444cc5d4f159efecf','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('943019008c7f89066e07eb9760ef803b','9431fcb98da2e0a42973997baa0257b0','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('9437e12fc5c4aa762e83b4152bb63ced','9437d99b0dce16c8b71a11ead38cceeb','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('943cc59bc65e9f51adfb8ac2dc884c85','94303a2c1cdb909a5df9e5e69b77e3e6','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('943c2597877a0a156946a0391132b611','9439d1ef0e362731ab0f6b62b8185d0d','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('9438aee60958456f5cca68eaf7058979','943e6b11ed9b231090534d7d9a03ec37','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('943e496880fce76167ceab32ff68186b','94334e5d393eb7391a6143ef7f9bfdb1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('943ca0a6f59feba3586b5b2c91c3e79f','94376ed49f8c2f31600c714b6dda9992','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('9432b384358b51c95883410e8cb485c4','943ebc81fc6e29566c4f4c5e3095f24d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('9439a044ba9a0c5784b53c91af634792','9430556dce8a28d503de503600e53dc3','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('94368d967a78671c191441a982ced78c','943014ce75befa766a1d4086958c07b1','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('9439e8f1c341b3995c4c806c48f7ae1f','943213b92f6a7760f740994394a42419','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('9436f7c34dfc32f47e14695efbd98cb6','943519727d29004a8def2307b236eb72','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('943d515f5e6400bb095cc62b43026eaf','943f5666b61225cd2db39d8a0e60c75c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('9437cf7ace29b58545279cfbcd1b68d9','9439262bebdf794b1463b35e3b9cda18','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('943ccc1acaad5ca10d6981edf8afff0e','943756de3cf306ec6002edc4b16d0684','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('94374f3e3fc0fcc7cb5baf2df15a3f7a','943b43b09f7ebf8c5ee805d05fd10466','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('943d7cdc7cd673dbfd93fe0cb8c62caf','943010664981c61c5802da8a46cd7d47','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('943a44886e7092955936730fcb963521','9430c4f3cda2988cd92b45fc84af5da5','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('9439940454bb3fbbed056f15d2f209c1','943f54f183ff92a368fabdafe7cb22f9','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('943a0efb48d9f14f25054f6772303d6b','94342683f3238053877df65f602e3aee','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('943a9e0ba9ff9c9840ee1b97db43db79','9432208c2e7686a305a54b0a72c3e383','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('943611e78303ce5b57b74a596826fe4c','943767fd15075ac85c596f177050dfe6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('943f004ab3f1c694863499f80dd22f45','9438b5d64e99c8c3306781bc23042e1a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('943f35d314853ce18202891b03a78c11','9436932b72a5c652f3788cf921c21e3c','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('9439d8f6fd244b9681126bc3e7d92353','943aa3d304ca412e38a59cc1c6494d7b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('94334daea3f2de27b3062e21a805652e','943ff9e0768e215c57c95b15459a5645','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('943f6d97e669a89ec6b43c60425e70b3','943a2516e53e3ff0f72c7a47f1bb191d','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('9432710691db911d3d95fefa9167c88e','943a164f903993f77fc53f2ef5a9d8b1','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('943a8516fcefe7f878a4f84974d34f51','943f64413ada941e06a13d7da52b32e3','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('943f77d449c3be1339c9352cbdbb2116','943ccb818d9c11032c7c3cb52016c15f','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('943964c791d748f88d4344b5611bc3f5','9439635d4434a4d86ad43670191d61aa','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943c4851e20f16a1f099afc95a99d205','943d12fd58e552ab7bf596dc98c50982','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('943357da948c8160299d386fe0019ba0','943ddec66eb113831dba9cd935e164b5','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('94387c6708055c288d561a3d80fdbdcc','94348b317db58c38e829940ea236adb3','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('943075031689d9e1d6861c19c2559429','943176938a68ce955d1c7f3636b8add2','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('943ad794a89f83b3d75186190a61214e','9431e5f279f0203c98651dd4b7aa6185','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('943658acc35f85e734ada7106b753a49','9438be6c9487ab072b3369448a5e97e5','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('943e13bc2762b3e9f06c5333330601a8','9432615bc3dc5c97b07d3f3ed3d1039e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('9436c329cb7e4040d1b709d34f4fbcf1','943189fc1cbec38a3bc3ff3794211cc1','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('943789ddb8ec50abdf9372f2e2a87a50','9433f7539396b429236ac91e1331aa7a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('9437d1a09446d33f17eba83edbe188c2','94347a0992cf39fcdf4cc4ac78a4aff5','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('9433c56b6640629e24a5b575698a5b76','94378b8f77a0e82dfe84b1f4c83ffd30','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('943952b3af5246d1054f9c4b966148c3','943b484bf50e75a39f209df2f0cf2f38','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('943957fe63bd9d7f3922ad2e64d18812','9431d9d63ab35f1a95c4c09f3d6476c8','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('943d5e735fd7c35a8f6c950cf809fcd6','943f86c3b0d2349a5564a95b6d90c818','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('9439bbb07c68cb350a512f312d9b9d2e','9430b6a1147fa760f51f3785651ebb41','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('9436fce37defb93283b2d430d95cba61','94389efc63f9bf3a0bff257ae87d2540','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('9432105cf8663664b21878c21343b24b','943252cab4bfc4bc67bdf52b0b61f5f8','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('9439dc64e97f8d9766a06acf0b62cbad','943bdba181c2457bf5b889ab2d0a78a2','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('94330e67c6f83e59d7fa1c6fbc36b67f','9432c41fe317779bbc4fca72fa55b306','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('943e01175b17862ff57831ba23f4b90d','943de74bea7488d87ab705b0c8cc7321','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('943cc02396f675cef29b8f7fb4dad4a8','9436e6f9a25330a0304e4d5fcb9a75b3','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('94388a438c221fbe0d3edf1d22478b35','943e78097e852f8afda52d600db478b3','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('9434e00de029e849993bf02018166ab0','943b43d104aae4d1ec4de7eb2dcee677','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('943272989f230a4f60a75e375b573eba','943b09551f679fafa8559a48b32cfceb','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('943b789e5dad69747fe88d1d9bb61852','9430d3e45973bbe2a9c777f8e3171fc0','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('943d097b4f2b4c664c3c89b6705fe470','94378412a3fd74f21ec854c3a89d5a3e','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('943f378dbf8434fde4518c5c011cb1dd','943b8a266aaafc287f7c6ea55f97be58','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('943b9d493ed1f4e7eb9cacddd0a299b4','94380d7e7a9da6776306ae1c5cd29121','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('94329ee1129ab72e34cd43ab34c54b9d','943a5ea8a91926e7eaacd7d45e7b5b26','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('9432f4e07b9053f036ad088c6e8e52c4','943d347334df24304e754495b8fe320f','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('9437c81aaa450d9f5d4c7d639207fe73','943a5a67145f460b9eb11a082b261535','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943eb455ca76a17a797b168bbc76dadd','943e335902ad91fcf48725d87c5ad0f4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436d02e7964982e4b3886adae40ed1e','9434fb681d2b29238f569996dfa91fbc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943165f40069791438b5639f24b40962','943c83a2fbdfaf77c2652e7cf9ad7cb9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a33bcc5cb6c848202a89f8f04438c','9438e88ae2f1f27c734a4b99abf8e19f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436568eed7832f736b6af475303a5a6','94320957eb23a4039ce06dee4d823fa7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432cd1a8ac3af47b24d7b16977604ec','943ef11c043560fda5ab26c676d2b4b7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b01a06171769745c3a80c5d81ba06','943f0b4f48f70554aba6df096cf77ecc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943edb0db84b47324e8b9402f4dbb655','94397c0c1152a58da8883fdeb64baa18','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943bbbbaf26183250ae4390f2d8e7f73','9434ee1d3e73483080df89db9a5b8505','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430518c17a5ce633621529a36fc6d1d','9437b909c98dc79dbea0d421a39f347b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94327fbe17aac917236b9013c924f6e9','94303a968fd25b5f455ca5df067e503f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434e89cc7549a72f8e39fe6337e6b9f','943436f17950bdc207cc11924621ffd4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b602d534d311c1d881d6e8725a11f','9434631b472ce1870c8584095b6ea189','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943d687e70e4ba7d9498d90228266faa','943c2424d95eb52c5436cd37742123ca','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430441aca213af70e3d6e14b8e50a0f','943546e6b03cba76e643c710d5ecdba7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943369c72269730ff3398b2d0734fb6c','943aabbe53af0f2370aa57a7baddb3f2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94358e6522b19369f0b5154137c88233','94316bb4e4f8855d6c876e8cc137bc6f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94333a004b34c3fec24865fcef2f6967','943b268e1bad07c3da0144f98c3b1f93','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943154f4a49bd9147610a98804bcfc36','943ca21c6f04bc1444cc5d4f159efecf','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434bce41754bf76d22835540c447c31','9431fcb98da2e0a42973997baa0257b0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94317756eb7ff3cd04a4a3f72021e187','9437d99b0dce16c8b71a11ead38cceeb','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ff520c71ed5d8e3c6407e201d6ebb','94303a2c1cdb909a5df9e5e69b77e3e6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b252e2ef973dff8f2f5539a7f181a','9439d1ef0e362731ab0f6b62b8185d0d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943aa8bf87e943db3fca2e75a4538e3c','943e6b11ed9b231090534d7d9a03ec37','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434a132087728685e5cb2f460cae0ad','94334e5d393eb7391a6143ef7f9bfdb1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ebf490229a4443e0bfdcfc0670478','94376ed49f8c2f31600c714b6dda9992','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943dbd002496d204a8b326cda4fa8d06','943ebc81fc6e29566c4f4c5e3095f24d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e017c2e8d7364a9a0e074e5d446b0','9430556dce8a28d503de503600e53dc3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94315bfb15cad573bd65ea71f5f6f378','943014ce75befa766a1d4086958c07b1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c4aa4fa4a7b78b8ba08c4bf6dfc5c','943213b92f6a7760f740994394a42419','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943426902c9f04a5aa094507b1890987','943519727d29004a8def2307b236eb72','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943eab40b26cbcc192a621d34f3429d1','943f5666b61225cd2db39d8a0e60c75c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94311c43aefc5c1ddcbfffbd1811ce89','9439262bebdf794b1463b35e3b9cda18','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436615318e7978dbbf2a71a192a5970','943756de3cf306ec6002edc4b16d0684','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a88d6f7af3db48145603c96a21f17','943b43b09f7ebf8c5ee805d05fd10466','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943a5980c65817ec3cb590523913d804','943010664981c61c5802da8a46cd7d47','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f285ff4dfcc7d6ab3e0a80035422d','9430c4f3cda2988cd92b45fc84af5da5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943837c62d329d6543339ff40c0cbd4f','943f54f183ff92a368fabdafe7cb22f9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94351b9f81e8a0640deffbf8469a6594','94342683f3238053877df65f602e3aee','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943cdd1859f62e3b4b37d3e723d7855a','9432208c2e7686a305a54b0a72c3e383','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94324eafec61b118f939024cae8e824d','943767fd15075ac85c596f177050dfe6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9439d6956d6e7817cd6a0347c1afc50e','9438b5d64e99c8c3306781bc23042e1a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b48b3aab2eb20620c1ac409875a69','9436932b72a5c652f3788cf921c21e3c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c96fb584f4a44e0a0434ef522564b','943aa3d304ca412e38a59cc1c6494d7b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e8dc3c29adf304d7cf25ac89e424c','943ff9e0768e215c57c95b15459a5645','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437f1cc38ebda27736bd54d6092ef4d','943a2516e53e3ff0f72c7a47f1bb191d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94395f5a31dae5c97349b7ae61c15fbe','943a164f903993f77fc53f2ef5a9d8b1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9438d675edbae2c005adab04c3c5772c','943f64413ada941e06a13d7da52b32e3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943dc272598c08d0d416d4f7d63eff5e','943ccb818d9c11032c7c3cb52016c15f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94361efdf627ecd54c5b837980d564c9','9439635d4434a4d86ad43670191d61aa','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9438626e824b968f5f6fabf9b7c0c556','943d12fd58e552ab7bf596dc98c50982','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f5eb858d3089bc360eceaeb7e74ed','943ddec66eb113831dba9cd935e164b5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b9fe62cc0681ae0329d63179d2079','94348b317db58c38e829940ea236adb3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9430150da5b8ef60b750cb668a206212','943176938a68ce955d1c7f3636b8add2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437d3d05764da8f76d4f3363b78ef0f','9431e5f279f0203c98651dd4b7aa6185','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94361c5b3f8d1a12ccfba14379ab9038','9438be6c9487ab072b3369448a5e97e5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437b9f1a815fd0902ea76c55dde1792','9432615bc3dc5c97b07d3f3ed3d1039e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c33c9d13b278e65678796bbd0f302','943189fc1cbec38a3bc3ff3794211cc1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9435ceb365ab36ab40de70f8e13b9f8b','9433f7539396b429236ac91e1331aa7a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c2fac6d60091479f251e5ef34e516','94347a0992cf39fcdf4cc4ac78a4aff5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94309c32f7bad78a2b8f7e581d3dc7d8','94378b8f77a0e82dfe84b1f4c83ffd30','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9434f0f6e7d95280d314ae459ce53283','943b484bf50e75a39f209df2f0cf2f38','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b4ab96490e7677db45048b39f2ffb','9431d9d63ab35f1a95c4c09f3d6476c8','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943e29009d8437a059ecb58ca556fdf0','943f86c3b0d2349a5564a95b6d90c818','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94314072fb0efe3e2280f4956047bf2b','9430b6a1147fa760f51f3785651ebb41','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943600c8f25044fbd854cc9ad7c09766','94389efc63f9bf3a0bff257ae87d2540','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943738e4c3b4dcf01c53e870300f6e0b','943252cab4bfc4bc67bdf52b0b61f5f8','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432de62545cd88838a77eb99dd681e5','943bdba181c2457bf5b889ab2d0a78a2','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94346de90aa5ea46d9f959325d751a5f','9432c41fe317779bbc4fca72fa55b306','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9432c0ecc2a6a15bafb6d17bce7fd48f','943de74bea7488d87ab705b0c8cc7321','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9437425709d884874e02a40838acba65','9436e6f9a25330a0304e4d5fcb9a75b3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9436e694b032a9403a7808515c15c1d3','943e78097e852f8afda52d600db478b3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94381b6f45a47753c39e72345a8d9652','943b43d104aae4d1ec4de7eb2dcee677','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943baa53df2aea522a9fa777d67cba69','943b09551f679fafa8559a48b32cfceb','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b18fee1235c7662cf5e1d455aea7a','9430d3e45973bbe2a9c777f8e3171fc0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943c7e139ce5029518bb566e115279bc','94378412a3fd74f21ec854c3a89d5a3e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('94386687bec2c13dc4fd716fa62a1c1d','943b8a266aaafc287f7c6ea55f97be58','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943f76b9c7c557c21c42d1de6d48748f','94380d7e7a9da6776306ae1c5cd29121','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('9433f98b812cea6ce86545cba40b8cab','943a5ea8a91926e7eaacd7d45e7b5b26','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943b63d587fea44998307cdb50bd6750','943d347334df24304e754495b8fe320f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('943ba37aafb72963a41bc442d4a94eaa','9438b891ec5f025d4d50ceb0903edf05','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 28',0,'','','','2016-07-19 14:11:15'),('9436c404df644a14481e8393dc4b1e0c','9438b891ec5f025d4d50ceb0903edf05','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c81e21291b6b51ed305ec0066f571','94376a044247949a4f4220b3596e3932','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 29',0,'','','','2016-07-19 14:11:15'),('9431c71150207f0327b34e21875bf7a3','94376a044247949a4f4220b3596e3932','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94309d1589b5a276dc4978f7ce32753b','943aed8b603ebc42391b714099b13698','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 30',0,'','','','2016-07-19 14:11:15'),('94333e032c8c0e361cc4498c283851fa','943aed8b603ebc42391b714099b13698','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9430b1ff1380d77c598db4b52db9f416','9431ee4cfde612f0a9f49b17b7fe78e7','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 31',0,'','','','2016-07-19 14:11:15'),('943c871ff18698b00c4a5f49cc598a67','9431ee4cfde612f0a9f49b17b7fe78e7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9435f8b91280393ab5da7bd40db35732','9433085a1bcf86c7eb9239f5c67dd854','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 32',0,'','','','2016-07-19 14:11:15'),('9435caed692dfc945e1dfaf559a20aad','9433085a1bcf86c7eb9239f5c67dd854','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943369b3c0297dce844252da301077ca','943af609723c14d73e39f3552ce517e9','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 33',0,'','','','2016-07-19 14:11:15'),('94353655dc1ed99959544aa641d2e09f','943af609723c14d73e39f3552ce517e9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b5f41a655d1b9f7321976e710c7fe','94389b95a9813b736844dd76e0f85282','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 34',0,'','','','2016-07-19 14:11:15'),('94382296f486b9918b38753ecccb3df8','94389b95a9813b736844dd76e0f85282','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434a23e5ba0f7502e8bb6ebeb4ef641','94343e15aa50846aa639f9b7e0584d26','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 35',0,'','','','2016-07-19 14:11:15'),('943dc3e1ccd7a1d6e4e5053b6a471d07','94343e15aa50846aa639f9b7e0584d26','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943376e4259f4a52dbcfd0cc0643f521','943c3bd5953535867fcd4033a237c939','943d32fd45d6eba3e5c8cce511cc0e74','W 28/L 36',0,'','','','2016-07-19 14:11:15'),('94341a2eca89963c35a24e7ae76325e8','943c3bd5953535867fcd4033a237c939','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b808660b613e9027398a75534a71a','9435417a1393e830667fee29ea661889','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 28',0,'','','','2016-07-19 14:11:15'),('9431efc545124c2d9a0c8a4d3ecde351','9435417a1393e830667fee29ea661889','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943da415dd88bf518457c896e902fe4e','943708b1d84e3287e70dcfcddd940996','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 29',0,'','','','2016-07-19 14:11:15'),('943fd3eae244259fa9fd89c928398032','943708b1d84e3287e70dcfcddd940996','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943050d751f7c70c2390fa7092bbb7ba','943e95eae888a39c9b017da808c05564','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 30',0,'','','','2016-07-19 14:11:15'),('943db0b4338bd8f4330c1976431ca57d','943e95eae888a39c9b017da808c05564','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94323f4de2ad1d12895ed413a62c0c59','94393869d183b43c68ae74526eb61a0e','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 31',0,'','','','2016-07-19 14:11:15'),('943664cabaf13f85be1ccf08f67a4524','94393869d183b43c68ae74526eb61a0e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94323375e629425b7559dcefe6d21e19','943e0bad907d22c58a1435a2551fbaf9','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 32',0,'','','','2016-07-19 14:11:15'),('943bad518b2aee313caa844c90c5c42c','943e0bad907d22c58a1435a2551fbaf9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94387753d5f3498fd3e7b28f5b78518e','943b9aea7c30c2674df2c7d31b55fe4c','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 33',0,'','','','2016-07-19 14:11:15'),('943fa241585dab9fea23e5acb5fba711','943b9aea7c30c2674df2c7d31b55fe4c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438049e60c75607062b853e3715f254','9434b4bdfa717cfb61e35a81b92da8b4','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 34',0,'','','','2016-07-19 14:11:15'),('943ceeec8896c98abf8c8b9bb250626e','9434b4bdfa717cfb61e35a81b92da8b4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b233084522c1c5ec24e83ed384ba9','943db89a1a331da30ad0618405446d8a','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 35',0,'','','','2016-07-19 14:11:15'),('943cae12d5624049141f7b1a2bfc9aa8','943db89a1a331da30ad0618405446d8a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943242557d9b692ad25be71b69fc4ede','94350c69fe5fe87228311fb89bf2d9d0','943d32fd45d6eba3e5c8cce511cc0e74','W 29/L 36',0,'','','','2016-07-19 14:11:15'),('9439cdbd6c3b9d199a02a4d413586fad','94350c69fe5fe87228311fb89bf2d9d0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bd5f2c08a389635902ac3872363b6','943ad9f1210c1f352901afbca4b643af','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 28',0,'','','','2016-07-19 14:11:15'),('943db8980b4786c7d82e1929475dbf7a','943ad9f1210c1f352901afbca4b643af','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94332d8d85eff5af28f7eabd752b3f92','9432f524d9ad3fa43db060ffa5a190ad','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 29',0,'','','','2016-07-19 14:11:15'),('943b8737277eaa664400aea5f5b40b92','9432f524d9ad3fa43db060ffa5a190ad','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436c0960e2d5352ca332f7bd48605e9','9431c217ef59f6fdb492ebe93abd300a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('9437971ad2099d05d8d741097d0e0f05','9431c217ef59f6fdb492ebe93abd300a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94337e6538e4eb37f7a23534f2e2882d','9432f604890dc287f130f4b6c2b28fe8','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 31',0,'','','','2016-07-19 14:11:15'),('943c0920e9270b4f3b9d9e03ba614a95','9432f604890dc287f130f4b6c2b28fe8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94357d857a1efe665140695ce3dca19a','94358302f98160951699aed6a1219552','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('943ed10ed403131cac973defc4760264','94358302f98160951699aed6a1219552','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432af24f22b46edcc8646242477aeba','9434a193d6457f62d1febd175fc23319','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 33',0,'','','','2016-07-19 14:11:15'),('943475a48cde9fb9ae97046ff4ff9927','9434a193d6457f62d1febd175fc23319','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94380a23180db3e128583eb1b872bb87','943d5ec782f90b308c911c00577ef981','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('9439de4a9e894c5040da4d5a7d19797e','943d5ec782f90b308c911c00577ef981','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94321f62f13915d241e17f0902c627de','943e68f62e29723dd38f67d9327b7654','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 35',0,'','','','2016-07-19 14:11:15'),('943bc0c184f0ccda9b24f4618e0f8115','943e68f62e29723dd38f67d9327b7654','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c0ecd2feb6e578f03a6b444cccb31','943c59d8baf6ff3f55824476cf558cac','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 36',0,'','','','2016-07-19 14:11:15'),('9433a5bb8ad650a458a7b480536d419a','943c59d8baf6ff3f55824476cf558cac','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bef6f25c2a713768cf4a73f7c8d0e','94391918a4fc0a20c424bc889f52fde2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 28',0,'','','','2016-07-19 14:11:15'),('943f98b0bf5a2e45a4e768a11a345353','94391918a4fc0a20c424bc889f52fde2','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432b6850c67f8e39eecac354bfbadbe','943a2dcdd41b61704fe32ace86dc8e41','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 29',0,'','','','2016-07-19 14:11:15'),('943d85a4829bbbf49a2701274431613e','943a2dcdd41b61704fe32ace86dc8e41','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943455defdccc0b18a091195ef7300d8','943755516138adb2e6b8d25cb6eeaa31','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('9436108543792526f514ce6754b28665','943755516138adb2e6b8d25cb6eeaa31','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9430288a69623034f107a3401dba7a0a','943292293aa9e086cd931c18db1fc877','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 31',0,'','','','2016-07-19 14:11:15'),('94331e18be56a272ed3c914f938a9f52','943292293aa9e086cd931c18db1fc877','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943272c93f2210df2e06627a9b1fb972','943bf16ccf58d7761af1bb18d76f0b20','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('94344e1170d7608971dd0ba63a35b56e','943bf16ccf58d7761af1bb18d76f0b20','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943da30598ba7272cdfa9b31dd735f81','943c8690d0022616d6b76868c635e75b','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 33',0,'','','','2016-07-19 14:11:15'),('94393edea52bacee1df534c5f9a9b1b3','943c8690d0022616d6b76868c635e75b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c7e1e545d856baf6067b8f92ca20d','9432a892c49897952c8393e2fe4fb5f1','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('943fe183568ae268f2ac62fbb24d8920','9432a892c49897952c8393e2fe4fb5f1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436dbb933300312dfc0a6a24d2b02a1','943e9240f023f6c936e9a5819080faed','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 35',0,'','','','2016-07-19 14:11:15'),('943ffb1bc8824b2842dc250da142c868','943e9240f023f6c936e9a5819080faed','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943aee0e16b3c1f09f407f17cf03c1e7','943d609a287f425834a686873bd847ec','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 36',0,'','','','2016-07-19 14:11:15'),('9431de0bcb561aa190fb3d0fbb486023','943d609a287f425834a686873bd847ec','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94395f56fed725d4b9cce938725a6766','9433a892f2dcea9354d22e3827773b32','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 28',0,'','','','2016-07-19 14:11:15'),('9430a0b08fb0bd39f6ecdbd317f5b96f','9433a892f2dcea9354d22e3827773b32','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bf15b9ad0da7a86142f8e0c8cbe98','9435d74693448454e77281065a43fa6b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 29',0,'','','','2016-07-19 14:11:15'),('94324b1d7d72bedeba8b2d450f22df04','9435d74693448454e77281065a43fa6b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432b1e267b758f4f97b6ff71a200af2','943815aa5ae0e6b4d4f8af199f21f27d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('9437c92bdc217f882c9d222613a0f579','943815aa5ae0e6b4d4f8af199f21f27d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943f379682c584488ead5adcde203ec6','943f56ef82206ecf941b0d2c7e05ed07','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 31',0,'','','','2016-07-19 14:11:15'),('94333205407badc6cd50ba701909e985','943f56ef82206ecf941b0d2c7e05ed07','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94328aceeb4f7905266bd05f95136f3c','943c410bb1d2de1fdfe7971df0cd955f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('9435f6a473a9172265d6e2f7d90d1467','943c410bb1d2de1fdfe7971df0cd955f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9430542fc179d5a6691ec2634c0e69be','9434e6f1ddea0a3ace59f95f6f34aec4','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 33',0,'','','','2016-07-19 14:11:15'),('94397334150101448044b6500c1e70c6','9434e6f1ddea0a3ace59f95f6f34aec4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438cc8b54b18c6d2832183531cb3c09','94394bd3654c020e12e75c81441557c6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('9437f8ec97829802ce667923c20edc1b','94394bd3654c020e12e75c81441557c6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9433b05ea352b790133c1c0c5a372b4a','9431ce27f6da8e2e502fd7f6468e671a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 35',0,'','','','2016-07-19 14:11:15'),('943a9e24d2cfc1c6cd0c54048255917e','9431ce27f6da8e2e502fd7f6468e671a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c62919204850bbb9e7ba74990663c','9438453e4715cb1bba4a7b48cb29be37','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 36',0,'','','','2016-07-19 14:11:15'),('94372c392c9ab6128666c5971117f664','9438453e4715cb1bba4a7b48cb29be37','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9434fb44c2e3cf1d8b56d770cdc37866','94350e4cc9ff09fbb094a4cf9dec66fa','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 28',0,'','','','2016-07-19 14:11:15'),('9437e8d762b504a8a21e3e88adf53278','94350e4cc9ff09fbb094a4cf9dec66fa','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a19e803ea7335d621764aabc94ead','9439db8ca4ea623af2e7a7f40a58587e','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 29',0,'','','','2016-07-19 14:11:15'),('943780803876230cf51d4412b0ce5ba8','9439db8ca4ea623af2e7a7f40a58587e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c1504d32a095ea11239854943c44e','943cf8fef31d3fe2c5b6e3963b45d73e','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 30',0,'','','','2016-07-19 14:11:15'),('943e210802425ff15fa97e953b9b9061','943cf8fef31d3fe2c5b6e3963b45d73e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c1b603c4a99c8d5edf04faf271bf7','9436596322a8bef4a21ca1992bbeb7fe','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 31',0,'','','','2016-07-19 14:11:15'),('943fec55c8338731976f236f3e0244fd','9436596322a8bef4a21ca1992bbeb7fe','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9431de95cfe9903ede90b446db87e42d','943235ba72ea59eb8e6e800b3b144293','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 32',0,'','','','2016-07-19 14:11:15'),('943e08cfa4929ba6662a66cdece2207b','943235ba72ea59eb8e6e800b3b144293','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943c86d45feecb765172cfc6ca620dfc','94395ee1a2e97d200894cbca95ce5b89','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 33',0,'','','','2016-07-19 14:11:15'),('943e60d0b8f3526d1a0d08e4c1b677fe','94395ee1a2e97d200894cbca95ce5b89','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94354a1c57fff2a0ecca52258285db82','9437db52156b460d2ee799035a062a41','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 34',0,'','','','2016-07-19 14:11:15'),('943674c4dea62ca293d53a516f68931c','9437db52156b460d2ee799035a062a41','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94343cb6c02691dd634622e4750b45b9','94399c3a29fb1fe07a975493b114105d','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 35',0,'','','','2016-07-19 14:11:15'),('9430519adfdb684bc7afd42c344926d1','94399c3a29fb1fe07a975493b114105d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943e8f06fdb8caeda109a20db921d57a','943ddb14e362f7602f51439ece857a2a','943d32fd45d6eba3e5c8cce511cc0e74','W 33/L 36',0,'','','','2016-07-19 14:11:15'),('943a9034bdfa67d7d54d3367c0cd842e','943ddb14e362f7602f51439ece857a2a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a281c5c37ae64982a52654fc96fb7','943da254a7ec62e9db036cd8590373f0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 28',0,'','','','2016-07-19 14:11:15'),('94309fc1790bbd0220fd75ce30dc3abf','943da254a7ec62e9db036cd8590373f0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943694ebe0522bbd343897fcf14888c2','943d804a766745b2a0d797882d1b040a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 29',0,'','','','2016-07-19 14:11:15'),('9436fb915252b55a57ca935cbd9669bb','943d804a766745b2a0d797882d1b040a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b1d9a08ce8b6be99873e53e6904d7','9437c46403b487b4154a78a9efa2419c','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('943945193f0ed15d14b73a2add2f3cd2','9437c46403b487b4154a78a9efa2419c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94333eb2ad362b7dad831f5ad17ba871','9436f86d6bf4df995a5021686066c4c5','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 31',0,'','','','2016-07-19 14:11:15'),('943ffe9a1aecc2e2896e73c052556b24','9436f86d6bf4df995a5021686066c4c5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b38ae211bbecd9e4046a6e722ddc3','943076b621ce7ec2f2c72a512e9aad10','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('943f3152b9a7de34464fb937448709be','943076b621ce7ec2f2c72a512e9aad10','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94340f979b2c63019fabb7fc0df595cc','9432b8139fb544eb172bb3538656f9e3','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 33',0,'','','','2016-07-19 14:11:15'),('943bdfa982ece1eca13b466c60549cbf','9432b8139fb544eb172bb3538656f9e3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943cb77210abfd74120d14f25fe38f4a','9435301fd2fe963cab9e96fb7eb8ee7b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('943cc1dd3fdd09962345590245543631','9435301fd2fe963cab9e96fb7eb8ee7b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943006d1560592213f3ae0be65433916','9436e67f696013cfdcdd8a9cc7e054db','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 35',0,'','','','2016-07-19 14:11:15'),('94397e38061dfc35cf30b861594d42fd','9436e67f696013cfdcdd8a9cc7e054db','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943d314c7d6f70c0a7c2e048d43f6d96','94339dddb36a63eda0904f0052366ba5','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 36',0,'','','','2016-07-19 14:11:15'),('9431beeea16df1e111475cf5946df50c','94339dddb36a63eda0904f0052366ba5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94364197476f70038f22490f877e0224','943c52d1bc6446bd9093db453b664ce6','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 28',0,'','','','2016-07-19 14:11:15'),('9438cb9e2fae9e0cacf7a9ed92218156','943c52d1bc6446bd9093db453b664ce6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943ad883d99bed2898c87910f9fbe648','943ac78ca16cf765f8eb0cedd3d822f2','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 29',0,'','','','2016-07-19 14:11:15'),('943e5daebe9e04fa3c84f47e5e12e0e8','943ac78ca16cf765f8eb0cedd3d822f2','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9431dd8e232f10f6e7e7d82ea8b6090f','94358269d2d9c678d1070ef219e78876','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 30',0,'','','','2016-07-19 14:11:15'),('943048269a7062052ee4ef3b4d266209','94358269d2d9c678d1070ef219e78876','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943a539ad331ae3b7a5a95aab3e2b868','9439d079812cc0a2e3831513542a8f3f','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 31',0,'','','','2016-07-19 14:11:15'),('9438e74d6cefe66983fe185585564cf7','9439d079812cc0a2e3831513542a8f3f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bb76b83546c85ce68dfb162f50341','9438ed32017a4fa000b2371e0a6c878d','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 32',0,'','','','2016-07-19 14:11:15'),('9434b25d328d4d4491b3dd0c09030212','9438ed32017a4fa000b2371e0a6c878d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943df1e69bc330f9fb489044b44a0d20','943980e0a15245bbe9f8be12500d37b5','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 33',0,'','','','2016-07-19 14:11:15'),('943a62d37baa20701c2195f2cc952310','943980e0a15245bbe9f8be12500d37b5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943affbc44741e09ff3694aee6bfd740','943354da278024c896a6df7f9073c303','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 34',0,'','','','2016-07-19 14:11:15'),('943ff823feffe3f28dd45f5ab38ce230','943354da278024c896a6df7f9073c303','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94396009cd1f5d1f2d96f2a093049027','9431ec645ea6d76258bbda16fd6821ef','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 35',0,'','','','2016-07-19 14:11:15'),('9432bfd5649bee59992ed7eabbb32faa','9431ec645ea6d76258bbda16fd6821ef','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9432582c08e3c6ba65fb2a967e7536e9','943328e2c271ff436125fcddf740f585','943d32fd45d6eba3e5c8cce511cc0e74','W 35/L 36',0,'','','','2016-07-19 14:11:15'),('9434372c8e0f54ffa366b60cc59d35d3','943328e2c271ff436125fcddf740f585','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943bf890bd935b3c1df3440f819ed7e2','943c0e9c2f4077d3f0816fcfed9e169d','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 28',0,'','','','2016-07-19 14:11:15'),('9431a5662a9c322d6852143ee59c88d9','943c0e9c2f4077d3f0816fcfed9e169d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9438c620297d436c05913b325f06b0a7','943b83736bd86f3c90015adc0a610806','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 29',0,'','','','2016-07-19 14:11:15'),('9430835e2c40a0d57a55960c52ffdee7','943b83736bd86f3c90015adc0a610806','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94357afbf593221bdbb7244c6c67d036','943bcb36ed69c1ee0632a697fbef0101','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 30',0,'','','','2016-07-19 14:11:15'),('94399d61bd98c0cada77332016678ae3','943bcb36ed69c1ee0632a697fbef0101','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94373a4891360773454274a3eb44a87a','943e4706384a989605932a7c02ac6022','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 31',0,'','','','2016-07-19 14:11:15'),('943a1133d838a6c377139caac9fba16c','943e4706384a989605932a7c02ac6022','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943391b1be267b3e49e830e2c6ec21a4','943b5c1ccc533697ca09a268c73bb54c','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 32',0,'','','','2016-07-19 14:11:15'),('94309e2d807d6bdfcf80b262782103a3','943b5c1ccc533697ca09a268c73bb54c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('9436d7fd26b5269cea4afadc40142630','94359e3f65938e171dc06ee15027ee2c','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 33',0,'','','','2016-07-19 14:11:15'),('943a2ba0cf31b3bc9c25c2f8e70e2138','94359e3f65938e171dc06ee15027ee2c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943db0987178797492e72003e5c8f646','9432adbd5664a02629e76ce29ff37a6b','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 34',0,'','','','2016-07-19 14:11:15'),('943acf0665955812797570e24c77ff6b','9432adbd5664a02629e76ce29ff37a6b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('94326324d50692ce15d7149d98301ecf','943a85a427ab352740bbbe201e35b2db','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 35',0,'','','','2016-07-19 14:11:15'),('94324596641811b9edf8d5ba790cbc7e','943a85a427ab352740bbbe201e35b2db','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('943b877a7baf96e5741f082f897987b2','9439d53fddffc134443696c9d576a12d','943d32fd45d6eba3e5c8cce511cc0e74','W 36/L 36',0,'','','','2016-07-19 14:11:15'),('9430f3cb3e492d72f49dc4ea72d3c31c','9439d53fddffc134443696c9d576a12d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('09607ec634605f2ff6142b1e0e1c17b9','0966da066fff2cb487a4860ca5d821e4','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('096957186aee5be044e8458ccaf6a424','0963c9792aea84adff1d2ef8aa4a7679','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('096d8dedd59abcddd24c31bd264cd41e','09660be8ebd60cc617293f022c0b4fac','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('09674c47c3bba624a59199da8668846a','09651d283fce7bcb313debfad743121f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('096178d386166dc46823884ecce59771','096b0ff894c38ed8ddfc693d6d6887e5','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('09645dc838309e19217d7d39f4225099','0968aa1f9aab0958ed0a88539dbdf88d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('09674b3d1e4e701c3a727458b59e1900','09680f1bbaf5723ba16fbe96c0b48245','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('09620ac742b0d6521d5143275dafe9fd','09646538b54bac72b4ccb92fb5e3649f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'W 32/L 32','','','2016-07-19 14:11:15'),('096e604f068e46241e6a673066f15732','096a92e7e82be0d65fee8f3fda9b8230','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('0966b08f0ef65d7791c3d8ba16d37c98','0962081a5693597654fd2887af7a6095','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('096c74c98276ce5f63f80267c2f4de57','09620040146118fbc4b7eef6a0faf072','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('09610f346bca55c70634a5a13f2c94a1','096e38032896a847682651d565966c45','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'W 34/L 34','','','2016-07-19 14:11:15'),('096897d51069802965e55309def78caa','0966da066fff2cb487a4860ca5d821e4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096383565c111531544859fd9e585f44','0963c9792aea84adff1d2ef8aa4a7679','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('0965c71da0fb0149dcc3eb01ce263b9c','09660be8ebd60cc617293f022c0b4fac','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096a27380d881a3d959d6e47c5556d47','09651d283fce7bcb313debfad743121f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096eaed0f4f87a902aa696f70011e9ee','096b0ff894c38ed8ddfc693d6d6887e5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096e01a38be6afad129aff6ddd8c1cf2','0968aa1f9aab0958ed0a88539dbdf88d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('09633ceb797b58c6bd19099a0fceffce','09680f1bbaf5723ba16fbe96c0b48245','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096135c8c0a5db92cb5d57b742b1fa28','09646538b54bac72b4ccb92fb5e3649f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('09651b192cab598b5621f01706300b68','096a92e7e82be0d65fee8f3fda9b8230','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096d49fd7ce6026de858f84ce242f450','0962081a5693597654fd2887af7a6095','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('096272dce4b31efbd3ca8c1fc8504220','09620040146118fbc4b7eef6a0faf072','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('09696a3edc23c9b801c3f65e05217a6c','096e38032896a847682651d565966c45','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('096a8f51d43222b5a10cf54c738eba5b','096bcffdf7345b174b18a41a76d54218','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('096f11faec522da80312e310f1e1fef8','096bcffdf7345b174b18a41a76d54218','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('096f47195eac5dc401ecb0acb3ba3472','096af915ec01c2d73e6477c42283c56e','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('096c371e57d1985a33a4b344db98ac8a','096af915ec01c2d73e6477c42283c56e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('096b20e0085d6c686945d38df5b35738','0968da9f88f6330e7f05f9b7eed00bd8','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('096ba62cc85f81de3024e0cbf7030c9d','0968da9f88f6330e7f05f9b7eed00bd8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('096715ccc42e81dcad8a7267003063ac','0968bb43f197a32856eae19688287649','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('0960e4cab4041e0744b59fe562a79086','0968bb43f197a32856eae19688287649','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('09609ded386f257e32adbb8865a3e507','096fec4cae008af69c9087228bd8af38','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('096a2d63f4c11bcbcd85dc343233665d','096fec4cae008af69c9087228bd8af38','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('09679f21c04f8c4ed32d8b9abd5157ce','0969ce57a6260f3826c252df0e6a6e17','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('0963a93996326f715d2d3b3abb879b40','0969ce57a6260f3826c252df0e6a6e17','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('0967ee4a1c9a969f546ec6b552505a25','09602cddb5af0aba745293d08ae6bcf6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('096455d1d77d62dd717d113787ad7064','09602cddb5af0aba745293d08ae6bcf6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('096a3ad5935ccf3578c1d0d248da1adb','0964a33fb0e51ca6b907a34fbede7c2e','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'W 32/L 32','','','2016-07-19 14:11:15'),('0967e30fb6031a04540319f47d50d9e2','0964a33fb0e51ca6b907a34fbede7c2e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'Blue','','','2016-07-19 14:11:15'),('096566c668ca281733455f654b69c0e6','096d0f954953901b7c83504f548a78ca','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('096f39ef5b2915afe08fd3c9f208d3d2','096d0f954953901b7c83504f548a78ca','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('0964b7e91f44df70fb826858a9f866fa','096cfee89f066471590d3552d3266e6f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('0965fc3ddfa484388a26e34de08a597c','096cfee89f066471590d3552d3266e6f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('0965907477d7e6b056987c7e1e0f9023','096421726d7eecdd2e04ce674e046215','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('096c41f8051cee8795da4af587c18082','096421726d7eecdd2e04ce674e046215','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('096aaa78e345ce45950a72a089525c0f','096a1b0849d5ffa4dd48cd388902420b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'W 34/L 34','','','2016-07-19 14:11:15'),('096ea2fe415157fbec00d041aab695ec','096a1b0849d5ffa4dd48cd388902420b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'Blue','','','2016-07-19 14:11:15'),('5313ddf841d5e80662f1384a91a0714a','53149cadc27d71f7bf0386d62b0a3d69','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('531412bece8b7cfa828233a0e4fcb054','531254b90e3fb4035bf29b1dd6243491','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('531f68b139184fda513e32bf7ce76323','531a8af7d9a9a5bb53b65a2b9a5356e5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('531e654f2c98882c9a1ac317e8aad448','53176c60fda309f2f6474553ee1b0f69','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('531f22cb6fa37706770976589e69d5e4','531591c3a072fb33d2f8eefa21e73132','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('531a8bc150da7bc648230019220cf6cb','531919e2b559de31a9bd7ba6adb429ae','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('531f113d37fdbb6bb40c2e96fcfc2b93','5319ef52ee8f21f8f4085924fe5ff00a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('531a40accd30b1a5829964115859b248','5317fcc3f8359b909b2b1da9fea84920','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('5316745c61166021f9fd176389ed1f8f','5312d72e4b46e67dba01478b7695d9de','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('5319bef3ea8ee2955be939fd5df620c9','53196680c5e67476fecfa43e1c0efc77','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('531e3ead167c724a21d826d8da99f0bf','5315f8c47ecdd89357d87c3ca6514396','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('53106d92610ad04d2a5f0fdc51570234','5312465764d63badd3618dd06c1cf7e5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('5314e6890cc1dfe30380df82ee0b9ad8','53149cadc27d71f7bf0386d62b0a3d69','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('53184a027bc981b233225fdc2db079c9','531a8af7d9a9a5bb53b65a2b9a5356e5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('5319352541a17b0be7530d73fe81bba9','5312465764d63badd3618dd06c1cf7e5','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('53120fbab17ee200b00566b44f0c8cba','5315f8c47ecdd89357d87c3ca6514396','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('53178efd13b8d44bbb696608ca0fbb44','53196680c5e67476fecfa43e1c0efc77','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('531db5d8171ae454e9e8fe97861dafd6','5312d72e4b46e67dba01478b7695d9de','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('5316b7a9cf0d49a3245124572cf563cc','5317fcc3f8359b909b2b1da9fea84920','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('53117da7230771368795b6e67d0845aa','5319ef52ee8f21f8f4085924fe5ff00a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('5310d2abfe9d374a7a069b2468521926','531919e2b559de31a9bd7ba6adb429ae','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('5313374592940b3b063c5da6a636d175','531591c3a072fb33d2f8eefa21e73132','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('53197db48aea1fe6f2a396e6e2b43d0d','53176c60fda309f2f6474553ee1b0f69','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('531b7b49b7b7104e586efd34fdad64a8','531254b90e3fb4035bf29b1dd6243491','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('531bcc4badc96ce1425eb4a6a24ad9c2','531ac7eda175429a3208f9acae3062ce','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('5313712f5f9a9628e66cb3efdd378bff','531ac7eda175429a3208f9acae3062ce','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('531fb49cc4b38ab7e64f562c9c317c8e','531381841fdadd8bef8f68868bd53e28','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('5311e387ccc7a83b0aa2cd5f2aea5463','531381841fdadd8bef8f68868bd53e28','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('5312829320375d24e9cc9b059994d899','531f9066701b5a2666b009e5b0e7d000','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('531a4ccd25cbf5713feb4e56e00e3576','531f9066701b5a2666b009e5b0e7d000','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('531fb62d4eddffee20683be7df63c300','53134ff82995abce4cc18f0bc67df183','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('531c77499f5e4b1a4120092cc72d7cd3','53134ff82995abce4cc18f0bc67df183','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('53155197ff50fe4e2f8b2f7cd6726fec','531ab80ec10426dcfedadbdd8b5b66c1','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('531d4f6dc1647e4c17119b34515de26e','531ab80ec10426dcfedadbdd8b5b66c1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('531bcbb88588cb887d83586027a11fce','5317f32b8cd1b40fd4fbe16ce6a7a4a6','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('5315a23e5e2ea9c5f8b0d4e6a763eac6','5317f32b8cd1b40fd4fbe16ce6a7a4a6','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('531fc96e2762c25f0138b64138873f82','5313a6695afac7f982c72b7d2c62b558','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('5315811ffb5a46df155364a9a44d0298','5313a6695afac7f982c72b7d2c62b558','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('531c8be3281a9e30092c127694eb571f','5316bbab81c19d81d5e36e59ecd7f506','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'W 32/L 32','','','2016-07-19 14:11:15'),('5315ab6904902fcc7637df5277170e66','5316bbab81c19d81d5e36e59ecd7f506','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'Blue','','','2016-07-19 14:11:15'),('5318492c078eeaeb2b36b6e68248fc18','5310c8b1267f5ee156c0a0e213ac3187','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('531b3c7237e6c30626472ec0d66f8e7c','5310c8b1267f5ee156c0a0e213ac3187','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('53137911b120f646d69ac2c2e5ab1d6e','531399454a6fd8ac0b6611138679d1fb','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('531beaa12f2c58fbceb6b2d943e1168a','531399454a6fd8ac0b6611138679d1fb','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('531c3f549e835f357336b9478bd3072f','531bf39eb388a9407a9c179f7c3239dc','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('531ddafacb9b6dbb436ff0eb07c566fc','531bf39eb388a9407a9c179f7c3239dc','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('5316e8cfe68d29341913e444379fe60d','531f10b886f201323fd5d94e2ec6d23d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('531422ee4b00a3249816fe995ccd042e','531f10b886f201323fd5d94e2ec6d23d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6193b8c7fe44fd9a7055da3fca0682','6b6a1d655f5dc880e003a17102d0dda7','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d95f9893e0b21221ae7471347752d','6b67b2282fe23b4023296399ca5aa97f','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b63ca96420f50c6b337607f19df0268','6b6ebc5618e1b7aba07d67b825002053','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6dd4a2b98be6ab7993e09d9def6362','6b6e20eb691520d5bafba76c721326ba','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6019b0accb77f4eab8995ce096f493','6b6647a83990e5cc96813e4074bfcd8f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b67123e68a8cf063414b1f33e8f9851','6b6ef6a10a159052886b6d962e699877','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b644e7a6dd4681e2e8b5249abc874ec','6b6bdcb8ce7a20b527bba1ab0ad87e76','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b60f2b07ef3d9f96d78f45614303191','6b6fd2012d394408afa75ddf47af7187','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b63c974bd0416b602eab6997838241f','6b6d6f984f4a0792e52183184f36055a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b67312aa15ce65b4229914522a92e9f','6b6bacec9114acd3140974d0b1e2e142','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b647da823e860eb412c834e327f0024','6b6657e502b24a6081e224be35fd9400','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6c876e407649f97e6f8311a29bb6a5','6b6d16024d9e0030b9cc9736cca60e3f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6eaa5b6b63ea9a9d097ce10f5d9182','6b6a1d655f5dc880e003a17102d0dda7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b603f061ba0d8ccc8b1166112f6136d','6b67b2282fe23b4023296399ca5aa97f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6e593b08524fa9598721a260fc67c5','6b6ebc5618e1b7aba07d67b825002053','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b61d4c30b8af2938be525e488d86d8a','6b6e20eb691520d5bafba76c721326ba','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6bc9d0cc5158cc2449ac1f740b6db4','6b6647a83990e5cc96813e4074bfcd8f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b629f7972379c10f4ca2759b9ec1576','6b6ef6a10a159052886b6d962e699877','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6a831e1db6e41e277cc1cd2586e390','6b6bdcb8ce7a20b527bba1ab0ad87e76','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b605973d2ba4fee057d62d0d8628e99','6b6fd2012d394408afa75ddf47af7187','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b68f5ca80b72ece0a161443f3e0b47e','6b6d6f984f4a0792e52183184f36055a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b678cff3ca7958bcc8329803596a100','6b6bacec9114acd3140974d0b1e2e142','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6a4e812efdea86589313093399b627','6b6657e502b24a6081e224be35fd9400','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b69dbadddc932b0544de5008c8fcae3','6b6d16024d9e0030b9cc9736cca60e3f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b67af3643de393d0ca7dca5277cddee','6b64dba943d269c70f09458baf984a25','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6eb65f9150ca87a5da6c1043717814','6b64dba943d269c70f09458baf984a25','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b67512d895025c06c0b5cbd1ec319e6','6b640a012b76b3d266eaf5f4d22ccd11','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b64eaf8345ca3435528b9c81c92095e','6b640a012b76b3d266eaf5f4d22ccd11','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b69038f7154292126c812c0f2c0a8d2','6b6fb15959ddc2af7b13c6521a481dda','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6afc8cc787a145f296a248ff1c0cb9','6b6fb15959ddc2af7b13c6521a481dda','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b677accd16aa7eaa982a9cd93a26cac','6b69d0083cde2dd78b62622eea14a83a','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6046feacaf93946f169f95002365b4','6b69d0083cde2dd78b62622eea14a83a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b633b01b3b0b05a7f6bd1e98c69f148','6b6bd69ac226c697afdf1d1d1b7a9420','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b62a9d2f37c2f09fd3e301b7a82b382','6b6bd69ac226c697afdf1d1d1b7a9420','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6560aa8ce34e02439acdd32639620e','6b6a7951e0f8b9936361ab75bb4df510','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b623851941ba1ce1f83c2fb47875a4a','6b6a7951e0f8b9936361ab75bb4df510','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b62504ea303a3e5046f227517a3d85d','6b66d17c785bbd2b85bf74a1036fbe6d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b675ecada6e69bc3d3b0a68a4ad9f46','6b66d17c785bbd2b85bf74a1036fbe6d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6134eb9625498cece16b28885d57ff','6b637fe96d1ce13411adec4b89a1af18','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6615cf02eb72e3b87612b2bc3e4e3b','6b637fe96d1ce13411adec4b89a1af18','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b64ce633c142b123d7efae1f01257fa','6b621ce0e84f580716c9154872bd5aae','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b626a689dfb4d826e3480ebc32ec684','6b621ce0e84f580716c9154872bd5aae','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b677449ac02938b0c7810e339cbc88e','6b61b4ff16080f449e7802a824fa20dd','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b620fbccf5c9cd9ba7e7c8e413c9bc3','6b61b4ff16080f449e7802a824fa20dd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b680aa4c5506f53a3dd0a056ead354d','6b690140a9cdd4c94875b258c62363d8','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b66af0b3f44b81908caeeb326f35c11','6b690140a9cdd4c94875b258c62363d8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b681cc235d80f78d130dde41e7d640f','6b6b0f475c5c764c22b81d3f8885c605','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6853fe6f05c59f8227f60265788026','6b6b0f475c5c764c22b81d3f8885c605','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b67523501b72db3b2d8e4f738b66b86','6b67aca590ee45e1c27444eb66e442c6','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b69578c58f48a228a3db1f944b31796','6b67aca590ee45e1c27444eb66e442c6','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b69d2595168bd81034ddbe11b17a6d1','6b6d460c7c31d597580143bbfd8aeaf1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6faf78e35f1f12f3b11fb6e305dcfc','6b6d460c7c31d597580143bbfd8aeaf1','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6af4b3b4ccff9f8967aafd65541465','6b6ebb6c3459f3d18eb11360cbb25a6d','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b611c99b7698cac98b568d2eab3628b','6b6ebb6c3459f3d18eb11360cbb25a6d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b65d68d636ac7165151665dfe6de06d','6b67e362a684251f9a22dfe3ed1beb11','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6e854d2d8d8e0dac1a6b1ad2b568cd','6b67e362a684251f9a22dfe3ed1beb11','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6005ee4269a1a1c75a43e1c1083855','6b64bbfa127e85bfcbbd479628b2e9b2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b62edeec2b1cde700ba9aff65262b59','6b64bbfa127e85bfcbbd479628b2e9b2','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6be62b58bf646b121049d0a9f00e08','6b66d52030653ad3b835e94a588471c9','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6f0f230f24feb3190009a4647ec4c8','6b66d52030653ad3b835e94a588471c9','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b629a04acfaba3d2b8e9585afb37176','6b60a77ad1c4339484180915fb7f0940','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b697daee9caf5b697a0a1a6b7de710e','6b60a77ad1c4339484180915fb7f0940','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b60895c07f93a4be33c2dc61d198856','6b68757dbee7f791f1d4a1c192bee40d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b68ce744b98881765171d5efddaf659','6b68757dbee7f791f1d4a1c192bee40d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6d0493fc364974806f40035da36bdd','6b62e4fb4b0d1faf034137528147c651','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6ed561c45ca31b4512d81a7d2c8fd4','6b62e4fb4b0d1faf034137528147c651','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61108ac3de62de3e91ee58360e342c','6b6a905a4ae81f5bda0135fb2370978a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b68c4b7aaa0741f5ff636afed35dfa7','6b6a905a4ae81f5bda0135fb2370978a','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6fe99a086497b27d5041471d96104b','6b63ef9ff6e67f437a0113dea18fd12a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6f3738e15b7f8ce34d832518052f1c','6b63ef9ff6e67f437a0113dea18fd12a','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b66554a737bb01dd1de1b3e9451a131','6b6cde088a11fa5b2e83370de8f66e3f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6507cdb43a6e84f905b60f89c5582f','6b6cde088a11fa5b2e83370de8f66e3f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6228d42b6c50ab9e721def098fc9f7','6b635f3984c165ea884bbdeeedff947a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b61276a4efe56995c5d92cfccecee14','6b635f3984c165ea884bbdeeedff947a','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b689a60316988bf04cabc0c64e30bf7','6b6a12a6c340568a532daa4c26f442ea','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6facacc7eabb565af204070cda6ee4','6b6a12a6c340568a532daa4c26f442ea','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6d623bf606d472ac304e9081eec0a2','6b651d94d55bba55ccf983511122d4bd','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6886073999450c18588d6b4c854943','6b651d94d55bba55ccf983511122d4bd','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6c2d4d0a791596e785d25665d0f7ca','6b6007341c3165a1813a5f5984a41b68','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b654caa5dfa9cf59d29c74fabac0ece','6b6007341c3165a1813a5f5984a41b68','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b67e953c659961d74116d50dced94df','6b67b4cebaea062f7e144f95c370294e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b65cdc8ace5bfedadd8e57ce88a7e0f','6b67b4cebaea062f7e144f95c370294e','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6949656e3b6f4325aa7133035a7e53','6b648c027397ab3a1fa64c648de0680f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6f08d09d0d2b85f8265f13bd763133','6b648c027397ab3a1fa64c648de0680f','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a2ec43869d731aba2b9a89e5166bd','6b6c2f47a0e28fa12b708802afa87318','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b642dc91d9d78ef031f304be38fffd5','6b6c2f47a0e28fa12b708802afa87318','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a1d2499f09551549d202fe118ee06','6b61f2d33d5b063c7becafc39ea1a4a1','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b696dda9911bdc63e9f073e7b4816fb','6b61f2d33d5b063c7becafc39ea1a4a1','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6708922b0df922726aed31ffa543c5','6b6cb5c29722e7e711f04dc39d7cb320','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b637604955401340423baad2f606699','6b6cb5c29722e7e711f04dc39d7cb320','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6b74712be3fd5204a5e74b3af04439','6b6c05efe6483eb3534c8d2f2b0a8988','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b66d23cf113af51b2caf42b1006cec8','6b6c05efe6483eb3534c8d2f2b0a8988','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a170c36b290cd5b095a64c5fc9a3b','6b635dea9c4066ec8c7b3cbccca0cb5a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6741931b34bcaed76ad910374aba75','6b635dea9c4066ec8c7b3cbccca0cb5a','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6fdf5c1d817f02240a177959b667ef','6b676af16e9910990a8b51091d6deceb','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b600ca257e63272b18e6ab416746cf1','6b676af16e9910990a8b51091d6deceb','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6f8c1473839766aea5d0e333f98393','6b6faec39f9a4f7c5dfa5bc8756b6c41','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6bb62f84e968d801c0812946fb6b5d','6b68b128a8a51f04ded3f7dcb6c5f876','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ff43d52f0534185a9cb1b0baf9753','6b6105b24df35bbdd480b7e65c8b1492','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b90247fcda67bf4f68e0a19fcdb9b','6b67171c134a55d0d2323606adec29d0','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b69fc2b6d1c19d4e613bfdf68b645eb','6b601d0422bdb9fcc64edacbf303794a','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6edb19f104ac8dde1c5067c84c3bd0','6b66f62bd7093eef4423192b76a41e36','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b603381d5fa1113edfdc9be0e9a85bd','6b66230b6428e32569d719d8462f2573','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6651c2f28f40e5f8ba828196d087e2','6b67e2c9b064d0c7cbf7f6614d7b3aac','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6e46903f2bda2ed250af40e3ec1d5f','6b661bfb623084943aee5e5c930137b6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b653a1e70e67ad1e96124f35a88a6a4','6b641c93a08b7407fc21b579d58053af','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b699a184e987265ca6d6b00e24c084f','6b648ee83b90ca748fcf290243fff4f9','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6fc30d9fb456cffb817cc3c78927e2','6b68070177b5957fbe09ac11956865d1','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b612041c6cd4a8c58c1f60bb7ed141c','6b6faec39f9a4f7c5dfa5bc8756b6c41','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b696b47acb4d479dfff56aaa839ee59','6b68b128a8a51f04ded3f7dcb6c5f876','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6fc3407e7a45b67d76ef721ed1de12','6b6105b24df35bbdd480b7e65c8b1492','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6586cd714dab9bad31715304877d0b','6b67171c134a55d0d2323606adec29d0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b643ae8d716c9d90aac25b9d0f4bf0e','6b601d0422bdb9fcc64edacbf303794a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b60e0a3be7978911abbc17e66923b9b','6b66f62bd7093eef4423192b76a41e36','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6aaaf3c2f2f34ceeaa9d0c2463908a','6b66230b6428e32569d719d8462f2573','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b622701c77080ecbd9d040127065af4','6b67e2c9b064d0c7cbf7f6614d7b3aac','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b600ea4514ef771fc0351e26604e70e','6b661bfb623084943aee5e5c930137b6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6bc488b9994d281557d752b012a102','6b641c93a08b7407fc21b579d58053af','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b627c9318ce870a1fa967655ed0605d','6b648ee83b90ca748fcf290243fff4f9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b69e55e2918a73a897e1cc0bdbad12c','6b68070177b5957fbe09ac11956865d1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6ea7bfd425883179c39603a76a8046','6b6efaa522be53c3e86fdb41f0542a8a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'W 30/L 30','','','2016-07-19 14:11:15'),('6b66867571e3695143f978b02c408b80','6b6efaa522be53c3e86fdb41f0542a8a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'Blue','','','2016-07-19 14:11:15'),('6b69dfd7a025ae6fbf9837b429122ccd','6b641f37692410d714cf2b36ef426e2d','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b69f3b9eeed8e6b62f410662ddff10a','6b641f37692410d714cf2b36ef426e2d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6ac2b1560a81cb383ad2b51ab4e0aa','6b63b5c41efc492c3f7bbeeeea6937f9','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6bfbd9847fdbe660ac44776687d475','6b63b5c41efc492c3f7bbeeeea6937f9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6ba3e8c569c0dd78c48ffa733eead9','6b6408460392303075a812294e8cda7c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b2430e917a9abd0b6250a0c15313c','6b6408460392303075a812294e8cda7c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6a26c2e06051e5b9ef71ea4a64cc12','6b6ec35c47b097a0372a8838192c8de3','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b672b0c96e0e4b8814926a5c1ca0cff','6b6ec35c47b097a0372a8838192c8de3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6aa54677fa36da292d7fb410cdf47d','6b628e6a8ffa98fea6f2ee9d708b1b23','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'W 31/L 34','','','2016-07-19 14:11:15'),('6b6b1a752823ce45a508c0f962876ca0','6b628e6a8ffa98fea6f2ee9d708b1b23','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'Blue','','','2016-07-19 14:11:15'),('6b6d2788016df2bada70874777652d9c','6b63722f5bd1be781395325e3825e95b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6854ef1264f3049c9557e20507ca53','6b63722f5bd1be781395325e3825e95b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6ca2fe6edfb2f24082b2bbb5c7643d','6b67919aa8f51c08c83dbb777d30900d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b62499f31d02455f8eb6c1e628e77dc','6b67919aa8f51c08c83dbb777d30900d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6fd785d857a5bc6da6f414cb55eb0a','6b6d319c9692c487ff57031a6337b6c0','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6dfbd7f5b5ba67a50a268bc802a1f3','6b6d319c9692c487ff57031a6337b6c0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b687780407dc2a53dc82a4e8ba9ed90','6b65af5069c9d525bb19106e565cf629','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b697a84a589a34dbdcd1f2d2e7bd3bc','6b65af5069c9d525bb19106e565cf629','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b690a7051af0ded711cf541e538d3df','6b6ed4e3b19c32c7cd2d58e32c051831','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b68192d81fbbd6ae55c02a71473e5a6','6b6ed4e3b19c32c7cd2d58e32c051831','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6f5e8baebab88b7fa2db10a9ceabbb','6b65295a7fe5fa6faaa2f0ac3f9b0f80','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'W 34/L 34','','','2016-07-19 14:11:15'),('6b67a7396234ce5fea81523154c48541','6b65295a7fe5fa6faaa2f0ac3f9b0f80','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'Blue','','','2016-07-19 14:11:15'),('6b6d79f79c569717b4aa3db6527752f8','6b65c82bfe8fa19865d560f8c1a905b4','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'W 30/L 30','','','2016-07-19 14:11:15'),('6b675654b5d51e69b2310af8bb64e1c3','6b65c82bfe8fa19865d560f8c1a905b4','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'Smoke Gray','','','2016-07-19 14:11:15'),('6b68e5fbbcbd9772682ed74ea00ace8f','6b6d0519ca4fb33b2f2bba668d96ba7a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6caa5d30e3a4960f4e3e279ee6a9cb','6b6d0519ca4fb33b2f2bba668d96ba7a','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b633823a39c1f361b5548d75faa0d0d','6b6d8c187461b30e01e2ce0adaa50e91','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b65c4abf37645f1928155ba55563054','6b6d8c187461b30e01e2ce0adaa50e91','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6e6b4a4305012726e7aca1ee0e057d','6b64eafc85111372f037906589cf43a2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d98269b1890562c1dc649d07e2e62','6b64eafc85111372f037906589cf43a2','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b687726620bd15a65ae2b6d282b794b','6b659102f68ff29c96e72153c852806c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6e0a4131c68dfd8b5efb37f8f1df1f','6b659102f68ff29c96e72153c852806c','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b65d031f92b3fb37ccb96e28f7022da','6b6e2c7af07fd2b9d82223ff35f4e08f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'W 31/L 34','','','2016-07-19 14:11:15'),('6b6e493de2fd50d07e99babf68c6a493','6b6e2c7af07fd2b9d82223ff35f4e08f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'Smoke Gray','','','2016-07-19 14:11:15'),('6b6634e857f17b3067fd9c6f36a9c4a0','6b6311a1c0c6cf37ed879f95223f8fbe','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6df2566d6e8ed03e40e6f8b711bfea','6b6311a1c0c6cf37ed879f95223f8fbe','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b60777fe657838bd0f4cabb75a5c3e9','6b62ff52ab998e76a78354a2657691f3','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b602386514ef807218279344d58ad59','6b62ff52ab998e76a78354a2657691f3','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b64b2a6dea796a60fc00a11043f17cb','6b69d2781fd557f7bcf90fd482b80406','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6867266f2773c82958c238ce263b6e','6b69d2781fd557f7bcf90fd482b80406','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b60308620034c3cbce0a317646b7c14','6b6cd337100bfcaa1eaad7ec8117dcee','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b69ad797b9ca2e5f20ff8caf4058e06','6b6cd337100bfcaa1eaad7ec8117dcee','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b67392be902429ed2948ae9df55e435','6b6b0a4fa6d17371ef5596fe363b9e04','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b62c5bff6765c0f6774e1daa5533945','6b6b0a4fa6d17371ef5596fe363b9e04','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b617bc50d56f6f6ba27aadca8a1d9a0','6b6e0bb9f2b8b5f070f91593073b4555','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'W 34/L 34','','','2016-07-19 14:11:15'),('6b6c4b9924d62df7c068d5aeef0a7eb0','6b6e0bb9f2b8b5f070f91593073b4555','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'Smoke Gray','','','2016-07-19 14:11:15'),('6b622a8761a500b7f8c0b14211831bdb','6b6ee4ad0a02a725a136ca139e226dd5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'W 30/L 30','','','2016-07-19 14:11:15'),('6b64166748d6bca0e3990e0a8c61cc02','6b6ee4ad0a02a725a136ca139e226dd5','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'Super Blue','','','2016-07-19 14:11:15'),('6b663b2d846a4ed183d7d2e491afac7f','6b62c2494de290bc5b2ef1046851ff19','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b656bfa877532ce800a5fc9ba90f2bb','6b62c2494de290bc5b2ef1046851ff19','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b66ae92cab56e059f8f8b92e9f804e4','6b6bdd895cb7b419c87c838b479e7691','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6d5209386684188b4c01c1f694fd0a','6b6bdd895cb7b419c87c838b479e7691','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b66bc8b830d2baebea9df4b34d305d3','6b61647e12835f0f9dee1d5596132e26','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b630fb5b0488e51778c89add3e5953d','6b61647e12835f0f9dee1d5596132e26','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b62b52c9438baf86325f0e430fc6331','6b6b0dcd9981f845b7f3c10b9ca8b0ee','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6f752a8a45bc522358faaac1d01e16','6b6b0dcd9981f845b7f3c10b9ca8b0ee','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b65e05bc66229e6fc6179655606aa83','6b6d187d3f648ab5d7875ce863244095','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'W 31/L 34','','','2016-07-19 14:11:15'),('6b633124bb229ec74cdd189346f72869','6b6d187d3f648ab5d7875ce863244095','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'Super Blue','','','2016-07-19 14:11:15'),('6b694309deb4daa9ddf5a35e46081050','6b6102e4f214581a9c3356bdd3839e1b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b61ddcf0a58910ba174d3f631b1a3d0','6b6102e4f214581a9c3356bdd3839e1b','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b61c7ebafcd8c12e423267846fccbe9','6b601c0b45cea6507b28b90a613174c8','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ac3fb8aeed12c414c7433d147b76a','6b601c0b45cea6507b28b90a613174c8','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6f6d83236c853fa02527d274e50b39','6b68d6b7ef3ce97c28c9f6ce8f4476bf','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6abec1d57ec60a0df5c65e33206642','6b68d6b7ef3ce97c28c9f6ce8f4476bf','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b65a7ec44d164b71b779694a4d8e0b6','6b66409b4e2c7560ce7df4943fd42434','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b603cb647ac424ccaac1a310b1b8375','6b66409b4e2c7560ce7df4943fd42434','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6bc12f1bfc8adc11042a07ff60fe6e','6b6032141245c2efb4d75a7e6205aa6b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b63096db935f593d33d8d12c570dd15','6b6032141245c2efb4d75a7e6205aa6b','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6957f68b4c241fd6bfe31e12588113','6b6cf1ed0c0b3e784b05b1c9c207d352','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'W 34/L 34','','','2016-07-19 14:11:15'),('6b6b397d27f63d85b5e95edbcf793a4b','6b6cf1ed0c0b3e784b05b1c9c207d352','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'Super Blue','','','2016-07-19 14:11:15'),('6b6337884bfe2f8c3dbdd6679e5b52b1','6b69aec941834eb206353f0cf5a8a116','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b688eac216c3b110f1aaaac9187b579','6b6fface2d01f7df7bdc62ae9c9478bb','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b64ce45251d19fa1b52bf1698a22f55','6b6d0bda24aba1d09b2b5cd3b31022b6','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b68a0e1ccfdaa82f00028087330bd21','6b69105901b7c48b9535c229e870ba3c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b67046fad3f1b6ec44e5891bd102eee','6b622d5c47bc014cca984754abd7a7b9','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ecc9638d8019aa743086cf2fb6dfc','6b6e2bbd843cbd633abb5bd0d4f6039a','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b62d1f7840edb7b015dab5b6de75d45','6b67eae4506b17bcd4e98c2584cf01b7','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b60575f25dde58d134cc3520842b455','6b6840a697afe834660fa26d96079db8','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b68c2ef987fd5041e64e33da5326f8d','6b61c4cef630b9d87bfdc024c8f2e1f6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b697a715f111c221da3f84574e89530','6b6597adc72cb5b9ece4a85b56a9add9','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b63c50cca2b5d027d1b175ca5e11d21','6b6d47608d0cfd193182f204db72b613','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ac6f092a9825a8190bafbb639572d','6b6ead92b5f0a039c437d3239a0b4378','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b602908dd62158e70be444dfeaf4d8a','6b69aec941834eb206353f0cf5a8a116','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b60ef616d25b44384cb092541e6024e','6b6fface2d01f7df7bdc62ae9c9478bb','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b61911621d2eb529f0011fa42469b64','6b6d0bda24aba1d09b2b5cd3b31022b6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6845ae934d855b182c218d7bfb9351','6b69105901b7c48b9535c229e870ba3c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6f22e8a1ed3ae9cefec2d2553d6e0e','6b622d5c47bc014cca984754abd7a7b9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6ebab6fbd683d0c9a8b75bebb5a592','6b6e2bbd843cbd633abb5bd0d4f6039a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b695d5eabe941a89616b89d834075bb','6b67eae4506b17bcd4e98c2584cf01b7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6042e0d476a6e73df6fd04aa301aa0','6b6840a697afe834660fa26d96079db8','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b62c878b1f209f3d5b2dd6df4036d3f','6b61c4cef630b9d87bfdc024c8f2e1f6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6302998d19fd895e6dd97192990138','6b6597adc72cb5b9ece4a85b56a9add9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6c9d5cf849aeee11e972a0bfb933e0','6b6d47608d0cfd193182f204db72b613','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6538446a18869d5cb0b9aee0b709af','6b6ead92b5f0a039c437d3239a0b4378','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b672996857d013e289495811a04afd0','6b67b9dcf7fd48770065c149ccb1ca7c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b666f99a6f530bd996986ca14496e','6b67b9dcf7fd48770065c149ccb1ca7c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6ac47bdd1f8bef9b8f21401b76e629','6b6d65d0a6f1f4a998bef711c75476f7','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b60ec99018d932ae4bf4273c1d350bf','6b6d65d0a6f1f4a998bef711c75476f7','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b662a854543fced9ad80e8740a06aa9','6b6ade4daab9633af3155ccd3dc8b9f1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b66913bf84acf8a59b80ef5040cebbe','6b6ade4daab9633af3155ccd3dc8b9f1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d16c5233b23dbc2967da1f306cba0','6b6847822bb48dc93a6b4f973f091ab5','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b670b338aac21656b280f4b2a71e578','6b6847822bb48dc93a6b4f973f091ab5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b681860ad70626c0cb43e39b73377c2','6b6926553ea93fc203a419f70eac9bfe','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b61f9ed43dd30ad196861d6870b4673','6b6926553ea93fc203a419f70eac9bfe','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e26a8a6182da8f377d421b0da0db7','6b61d9cc5b3e24398bd4aa9a189ba1a8','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b648d79282b192f9ba9aaafd4f52977','6b61d9cc5b3e24398bd4aa9a189ba1a8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6338eec495c0cd998c32ca8d9643d3','6b61d42ca73c392975ec347f6be442ec','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6fb8a131f16a06928e5fdcc0976f82','6b61d42ca73c392975ec347f6be442ec','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6f676d01de15a77053cf954ab28484','6b679a4b15c0ebb4e874bfa799af8560','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b60660a7c63f191a72b7a831e0abddf','6b679a4b15c0ebb4e874bfa799af8560','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6a9411c1498a482bd44d05de5e5d8f','6b65d7595efb26beab0a39c7a8ecfa2a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6796548c02aecdc04c7c08d9ff3288','6b65d7595efb26beab0a39c7a8ecfa2a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6806444fa335bb5781106a7212ec0b','6b66748203633bfdaaa0230270349e39','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6951f5e82733855a661a40a10b71c2','6b66748203633bfdaaa0230270349e39','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e962a1bcd24d5a2fd95f927e01a3d','6b647ad249fa464d4dcf5dbdc92f9949','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6a5ac2eb9c766ed4f7f57208d011f9','6b647ad249fa464d4dcf5dbdc92f9949','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b617805adfd0e7d9a9ba70425a213e7','6b689ad075866f63b0fde72de019620a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6f013c352e7966bc6abdbb05ca7eed','6b689ad075866f63b0fde72de019620a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b67fdb7a7125c6a54ab4c036a02c7bb','6b64031c82e7627f5100df0f3738e4d8','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b905adada8134b158d1cb07e725a7','6b64031c82e7627f5100df0f3738e4d8','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61cadb909d8c64f87809251a4350c8','6b6f9968181949b95c31ad1468029dbf','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bd4bdc466bce3bd6b54466fbe5b18','6b6f9968181949b95c31ad1468029dbf','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6c082e2acaa8e2efc54c413f174aa1','6b66416b28888acbf2987d4de81456ac','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b660c0a307a31d2ba3caac4f6300864','6b66416b28888acbf2987d4de81456ac','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6f5b29eec110cdc4797856f57fa8b4','6b607cb901042ff041d2fd6e9acfdb19','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b695bfc7f8c0033666ce876ac3bb128','6b607cb901042ff041d2fd6e9acfdb19','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b671635bb0fd2460cc43e29a6e7e87d','6b6941786ff1a3677b7843e7f8cab75f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6785238e1e8baae6707f23d51b2279','6b6941786ff1a3677b7843e7f8cab75f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6020184c4136482d10b80f503818f7','6b63f94c43af79c619c3e78b0198c491','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6e38b1a2a8908e1e908de65e4d5add','6b63f94c43af79c619c3e78b0198c491','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61d55167e2dcf9fe4c19995ee70f46','6b65d91644d2e76383762822c766b77f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6e471425754e6394bb9c570c69af54','6b65d91644d2e76383762822c766b77f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6a3ce17d80cde0a0bf23e6de25f100','6b6914fed08b2d0efb32466fca22fa4c','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ffcb29cf5d2b76fbbdb2e1d5ec5bd','6b6914fed08b2d0efb32466fca22fa4c','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61e59b1e8b2b757893b52c3e5f29a5','6b6aa48894cfdceb84f1c5f5ce394c6d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6ed80a758242b2e0d4d1b54765d1b8','6b6aa48894cfdceb84f1c5f5ce394c6d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b67b28cd077f0705fff8e26ecaf696b','6b6e2f305e1308e8d32f28a889d0235f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b609a60387667ad551d129641d02179','6b6e2f305e1308e8d32f28a889d0235f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b613875233071144ee8c7e24e8a84d1','6b62fb9e3e897f368314099a6f57c94e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b601972bf673a39181b7b6283bce0eb','6b62fb9e3e897f368314099a6f57c94e','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b654705341ec239583d3653b601d970','6b63d463de3c60e89b325cb74de398f5','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6ba0e29add07c7c11c3b55ff3b6fde','6b63d463de3c60e89b325cb74de398f5','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6c4eea28ac5068593b84f16d54d6ef','6b65414656e48ce0668f84344e1f44f0','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6569f199d1f0dc0b0f83ad7e07126d','6b65414656e48ce0668f84344e1f44f0','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6fe88cbeb92e9ec5fbf39503879106','6b68d987f1c907f511434c4f6537d67f','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6a1bde4c8c75e42d747403ad7ddf08','6b68d987f1c907f511434c4f6537d67f','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b69374ff7f9a56f6cf04571e3612721','6b656ffaf30f5eaf6babf155f78505f6','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6d59be8571e6b62383dec4aff979d3','6b656ffaf30f5eaf6babf155f78505f6','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a7a94d7b2498a558750a7249b10fb','6b6183bb25524304e52bdbeb0cf71f22','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6edc394d020cedf7730f7a678fc004','6b6183bb25524304e52bdbeb0cf71f22','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a988baf58968bcd9b1279c151cefb','6b6780bb8648dff8c8ae52393de375fa','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b675ef4d31bcb565eb4b014f89cd567','6b6780bb8648dff8c8ae52393de375fa','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b62d92437f09b02ee23cbfb9e985cb2','6b65302befdebecfa953c5a303000d65','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b770040055a000cad491165ebb8f3','6b65302befdebecfa953c5a303000d65','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6b931a1f573110e6003b3581c96f33','6b65fb0e572d42ac78b5607538075054','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ccdf9a5e0a528368ff1237a7176ce','6b65fb0e572d42ac78b5607538075054','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b61a271048f746be0e4f607029d54a2','6b6d2357923f3984db071f5809cc3785','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b675e5691b3e9522e93897c3c87e672','6b6d2357923f3984db071f5809cc3785','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b63363a086a418793345380a8a71357','6b67a11ccd0ab5e30a35c60ac9b18395','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b625aee5c56bd899622007393759733','6b67a11ccd0ab5e30a35c60ac9b18395','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b67da53a6e73f86809581a8a50a58b1','6b696ef8fcf95df73c2d3cc7b05add3d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b65290579b1d18f553d7e73c467b274','6b696ef8fcf95df73c2d3cc7b05add3d','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6ec327c117d01e68f8a8f2c2920a8f','6b61fe0d4cef2dc8ff50309fcdc06455','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b69d820ada6c4db26e2318d86580d6d','6b61fe0d4cef2dc8ff50309fcdc06455','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6678148096ed20e413646dbf52f86a','6b64ca169309b0561f981b45abb292e0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6c39dd981a13d92a9237b4809404bd','6b64ca169309b0561f981b45abb292e0','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a2437fcdc2fc72ba606b81b217bdb','6b6ec8fba436a74b996707c894bacf43','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b66412188270eeed33377a5f0ba0307','6b61038a50af6b49794833fae52d8596','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b633556e472f4f198f1d12dd44cfac1','6b6b2f91da0a75e421e76475a68929b7','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b67eb44fa9a6f2b9a073f6e5a9900e1','6b61a3e622c3b7fc95f06792b84e175f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b62aa1f61fd3bf7f72272505b1211eb','6b643fbdca947eb177327c906feabb56','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b66f9ef3978e27ab986b91c3ececc63','6b6b818e5d5f2136b260e47735579c98','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6c9c26b93bd6109c55a8f37f68710a','6b620860ad13ce38d708d6fbdd3b4a14','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b649e650ecd1c79764e752802baf9b0','6b64e4d62652cb52af6dd6d3d347c344','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6b2dcf6445b3153d4ee58b42e44a8c','6b6d34003f6cf441580188de28909555','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b45e6a90efaf83f8fc8ba1650c85f','6b6ae37f452b1c3a9303b74629e34686','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b64712fff103a2fb57754e75a7a7c08','6b628a560b2f5e9b2b169a3fbdd607ef','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6fe5f3aad7a2a11e432f855bb1418f','6b655979217fa6bfa2e9ee9e488d117e','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6d8bb0eec0617ee835b03002ff731e','6b6ec8fba436a74b996707c894bacf43','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6c60afb9cc43721c0a62db8578de98','6b61038a50af6b49794833fae52d8596','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b689e45f3b64c8bdb2ecb42a3fc27e4','6b6b2f91da0a75e421e76475a68929b7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b66f314937d3d1d16265a6a5ffea0c8','6b61a3e622c3b7fc95f06792b84e175f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6737f9f0b0e5e6714e8214045bf1d7','6b643fbdca947eb177327c906feabb56','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6abb9ca3eb4bf8df50355aabd4f398','6b6b818e5d5f2136b260e47735579c98','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6364e549ffb3271084370d26ca70d0','6b620860ad13ce38d708d6fbdd3b4a14','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b695c41e4888d5e75313dbef31b14bf','6b64e4d62652cb52af6dd6d3d347c344','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b60c7e3979ce507a210fd0d84ca6958','6b6d34003f6cf441580188de28909555','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b67d400091fd592b0fc946b38bbf7b3','6b6ae37f452b1c3a9303b74629e34686','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b61a804c8a1fcc81b296d5ed8351868','6b628a560b2f5e9b2b169a3fbdd607ef','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6da76076132abe979684ed02d10396','6b655979217fa6bfa2e9ee9e488d117e','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b63b539986f224cfda7b2211c47f543','6b6fa935be712d2a6bb3943308701b86','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b68ab15adf712b15ada84f2df480d75','6b6fa935be712d2a6bb3943308701b86','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6705550c7626b411c817318a4a73e6','6b623f7221b10a04b160f790f257227d','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b61b8ba3eec5dd953087b41a99af4e0','6b623f7221b10a04b160f790f257227d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6b5e2c7ba609317f834a1fd8df3084','6b637d3f3bfe81e73766470620c2c9e8','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6490286544d38f1578c593ac9727be','6b637d3f3bfe81e73766470620c2c9e8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b68270004a5ec4129c9e759979899f7','6b605b4a372be53d859a5e3f81fe8e7e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b69c211717a5b4e79b4fdeca861ad47','6b605b4a372be53d859a5e3f81fe8e7e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d649eb22653ce59ba22ad2cc479ef','6b6eb4521adf7b68fb660d63c797377b','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bb9f90d88168e16071366eb69b37b','6b6eb4521adf7b68fb660d63c797377b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6758a2c08495a9de73dc2fde10a9b9','6b6c379531a7432cb1562070c7aed74c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b66bedaf1690a678fd6192f62241ed4','6b6c379531a7432cb1562070c7aed74c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6b54703e6cee89a58dc1fc5a4dbc22','6b6f01c7106d77e7f49cb3de08530fdb','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d2eb4ad5b1e806515a9918406dc43','6b6f01c7106d77e7f49cb3de08530fdb','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b60da7df54772cf149ac01a828b27fd','6b63fd255e7cd460ab6695d321aa522f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b63ea473688327d93c9b58dc094599e','6b63fd255e7cd460ab6695d321aa522f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b688345cd38d3c62347b25303c6dddc','6b69d9dc3b699b9a6f1350177e018088','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b613b73a7b51600a4d6171e8b7e7d90','6b69d9dc3b699b9a6f1350177e018088','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b61c8b2828ad5cdd87f757bee6013bd','6b695586eb1f23da8d822b8bfd8072b0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b64ff463f78d27ba5ea5ee9699482a7','6b695586eb1f23da8d822b8bfd8072b0','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b631c6c61e17ffe063eaf76eff302ff','6b630539b74d9280f70a7a6549c34e2b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ea1f0092ea2ed35e81c732ccdeaac','6b630539b74d9280f70a7a6549c34e2b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b69363935ccc600e423aa413c22bfb9','6b6eb523b4feeaf57227b737bc8bdfb1','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b658285ded0121072830b26a90a8ed6','6b6eb523b4feeaf57227b737bc8bdfb1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b678c5190e85de13c22fb15ad7b1a1d','6b6622aa803a99aab720162af7ddddba','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b64c4c92812c5e0d814d55e3b898563','6b6622aa803a99aab720162af7ddddba','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b638d290edc01b33a3133bc0f91475d','6b68745e0e86c77141b702e5787882a5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b616666f0ee6160073ffd642d2cd45d','6b68745e0e86c77141b702e5787882a5','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61c144b5ca463975f448018e212466','6b6699d3d7730c6f7e7dd525c48a9e18','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b69a2e660f026eaca39697e4f60d479','6b6699d3d7730c6f7e7dd525c48a9e18','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b69ab818cc927afa1b03c99e031bdab','6b61875b5df341b2643bc68a4f8607bb','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b68c7f0649cb11e8c45edf35f258b58','6b61875b5df341b2643bc68a4f8607bb','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61dc84e67eb43b29b9177b1c243d31','6b65e3d5bfc3be3437e11ebccdfceb2b','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6fbdf6777af840a97d94872e44e35c','6b65e3d5bfc3be3437e11ebccdfceb2b','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b693d5eef696c90fc8683a425fb7534','6b6dd94441dcef94177e08f7e20e6004','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6185e232a10b5a0948fd11bea37a1c','6b6dd94441dcef94177e08f7e20e6004','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b60ec103a629ddb86d4d5dbbcee62fc','6b6583d9a79cc7eb219c575f2d75e13a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6507e8049141249aa401e61c96a5d1','6b6583d9a79cc7eb219c575f2d75e13a','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b671faa77625f9330b5e87169b21162','6b6a32df46c7612ee12bf7f634845f37','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b643bfea189f362e5c0ba7f3e3058cf','6b6a32df46c7612ee12bf7f634845f37','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6e1b66d52c2ba497359c72321b68f5','6b6d35163f80d7042eb1fc4049c966ca','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b67a267bf18bed0854fe1cd97c8eba5','6b6d35163f80d7042eb1fc4049c966ca','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6337372ca8484d227b945c0f42ab23','6b6ab75c91d544ef57810d0ea52913b8','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6887578fa9d75b5afe333b84ad5425','6b6ab75c91d544ef57810d0ea52913b8','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b686acdcc285f3edace004ddf1897dc','6b69478a4602332eefa3046f99dc5c44','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d9fc5f1c02a03401718acfa0c27bb','6b69478a4602332eefa3046f99dc5c44','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6d3a9a444dcbb58ba0d99f04eb511b','6b647f995de3e0be4599a22d66cf3e3b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b65e46f6dabd6f64ff6678636189ac2','6b647f995de3e0be4599a22d66cf3e3b','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b656e4cc005d7cf0196311b50ac05ff','6b6ec00303ad2367187b4049c97e4765','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b67e940110cc24a4440a27866cd9b76','6b6ec00303ad2367187b4049c97e4765','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b65c53aaa93ac3468e3c0b3c4bee50e','6b6f8511580ed8ae34b0f2a399f184c2','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b63ded1c75749d6a11ae2139ed74a60','6b6f8511580ed8ae34b0f2a399f184c2','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b631edd22b2e7845ee5f76d148da70b','6b66d469a9e942b326ed95b57d66345e','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b69a2e720ef679e263eb9fd8034f269','6b66d469a9e942b326ed95b57d66345e','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6dda6c51452ba4d1e539143b91266a','6b6a0c8cfb1fe3c467f32b2958ca8023','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b67341af4e27af2997f7c185c5f7cc1','6b6a0c8cfb1fe3c467f32b2958ca8023','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6b4e1f063206f367d74d1a157419bd','6b69212fd84ae11748387d74df9aec1e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b68bad60a0c96437ea6c3b10a091840','6b69212fd84ae11748387d74df9aec1e','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b647e03bf26e32dd3dea72705dc6540','6b6c57486c5def24c8715c1a5908316c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b62602b3a2baf33a5e7265d20634968','6b6c57486c5def24c8715c1a5908316c','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b649f8f76bfea64be6144d784bead55','6b6b162157ca56c5237434468db3f3a3','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b66ad08604844ab804ba2fd55c91ddb','6b6b162157ca56c5237434468db3f3a3','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b632b1183aee357a36d3c58f8465e54','6b64bd7f71b12a89f8a3809731e7ff6b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b60c7837085193d6ea286c71970f891','6b64bd7f71b12a89f8a3809731e7ff6b','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6509fc8dbd64a2eff54196aae6dbaa','6b65ee24ecbbca2d3ed28455317467c1','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6aec2fb76cd2cbda1dcaac9a8afb45','6b65ee24ecbbca2d3ed28455317467c1','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b633568f6e71f10a846ecedf1a1efc6','6b61e7a97bb5c065ee9400d52fd87f32','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6c45a28cd42fbf0b6ba1ca9c762626','6b61e7a97bb5c065ee9400d52fd87f32','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6ac586b0ea4d241b7371f13808490e','6b61e06dbb8db4dd4d8f3ee0a6884d93','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b66b5599f73b8497c71c092f8382f7a','6b61e06dbb8db4dd4d8f3ee0a6884d93','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b632c1f0f054cb4ae8b668097b096b0','6b61b70b4f27179702ea10d69b45b3e2','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b65969b4a27dae4c060718254d86ab2','6b61b70b4f27179702ea10d69b45b3e2','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6f7fa4eac72e606cfbd4413c3f1135','6b6b6abed58b118ee988c92856b8b675','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'W 30/L 30','','','2016-07-19 14:11:15'),('6b663b50e5ed60d20f7767303da467ed','6b6b6abed58b118ee988c92856b8b675','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'Dark Blue','','','2016-07-19 14:11:15'),('6b66e089a71e4a2fcb5774b6a16e73ab','6b627d9607f0081ca57ad3d0b5eb16e4','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b60e457b0c5ca969fb79d2a1015d598','6b627d9607f0081ca57ad3d0b5eb16e4','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6b9bb374b235864514a7939da8252d','6b65cfe49d699c2c7faf2c1dbaa76639','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6ae640b0b284f59e139007751f760a','6b65cfe49d699c2c7faf2c1dbaa76639','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6118d7c631b1122a02ca400ee5faee','6b66f538ede23a41f0598a3bc38e8b52','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b66bc89eeefa4794aa018e55e2f24e5','6b66f538ede23a41f0598a3bc38e8b52','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6a760f55c30a6cc95addff1d131185','6b6f776b68aa6b8cf8e0d3357d7215fe','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6efee00c7aaf60b5b293b59eba8ce0','6b6f776b68aa6b8cf8e0d3357d7215fe','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b657dceac366211e425881362fa9f24','6b62700a4eb25d6c370ea2ae3807b9e3','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'W 31/L 34','','','2016-07-19 14:11:15'),('6b68ee8284cdff7b1eb0390309c996fc','6b62700a4eb25d6c370ea2ae3807b9e3','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'Dark Blue','','','2016-07-19 14:11:15'),('6b687c5e5fe515ae8c99542b46f3ead0','6b6cd2b7fd16866d220ca4eff8c1387d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6af03c885988314f1ae371dce8e46e','6b6cd2b7fd16866d220ca4eff8c1387d','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6052e2c3e76dd3e597b9a5d60b050c','6b6a6aedca3e438e98d51f0a5d586c0b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'W 32/L 32','','','2016-07-19 14:11:15'),('6b69ebeccd3c305f1da7cd17ea748e9c','6b6a6aedca3e438e98d51f0a5d586c0b','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'Dark Blue','','','2016-07-19 14:11:15'),('6b68e0674b5eeb4b4964e416560390ca','6b605db2fd1cd3f36154b59c8e6d2e40','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b9cd6bba0ca45eb208d719f753a9d','6b605db2fd1cd3f36154b59c8e6d2e40','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b699fed1aa7673d6a2322cbf47d5666','6b643f0635b575ff6c4a09f8518f403f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6a4112b18a51689096c203462e6b88','6b643f0635b575ff6c4a09f8518f403f','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b656fe39eab2cf9b5eb23800b43eb9b','6b692f8831b65cafb2b518415559b380','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b65493e62b87a0863d7a83529f42abc','6b692f8831b65cafb2b518415559b380','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6fd522a58afdabb56402bd84706666','6b64544755598696ea104fc915f73e09','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b612b9bba85032e3698ef6f73c2a6ad','6b64544755598696ea104fc915f73e09','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b62248ba7c6578a41f08960a0422897','6b6ee1cfdeeab73834f6fb0376139cb6','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d763804fe9d6df47638dccd44f363','6b604968df1db0ff50ed2bdc0aa33d29','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b66c3ddd7addc71a05744a980ed7b7b','6b612c596cd110afd4ef867feed32cf7','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6034ceadbbd73ea37cec52226afcb9','6b645b19be9ef0e004c3bf5b9711fc94','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b60b7be0ee0dcce45d24b263979f484','6b6d4b521b44c8be3ba6f46d50a61a58','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b63f8daed80511e29be8768b489c983','6b68ef2aec790609f6043c2e67c69b61','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b8626eac96952e81c333f1463c947','6b6beff42aff690b61872f8f66ef67f4','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6e6ac431bbad7d2645aea054b32ce3','6b6f30daac6333a17854c0f26e1c76ef','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6c49eb5f339d006c5d2984a71c9421','6b680fb40a3abb57b4c08cbf4db4fbbd','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b681117cde630785fc1d8bf1050f99a','6b6523e0ead8303fb9cc56c7f0197579','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b621cbe26091720fb9fd3e0ef4a0957','6b67bf900e85d47632c08bb31e8794c9','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b628807cf25896798df2285340595c6','6b625458fd7b362e84d05fda3e22d501','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b654ea7b3cc64f98a22c7d0fc06d10e','6b6ee1cfdeeab73834f6fb0376139cb6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b67ffa85da079b645586ebb05ed5338','6b604968df1db0ff50ed2bdc0aa33d29','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b5aa4a0e23e04f693a4bf039e8c98','6b612c596cd110afd4ef867feed32cf7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b43d2e968ec5afe634be59263e38e','6b645b19be9ef0e004c3bf5b9711fc94','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6569452723fd96bdd6b9d751bddf9e','6b6d4b521b44c8be3ba6f46d50a61a58','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b691db552cc385b6960939f6e7af4d5','6b68ef2aec790609f6043c2e67c69b61','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b632e363829b658ba4235d1351b4634','6b6beff42aff690b61872f8f66ef67f4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b604654bd8feadde0299aff5ecf96ea','6b6f30daac6333a17854c0f26e1c76ef','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6a20504731b51a24ead273569376c0','6b680fb40a3abb57b4c08cbf4db4fbbd','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6c243b593bd61b4591f9d0704f47ba','6b6523e0ead8303fb9cc56c7f0197579','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b649ff3d7451ed2ae5aaa8c0af4b88d','6b67bf900e85d47632c08bb31e8794c9','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6fe3494a52e5e8cef46a6cd0e94e62','6b625458fd7b362e84d05fda3e22d501','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b64d9e73f9531e0eaac036804c2398e','6b649acc681d007bc3a1506103ece741','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ca649ed0b59729430910837ad303f','6b649acc681d007bc3a1506103ece741','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b61445d06dad12767b42158235a35cb','6b621c7d9b97c6b75ca02fb6ff350667','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b664dca6d648ef4c8614227ac1fcc39','6b621c7d9b97c6b75ca02fb6ff350667','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6f5368ffc3bb4620de2cddf694e6e6','6b63709afb60392f614de393c2471a6e','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b636b13346edc2615f47b0e2f123e55','6b63709afb60392f614de393c2471a6e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6b562400aceeddd7847e1598144893','6b66a777ae3977569fef43412d8b91dc','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b656a69918abff52d20e17efd0f8701','6b66a777ae3977569fef43412d8b91dc','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b68765b87d53ce85fa62807cd53e564','6b687f8e935a74745bccde92ed8b2409','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6017124e0437485942b7b9463de62e','6b687f8e935a74745bccde92ed8b2409','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6341f27df2abda127b38a3afad340b','6b69d6c998eff3b3af1aea7ff7a71e33','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6fee43b4b792cdda71a237faa6c60a','6b69d6c998eff3b3af1aea7ff7a71e33','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6461f172d077967a216321d0144ef0','6b6e23bb114e97a249bdd6804e5abfab','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6e8015391801f64b5dd87ae9236d08','6b6e23bb114e97a249bdd6804e5abfab','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6afd40493960aa64ecaa2587ed8d79','6b6d841caaedbbd2be2db4689eed6b7c','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b626089ecad6b5eead4ada9ce825c0a','6b6d841caaedbbd2be2db4689eed6b7c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d6051c82ce509385e1ada03dce9c8','6b6f2336d0e0045a6cf78a4d42fc1321','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6978a07a205922fbf032a35a0e2ee8','6b6f2336d0e0045a6cf78a4d42fc1321','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e1c6bece13f57c8f577522ed0b464','6b67a094a2f8608cd59f0297c10b3e79','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b639b122d7c1559df3a23374956cf8f','6b67a094a2f8608cd59f0297c10b3e79','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b62ed40b737cc8a05422d30e9ed1fe4','6b6d1a59edc30147b83d466bf9990e0d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b65d143d7001d8b213d24721e142e63','6b6d1a59edc30147b83d466bf9990e0d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6ebb266eef95dd3dd69c4171044218','6b6beccb7a58791a651b110093bdc67c','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6edcbc88aa8c3699e65d471615bd3a','6b6beccb7a58791a651b110093bdc67c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b631b094d4c3387c3bffd3e382553a7','6b62409c734728ec98188f53ff73ec7a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6cb4c81c6afd3f6483a19e951ecd76','6b62409c734728ec98188f53ff73ec7a','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b62be7adec1cac535f8883f3ec79044','6b68ebf8028c01707db56b5bfd73901a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6afe73db69972fee86aeaf5fb3a896','6b68ebf8028c01707db56b5bfd73901a','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b67954abbf7d600fa13e86b9de8ffd1','6b601475e2e3cb682a5c0e05798ddffc','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6e31b018a6425962fa306a4ad71e7d','6b601475e2e3cb682a5c0e05798ddffc','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6b1e1fb0eab1b89f24ce7227d184d0','6b6ab2bb6d2593d45c60d3e8361ad763','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b85a0016c4f3ba8eed76aa3d62eea','6b6ab2bb6d2593d45c60d3e8361ad763','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6204c65fec4e94d6c6c28a9e9e7d87','6b6241cfbe3221fdd19ae6b35028d36d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b63a10d385fbac82367e40cbd24d2f1','6b6241cfbe3221fdd19ae6b35028d36d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6bf5a4745ef9e622dab4c779b97042','6b60ea7d56e6f20b8b4666f002e68a33','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6e23cb071709ea9e10e407f47c6362','6b60ea7d56e6f20b8b4666f002e68a33','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b672b11dca20b0affbb7bd0dabe0555','6b6610152522a50335cf603d9ccf38c9','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ab593d1a6780437adea687a291624','6b6610152522a50335cf603d9ccf38c9','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b67070ef43b8c6f27ab83834ecf5088','6b6fe1250ed80f4175ca1a9de56cf4ec','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6f2446030aa6c34018eaaacfab964b','6b6fe1250ed80f4175ca1a9de56cf4ec','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6c7222604deff2824eeb94b3f93297','6b6b38f0a6de2b554c2d49a969290c8f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6c46093685b807d4de1b766f213647','6b6b38f0a6de2b554c2d49a969290c8f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b695fc290f73778888d4047952c723c','6b6dd192634385915a09431a454ed9c7','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b64b144f3229223afd05e6a8633472d','6b6dd192634385915a09431a454ed9c7','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6bfa8d2c98509bdfa46f421c6f3779','6b671130a95607c5f5c0b926feb642a2','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bf7e1196db6ce3f11c74fd12da01b','6b671130a95607c5f5c0b926feb642a2','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6fe3cb450d396ff2bda2b8a985b7d5','6b60a12a449cbdb8934519fbbb83d9a6','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b606a7febb83f9ffedd2036370e7951','6b60a12a449cbdb8934519fbbb83d9a6','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6caac840724c9fbf005efd31d905a4','6b6c11d3012885750c635479cea6a902','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ff3c021e4fbeac09a2f815a9de4f9','6b6c11d3012885750c635479cea6a902','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6b1dfbc430683614d48805afe6a4cf','6b69aa7227442d5eb0df4c08dfde81d9','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6a6124f8d2db90651782a0f12d5080','6b69aa7227442d5eb0df4c08dfde81d9','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6230995b1997a27f4ea0bab96c22c5','6b6419449bfce44e6bfe9b356778949a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6064f3053358f4a02baa86da6f7350','6b6419449bfce44e6bfe9b356778949a','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6aaa6f1c603ba10a144167e61d54dc','6b6226867346c666c4f36461cb8d4d45','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b604b3f6a952d40e9d3fa5686c628f2','6b6226867346c666c4f36461cb8d4d45','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6fedc27a6f2edb532b9c90507828e4','6b6bbee08ebc85f4fc02d7fe5bff1ed6','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ac7ff76a1dae5303dbd5cfd960236','6b6bbee08ebc85f4fc02d7fe5bff1ed6','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b68bc64f4f226be0d5369299da78f17','6b648cd528bca9be4da259138548156d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b63b0c994ae9b0aa042b8e5ebc795ea','6b648cd528bca9be4da259138548156d','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6bd1b95ccb4613bcbee574d743b9c8','6b66eb3c44a1b423c6547a461f75865a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d590991bd9fbc460823f287eee179','6b66eb3c44a1b423c6547a461f75865a','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b63460d0eab913a8333ee537e8873dc','6b693f0d86f789b66246202a41906557','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b65969f378079605c65cfc6ecf43f2e','6b693f0d86f789b66246202a41906557','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b61cde7bb2c28fcf32f7a6bdf1459a4','6b6d806fa044e38e268322ac9c74cd42','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6fd3bed8d5084565042f3c6ef0da6f','6b6d806fa044e38e268322ac9c74cd42','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6c9d338de6c39c47fe17b63f3f37ed','6b618ce180307018fce26440b194f58d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ab5d976da6fbeedd4f686e5e63e22','6b618ce180307018fce26440b194f58d','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b653d3614b83db6994e0aec5efd1ade','6b684a67939f7b2e7b03a13433aef5a7','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6b689b8ec1d4ed867b6e0d3e88ce26','6b684a67939f7b2e7b03a13433aef5a7','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6e9eebc09a600eaea91397dde2e16f','6b69a9abf3a6af23389c840f57c0f781','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b63c713956c9a0082e0e686206350c5','6b69a9abf3a6af23389c840f57c0f781','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b695e01fd285c6d83a7263cd729dbba','6b6340961bcab561725470297c7128e1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6629ab81af5383db9e74cc7122ee1b','6b6340961bcab561725470297c7128e1','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b62526ad41b50ffd4e54fa8484f435e','6b6b8404557b78376523740db7807138','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b680cccab7ef673be921c7560bd7ce3','6b6b8404557b78376523740db7807138','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6e887549f53f55b86c386458feea7b','6b67aa3f29f0c1d060935b2e98c2e5ba','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6c852c6bd2a7ab9897e5f9be58fa12','6b67aa3f29f0c1d060935b2e98c2e5ba','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6dd29ee99f09c9da020faedc69ba6e','6b655c85368376a8018991471e42aff7','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b67e873357f1ecd10c0afac6449b54e','6b655c85368376a8018991471e42aff7','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6932688275a821809fe71534f8a6ea','6b6eb34fcceb69efafddaeeedb81d9a4','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d906495458d077053ebc1b31fa4ed','6b6eb34fcceb69efafddaeeedb81d9a4','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6b9eea99e50fcefb57beb70a9ce99d','6b6b9f89cb8decee837d1a4c60742875','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'W 31/L 34','','','2016-07-19 14:11:15'),('6b621f7bfca90db595855602cd9f902a','6b6b9f89cb8decee837d1a4c60742875','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'Dark Blue','','','2016-07-19 14:11:15'),('6b6f896bf6473f8d6e70a05028fc9d5a','6b67d8455169e2a581e8dea40582745c','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6c9ef2be68b5e4a74b6e8d92076979','6b67d8455169e2a581e8dea40582745c','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6577c829d99509c475d08743690250','6b63ed599fcfa07768dbfbd93991543b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'W 32/L 32','','','2016-07-19 14:11:15'),('6b6376bcc8b9792da6d2e11e5c996ddd','6b63ed599fcfa07768dbfbd93991543b','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'Dark Blue','','','2016-07-19 14:11:15'),('6b6c7acc24f24533de080288342a89e3','6b6ae0323db1288421c104136a9549ac','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6da724e6dfc63716094cf844b73248','6b6ae0323db1288421c104136a9549ac','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6df974c540ca5eb0a9c4c9b95a291a','6b6ce806581c57889364e88f92cf5992','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b924ecfe0b8bd6909d7dadd27ceb1','6b6ce806581c57889364e88f92cf5992','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6b968216f283ef00b12d45446ea1e5','6b6f5641f5a72fbfc8600041d0f50f64','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bdbff15fb0e41a04cacdf5ad69e9c','6b6f5641f5a72fbfc8600041d0f50f64','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6d7c4a3913de1f633f16a71ecfb263','6b6b42499614ce3bfbee01f6eaba2f30','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'W 34/L 34','','','2016-07-19 14:11:15'),('6b69cd9596dbcec217ff47cda50ea151','6b6b42499614ce3bfbee01f6eaba2f30','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'Dark Blue','','','2016-07-19 14:11:15'),('6b637e4a2d5329304dd260899d87f999','6b6ee1cfdeeab73834f6fb0376139cb6','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6c22562e282c6d6322b593ca3907ca','6b649acc681d007bc3a1506103ece741','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6e3a40975986b85b8913c1034ba3d0','6b62409c734728ec98188f53ff73ec7a','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6310d8d2223e3695b11ada5644312e','6b6c11d3012885750c635479cea6a902','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6c365bd3d0ae38c435ffdef4acf963','6b6340961bcab561725470297c7128e1','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b61150bd80d7fbb088885b1aa2e4cdf','6b604968df1db0ff50ed2bdc0aa33d29','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b64b84160ba816552edef80e9f58009','6b621c7d9b97c6b75ca02fb6ff350667','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b68e2f892d99f97e1e375a42dc9ccca','6b68ebf8028c01707db56b5bfd73901a','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b687c209b05bab87626f3fb190351c9','6b69aa7227442d5eb0df4c08dfde81d9','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b626af816a343bf7a9a56ca57d22090','6b6b8404557b78376523740db7807138','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b61612433b076b53a3eda53b41a9684','6b612c596cd110afd4ef867feed32cf7','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6b0e4b0a807f44d352d16c62bf9948','6b63709afb60392f614de393c2471a6e','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b627fdda3737101612656775e2fd89e','6b601475e2e3cb682a5c0e05798ddffc','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b665971be8ca66b71c7d7aa06307ead','6b6419449bfce44e6bfe9b356778949a','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6703cfdaf92207eceadbf366a8a9f9','6b67aa3f29f0c1d060935b2e98c2e5ba','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6714cb2e9b7ee6367adef80e690d48','6b645b19be9ef0e004c3bf5b9711fc94','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6d55883f64b42882693762c591cce6','6b66a777ae3977569fef43412d8b91dc','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6425f0622c518b1d0538eb4dfbb273','6b6ab2bb6d2593d45c60d3e8361ad763','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b66b90f2b630a612af6bad22f34c464','6b6226867346c666c4f36461cb8d4d45','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6462858a46ce72a5618de178148af8','6b655c85368376a8018991471e42aff7','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6836fc3f32fb7c7c4fb4e15b6e8a6b','6b6d4b521b44c8be3ba6f46d50a61a58','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6e800d42370b123aac4e3fe99ec940','6b687f8e935a74745bccde92ed8b2409','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6cae1b33380feb3763941d0fafc035','6b6241cfbe3221fdd19ae6b35028d36d','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b616788e0f643b2fa3b32612b43b6ef','6b6bbee08ebc85f4fc02d7fe5bff1ed6','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b679761add8a0ccf0618415452ecd45','6b6eb34fcceb69efafddaeeedb81d9a4','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6b7d938873ef9c4d9fc7fb5f2443ee','6b68ef2aec790609f6043c2e67c69b61','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6c4cb7790bec3184d0515f49cd6703','6b69d6c998eff3b3af1aea7ff7a71e33','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b63275815df24b6cc1db2e184825041','6b60ea7d56e6f20b8b4666f002e68a33','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b679898eb2d51c28658aba765ce7f13','6b648cd528bca9be4da259138548156d','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6d87fdf52388a1209dfb7178ef4dd4','6b6b9f89cb8decee837d1a4c60742875','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'Bangle Blue','','','2016-07-19 14:11:15'),('6b6986092bc3501e7a00330534f5a718','6b6beff42aff690b61872f8f66ef67f4','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b65b58a1482b543c480c639363d16f4','6b6e23bb114e97a249bdd6804e5abfab','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b66ab95f78086dc48427ca73fc7f352','6b6610152522a50335cf603d9ccf38c9','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6b11b6a92c95818927f2a283f7a6bf','6b66eb3c44a1b423c6547a461f75865a','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b631571759b24c6520396635678f207','6b67d8455169e2a581e8dea40582745c','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6de275f2a9768084d61507a82ce879','6b6f30daac6333a17854c0f26e1c76ef','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6c936b8e0b129d94f4fa405c51394f','6b6d841caaedbbd2be2db4689eed6b7c','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6aa778ec91cf888e73c1003c1ce745','6b6fe1250ed80f4175ca1a9de56cf4ec','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b681bfaac5c24e24184528d5e83342a','6b693f0d86f789b66246202a41906557','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b696fdd0553a47b489b29f16f3218ef','6b63ed599fcfa07768dbfbd93991543b','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'Bangle Blue','','','2016-07-19 14:11:15'),('6b6f45b48ffa28d0aa7f8f8c453e5460','6b680fb40a3abb57b4c08cbf4db4fbbd','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6ce6e8152ace06fb7e992af31a27f5','6b6f2336d0e0045a6cf78a4d42fc1321','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6e95c5f82cd6decbe1e14db6591f92','6b6b38f0a6de2b554c2d49a969290c8f','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b64ac43add1f41cd30145946604a202','6b6d806fa044e38e268322ac9c74cd42','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6cfb7213b3062dd644cb472a50d48c','6b6ae0323db1288421c104136a9549ac','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6f600799a59bd3d315c54ac0a6ae3c','6b6523e0ead8303fb9cc56c7f0197579','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b62472c869ed78a4fccbe188527e092','6b67a094a2f8608cd59f0297c10b3e79','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b66bee3624ba9ff1488d275bfa9c9ed','6b6dd192634385915a09431a454ed9c7','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6cf379740977f6e29bd582108f8c8f','6b618ce180307018fce26440b194f58d','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6d9efbbff367230c1affee6f916db6','6b6ce806581c57889364e88f92cf5992','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b67c8463b4a638c80ceb321d2074989','6b67bf900e85d47632c08bb31e8794c9','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b613c41c757fbf6ba63dc285e2c6c2a','6b6d1a59edc30147b83d466bf9990e0d','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6149cc076f27762ed7648c2a7f5525','6b671130a95607c5f5c0b926feb642a2','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6348f1da2fe1966552f6147fd1339f','6b684a67939f7b2e7b03a13433aef5a7','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6bdb23552b85764ea846310910e7a0','6b6f5641f5a72fbfc8600041d0f50f64','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6a73895d12edcf09e4787148950395','6b625458fd7b362e84d05fda3e22d501','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6fc9608cbe096386ea8809d2d10004','6b6beccb7a58791a651b110093bdc67c','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6de1cb0a0c187c63417ae02530859e','6b60a12a449cbdb8934519fbbb83d9a6','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b6696f117c92834213b002b9c44e169','6b69a9abf3a6af23389c840f57c0f781','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'','','','2016-07-19 14:11:15'),('6b60db118877ec00899916ded18a77f4','6b6b42499614ce3bfbee01f6eaba2f30','6b6e77de7a04de54f1aa63cfeca2f487','Bangle Blue',0,'Bangle Blue','','','2016-07-19 14:11:15'),('6b68367246212a4bcffbcc9e56d19345','6b6409b6fb249885d9f625009597f983','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6db482ec990ee91251a1b2e87d6f33','b6fb249885d9f625009597f983','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b600e21acab729f3d979287e1602600','6b6409b6fb249885d9f625009597f983','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b68c2dc47785d6e7aa2b59dfea19a82','6b6c3736fcc640f98af0990e76c862a4','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d58c1e77a1c064afed1b11760d639','36fcc640f98af0990e76c862a4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b60ef6fa075e7b58db593bba5bc5f1b','6b6c3736fcc640f98af0990e76c862a4','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6b191e892018815256059636d3e59a','6b6a0e384ba58779accb2867e3829dfe','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b65d74457d7bdce3bbad943e9a64053','384ba58779accb2867e3829dfe','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6aeafc78145a26c515a25cde1deaa2','6b6a0e384ba58779accb2867e3829dfe','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b669ddaef9e43e2d2a0a195d4337598','6b6ef80032a6bc519e54f7bd821277ca','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b633d7f016faed99a39e5bae40ff1e5','0032a6bc519e54f7bd821277ca','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6dd28b4ea426724e323633a62e971e','6b6ef80032a6bc519e54f7bd821277ca','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b67642a54ec517357bd3796840843a7','6b653b86aaafbea399aee6f036bf4092','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6e88cafe051f10cc670662742038a0','86aaafbea399aee6f036bf4092','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b635421687431edd9d7798b4681d59b','6b653b86aaafbea399aee6f036bf4092','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6cb88fd266a4e53945eb2e659ca52e','6b67099f62c55b59eb5abf97ef929416','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6b25d6d0acd134c14c5375c1b9e506','9f62c55b59eb5abf97ef929416','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b659e760d8398dc4168fd7277ef44c6','6b67099f62c55b59eb5abf97ef929416','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6da4cb9477c753759925aadff23106','6b62e33d19c55eafaeebbac6029fa86f','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b663b3472251d608ed8c51e3299a5ee','3d19c55eafaeebbac6029fa86f','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b672fc47af3c42fc31ce592878237ad','6b62e33d19c55eafaeebbac6029fa86f','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6126c23a7ab476a93120562445eb76','6b6dc4a0a4dd1f3d866efea6304942e6','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d62dc29d89aabd50a14ad419042d3','a0a4dd1f3d866efea6304942e6','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b684848b948dec7132f5662aaabc928','6b6dc4a0a4dd1f3d866efea6304942e6','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b645039945ffd4a13b529be662c82cd','6b6638264bc483c0c78363904ab3e38b','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b61f2ecf64c5cf53ebeac8be39b984d','264bc483c0c78363904ab3e38b','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b67da93df2f38153feff4bf58e2fa9a','6b6638264bc483c0c78363904ab3e38b','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6054b941b0bfcd0875ab6fc960bef1','6b6eb700fb264b0a050bdf673267bb2a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6c200d1db0ea462074488aed3e0381','00fb264b0a050bdf673267bb2a','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b64420e40d0036783c3144398160e0a','6b6eb700fb264b0a050bdf673267bb2a','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6adcc102a8206a7ece51272f4b626a','6b6a44ec1760f0a5afccd389e5ed2e0c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b651c78dd46a0251bd6043c93aae2b9','ec1760f0a5afccd389e5ed2e0c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6ebb062630ea482cab5cfc0b266f96','6b6a44ec1760f0a5afccd389e5ed2e0c','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b65e339d3cc90e02080b5df4fcc4c3d','6b60a1921654c6bbd84f34bd174cf0db','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b1df061cd1dd9c19963d0d16b4671','921654c6bbd84f34bd174cf0db','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e9e47a458275ec2c50cc4ddb913e9','6b60a1921654c6bbd84f34bd174cf0db','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6f5ce17e8f1992fd49ec0e5bb28829','6b6e47ae8535dd1115ec20eec7b8c62b','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b60991c1ba8c3c472730eb2b4f05b42','ae8535dd1115ec20eec7b8c62b','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b650cad49b09585e29d604ba3da9c38','6b6e47ae8535dd1115ec20eec7b8c62b','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6dd09c3e87ddbe43e814388a41a220','6b630669eeb2262e7d62f3ad2fa2a5c3','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b645300c074a993fdedcf7dd3548c29','69eeb2262e7d62f3ad2fa2a5c3','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b648825f3c02f985b428d7b19ca817b','6b630669eeb2262e7d62f3ad2fa2a5c3','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b65a9f8aa159e6869aa7a8fbcaeb4c2','6b64d5e8a2e4da108725e85bd5833519','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b68603f8857d0b7c98571d38b4f33fe','e8a2e4da108725e85bd5833519','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b60c3dccc8e3659359e4ad2f062abff','6b64d5e8a2e4da108725e85bd5833519','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6599bb6eea14015dd822c50a5a420d','6b6b294f91e44c9835078cdc56a81c68','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b69f4a2edb93e2fac6b0238c0d4a60d','4f91e44c9835078cdc56a81c68','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6d49275808a11484e1155bdf08053f','6b6b294f91e44c9835078cdc56a81c68','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6cb8391c00546eeef4d1990dee3a2d','6b63bc6e384483f06b3250eb11f5ac40','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6c8f1da1826284d110830cbbf0f33e','6e384483f06b3250eb11f5ac40','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b64782468948eb911744a64244e08c2','6b63bc6e384483f06b3250eb11f5ac40','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b649f5153b982fbcff1dea30882c414','6b67549989fb5c13050783be8ad49d39','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6bb82c921654510c7f5662109ab920','9989fb5c13050783be8ad49d39','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6b4bbe8fdb3b5986bf6fd833e63cfd','6b67549989fb5c13050783be8ad49d39','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6cd989ba768e5c09a4d0f16cbd3505','6b636346c51545a260f7714715bfd65e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b65c40ea468911c642349c54871f0af','46c51545a260f7714715bfd65e','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b618e34a48ee79d3533a2bf0150164b','6b636346c51545a260f7714715bfd65e','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b60c407c6911d4c6eb928dff084f6f9','6b6521c2ff46353628da62e8bf5c7cbc','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6591a6d7c0111a9487947a29e3b6ea','c2ff46353628da62e8bf5c7cbc','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b668a93020cd46a2592e72861d34cae','6b6521c2ff46353628da62e8bf5c7cbc','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6773058fb418c742a8f37b06022c05','6b615f25e50c68d48853e597ac9a5e27','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b64adbd1e69eff6ffc34aa742b3411d','25e50c68d48853e597ac9a5e27','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b63784f4c58d818e19da042dc91c914','6b615f25e50c68d48853e597ac9a5e27','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6c633b7600e0975e3cbb21f95e6cf2','6b69d055e438da6d147c8cd574f91f8c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b687ed25df7bec222573a88a724b254','55e438da6d147c8cd574f91f8c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b67a9891ca930a083c7614b3eac8671','6b69d055e438da6d147c8cd574f91f8c','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b692d2b8ebde03b126fec44603c59da','6b62c891a75b8d16f9b1c71638cdae29','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6f29cd6f1ac7617b9f509580c59df3','91a75b8d16f9b1c71638cdae29','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6cc0b6580790b97acf034e69082d12','6b62c891a75b8d16f9b1c71638cdae29','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b68f22924fe7d88770830a92de631ac','6b6d1899ebe63dc2e10596d03c80e8f5','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b65c837ccc43db2999688b835c45c0c','99ebe63dc2e10596d03c80e8f5','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b620374a177d5bcd05a7a720b60bcf4','6b6d1899ebe63dc2e10596d03c80e8f5','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b60f8fdf3c079ef97f1c6136b9bf02d','6b611eddf92f535f48781d30e820641a','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d6f917623452b2b0614e18c383a8c','ddf92f535f48781d30e820641a','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6c4438ac3f255ec0cb19dea722f81b','6b611eddf92f535f48781d30e820641a','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b663dad81d27bdf370aeaedc6674b68','6b6cf9f83e21bd9be969051ffb8ad4f7','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b68d1faf7b4c52b516b437ecc6e3bcc','f83e21bd9be969051ffb8ad4f7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b655d4a8404335c068e725682a87504','6b6cf9f83e21bd9be969051ffb8ad4f7','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6c529057669f412ebe0541993a957d','6b69909b7865283b6b5e06d868b24322','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b673a821921345d1d3b0273df379fff','9b7865283b6b5e06d868b24322','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6f0b3990eca01e134264342f14e8d9','6b69909b7865283b6b5e06d868b24322','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6ec78297a2e2af7bdbd8b9efaef7a3','6b6b0a08873dfcf8d45a9e9df482decb','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b61c46274a5a0792b060956d1b829f4','08873dfcf8d45a9e9df482decb','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b63f7a4642b00b703f6c73ed09c40c9','6b6b0a08873dfcf8d45a9e9df482decb','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6401d420a70a0e577ef98f30eab7a4','6b6a3699b9879479aa72f74d269130e9','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b67906ea9884a799042ee29dfb5b089','99b9879479aa72f74d269130e9','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b630d12029b4582d6e24531a0325f86','6b6a3699b9879479aa72f74d269130e9','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6f226a6d16e008bb6568d2ee535f9a','6b644868747882c3059ebc2cf2911cdd','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b606400a57de80f5fbdeed8e15157ac','68747882c3059ebc2cf2911cdd','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6ccabcf6be168d252ecb39dbe52e45','6b644868747882c3059ebc2cf2911cdd','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6b9bc13f32131765af62bd204bfb28','6b6204f963635baf1a74f4b3020b7b23','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b61f7353ab5fbae2ad2b4eda852a230','f963635baf1a74f4b3020b7b23','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6d688d8a1b6f446aeaf4347e800793','6b6204f963635baf1a74f4b3020b7b23','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6bea010acf1b8c677b120a8c901dc2','6b6d72f32b35017894cc4af98517094a','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b60ae2c21e3b30619b7bca09a94d400','f32b35017894cc4af98517094a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b62c3f3441934809d715289d500fb49','6b6d72f32b35017894cc4af98517094a','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b69514858942faf66a82985af87ea67','6b60c5d539c1b3d6d507eb54acb936c6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b54b1dc77d2ee4ced3a532de5892f','d539c1b3d6d507eb54acb936c6','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b60d357c814c8dc8c120f0814d303dd','6b60c5d539c1b3d6d507eb54acb936c6','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b643a3f47df198737889e3c43814bac','6b604054aeb97224742279a7e393d90d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6c6ac42a7db2182d78ec11688e7a3b','54aeb97224742279a7e393d90d','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b696fcf2c7a9f8563530ac2dca09dba','6b604054aeb97224742279a7e393d90d','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b67f946b71f33b877986a5684a03148','6b673fec2ca16bcb88e4e0eacd81a7e7','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6a2ea5d9c14027d227bcb84e255ace','ec2ca16bcb88e4e0eacd81a7e7','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6a92eccc5be5bf720bf0c95023ae6e','6b673fec2ca16bcb88e4e0eacd81a7e7','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6d2a82055b53de1e7bc5537fc153bb','6b6e15d4dab7afd5322643eb9ea1b371','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6b104f131292aca701c3e964851607','d4dab7afd5322643eb9ea1b371','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6225d70729737fd9cd06801ffa6c24','6b6e15d4dab7afd5322643eb9ea1b371','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b68f7fa1f902e7982014a2222930785','6b6d02de1c68530dbee23794476d866d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b62c321658937539932d0ea9762f2d9','de1c68530dbee23794476d866d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b68e6fdfa6ac4f98c23c0cd9683f138','6b6d02de1c68530dbee23794476d866d','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b647bd758dcd70b22a14fa16cd5fdc4','6b6ce1411157816ae6cebf025fd0eacb','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b67dd9f062b19f35835aa2fb7011507','411157816ae6cebf025fd0eacb','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6799ec0d691054396e85b74916b59e','6b6ce1411157816ae6cebf025fd0eacb','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6ecf3f8d5b2708ff392747d82f8bac','6b62d5d49563644d44d8b91bb0eed3b4','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b63316031b6aa31363b6a2dd1815434','d49563644d44d8b91bb0eed3b4','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b61faed0f4311d213b40456b3d479e0','6b62d5d49563644d44d8b91bb0eed3b4','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b656c71dbc2cee2245f57f99b182b47','6b6f61f7acf47aa9172230601ca16e91','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6f87d5e6e83aff72b8058d03b5ecd2','f7acf47aa9172230601ca16e91','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b687e5848a3820d5aeef343fd063bbb','6b6f61f7acf47aa9172230601ca16e91','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6d3f487f53d38b83e13ceda76acacf','6b6259c2806ef3c748d3b874ec6fecc6','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6792a85927dbd99541cbb43d88a1d1','c2806ef3c748d3b874ec6fecc6','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b63fe18f837e302fdc541fa1bcd119a','6b6259c2806ef3c748d3b874ec6fecc6','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b62764c30b5f2aee3ff247918184d13','6b677330554d6c063a03abdcda72ea67','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6d77d043ff3a202f99cfd36afebb71','30554d6c063a03abdcda72ea67','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b61a50b803d95f532db320a7a42c2f6','6b677330554d6c063a03abdcda72ea67','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6d6ccb4f691b785d3feb83c691cea6','6b60a40fc6be8ae6a802f5e6e8f6fad8','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b673dc3af207e79640e9d41478c976e','0fc6be8ae6a802f5e6e8f6fad8','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6eb6c0582e0e3d642ac5bec3feb42a','6b60a40fc6be8ae6a802f5e6e8f6fad8','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6f323690cd65dec5f0961971eb5f02','6b6720f86749689bbc430b1f4c04272f','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6061bf6b60358e3fe547df6101d30d','f86749689bbc430b1f4c04272f','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6d68d87dc8cdf2785ed71352453773','6b6720f86749689bbc430b1f4c04272f','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b676ba06a85f9a74491ee9b09fe55d3','6b68ae8c832f3a02ee5571d60d58ca74','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6287183f2acfda460c82abf1395ce5','8c832f3a02ee5571d60d58ca74','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6bd83c820ae7a4c34ffbc8c4d24cc2','6b68ae8c832f3a02ee5571d60d58ca74','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b666c751489843093781a323d68803e','6b662491ca9d529c67b51cf15f81bbb0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b69c13c67d2e6684ee1a5a274ded14c','91ca9d529c67b51cf15f81bbb0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6f7db6f638b55c4d33afbd13817b45','6b662491ca9d529c67b51cf15f81bbb0','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b69a5a8cd011171e06299bee81f87db','6b60d73f13dd57796e16cbaf21dfd646','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6b223e039d7279b917e87f94fc0aa3','3f13dd57796e16cbaf21dfd646','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b69bfc555f19d2d2b1f7808a854d8f1','6b60d73f13dd57796e16cbaf21dfd646','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b63124171b20f1365faba2c9b98c17d','6b6ac518f67b92b9abe28dc2b127f27d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6edd0cde8c24ed8a262d9994d53731','18f67b92b9abe28dc2b127f27d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b69e188e8ccc1712347b59bb0259e61','6b6ac518f67b92b9abe28dc2b127f27d','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b66e79ad2ab9a152420d0bdf8c9d2c7','6b61d4b44eefdc1c13f369ddb15d0c07','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b65de83a2d96c1be09e3de28c82a548','b44eefdc1c13f369ddb15d0c07','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b69aa745b29ff75fbaf1d5f7cdddab6','6b61d4b44eefdc1c13f369ddb15d0c07','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b64afa2c455b5dfba1165bc84a9f1d3','6b65d74bb90825fbee025805876a2bd3','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b625d5df9d9ca95681472c0cc0aaa4a','4bb90825fbee025805876a2bd3','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6d1a9f3e86b1c28784f2167fd03599','6b65d74bb90825fbee025805876a2bd3','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6073e278580a5436c6b7aeca4abaa9','6b65812113f8d9457cfed73469f94cdc','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6e2e1da71a1e560e34434db6b90582','2113f8d9457cfed73469f94cdc','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6614c931dcf72e747ac7a74ba82aad','6b65812113f8d9457cfed73469f94cdc','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b603da03f423e7925acffc23c4c802d','6b66bce0fd880213067fdb0d70325b32','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b682e0463577accdecb6c412a51071f','e0fd880213067fdb0d70325b32','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b679c17ffb264de619b7b8c0768f4b9','6b66bce0fd880213067fdb0d70325b32','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b60fdd07afe898be20af39cb3f38469','6b62cc0bbca65c2c8ce5a1921bcf2672','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b630f419c5912f6b5f4bb6818042b99','0bbca65c2c8ce5a1921bcf2672','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b66321c26545f2bb5d1142ee906bc1c','6b62cc0bbca65c2c8ce5a1921bcf2672','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6ef830c0d2fa7c463b76196f106d28','6b6b7ff501f12d5e4b6e51949bd16d0f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b646d4b8bb47bdbec8797f429d77df2','f501f12d5e4b6e51949bd16d0f','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6d15147a9dbcbcb1011cc080b2a2bc','6b6b7ff501f12d5e4b6e51949bd16d0f','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6c0c02dca2bdc6a3083f1fd4d586d4','6b6e344a8ae2285278eea82ee232a651','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b66bee69f32c7c0cb2aa071ada2f17d','4a8ae2285278eea82ee232a651','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b67b83bd357b349ccc45270ac51b58a','6b6e344a8ae2285278eea82ee232a651','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6bb6ea3b634b9c0d88071f2f175061','6b6088792f718751d0dca01d836b4336','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6a38e5e3ace72ae9339b57fc6628ba','792f718751d0dca01d836b4336','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b48b2decc83780b6d1d0c2d2df55d','6b6088792f718751d0dca01d836b4336','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b634f8603ff27d4987d879258d79d45','6b6dcc6ee9e1c7e0170d29a65176dafb','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b661b4416e3d7f08aad4b520814ebeb','6ee9e1c7e0170d29a65176dafb','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d00233ff684d1df42180319c1ccd3','6b6dcc6ee9e1c7e0170d29a65176dafb','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b679cf6b26e49bd7ca24a9a7ff6fede','6b6283b404eb95a9cc1661e742562686','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6caee891567399bfd2883d9243d1ee','b404eb95a9cc1661e742562686','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6fd2d56fb638804c444ba26ed193fd','6b6283b404eb95a9cc1661e742562686','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b64fb2978fb0972d787afa32cc0b217','6b6257368fc3b0a0b28fbc7022db28fd','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b66b1d36c62fcda8a4fad24846ee941','368fc3b0a0b28fbc7022db28fd','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b604683048d7981049b736557d03796','6b6257368fc3b0a0b28fbc7022db28fd','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b6ca57abca59837e0b062b5ba790c0c','6b6a7440a32525da74befa9ae2bc8185','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6bedc8b7676dd5c8830a9487df0ca9','40a32525da74befa9ae2bc8185','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6c107a07664a0bbda06064422ac05c','6b6a7440a32525da74befa9ae2bc8185','6b6e77de7a04de54f1aa63cfeca2f487','Used And Abused',0,'','','','2016-07-19 14:11:15'),('6b68860c71cdc53fd2544f8df2e4da18','6b68ed659c29ffdf8a78473867d2ced1','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d23aeafa712a828eae4fe0e1e2d3b','659c29ffdf8a78473867d2ced1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b61004dc006425b59c7f1fd56256536','6b68ed659c29ffdf8a78473867d2ced1','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b686c37d72f2d0e3c2c2ff107a1fb33','6b6439a5aede3b2d290f1fb5d7734a3c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b67faabf3bed4ff0c9e6306e3545a77','a5aede3b2d290f1fb5d7734a3c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6037be278d86f19afca30c51048a9f','6b6439a5aede3b2d290f1fb5d7734a3c','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b61b68da3ec2d38ad7f8702c39ee7d5','6b6eafd61d10737b8f1857c18b977c40','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b60c4d010af044c388000639796bd28','d61d10737b8f1857c18b977c40','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b665a7fefaf10ec4d124ca07ec2ac98','6b6eafd61d10737b8f1857c18b977c40','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6dd7f3dc72db51cd63099db37f315e','6b601fa6337dd010eb2e5727fd3eac87','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b61435f08da44a3a8982cac0096219d','a6337dd010eb2e5727fd3eac87','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6b29cdc05283754d0cf75f43ee1006','6b601fa6337dd010eb2e5727fd3eac87','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b63190df0d45f36bb0e5e07e4a0f169','6b66d3a31242a52a4ee84c4f373cef3c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b65e0713e3ef777b9207e1b27158e57','a31242a52a4ee84c4f373cef3c','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6b713e17c7e421c1d3e18d88ca4e6f','6b66d3a31242a52a4ee84c4f373cef3c','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b643d2516d068552e7fb801798f91c5','6b60d9feb2af310c1e5a94972790921c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d01ddb39edc8740e4d8db18e38303','feb2af310c1e5a94972790921c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b605c8d6adea3bc7063884130ea28ed','6b60d9feb2af310c1e5a94972790921c','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b65fc3c186d18466402da79fbea47c5','6b65177c1deb7dba0a4acf8a1788f8f3','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bd24c6f1745f21e603f55cb492fb4','7c1deb7dba0a4acf8a1788f8f3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b644b0be83fba3da637341e2cc1f31e','6b65177c1deb7dba0a4acf8a1788f8f3','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b60ab82e5189cefd328a536e56add0f','6b6ac4110f7ae37ab75b1cf76c738d3b','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b69534710e1a5dabfab6071678bbe02','110f7ae37ab75b1cf76c738d3b','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6da90aa582aee1212da2c83be4cc05','6b6ac4110f7ae37ab75b1cf76c738d3b','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6cd9d28f4145b2c0605f696612726d','6b6fae7bb8be9f70413f9688cc75d674','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6c1bbbb7b332f598a04e6c8d9b6371','7bb8be9f70413f9688cc75d674','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6fac342960b2144c6dc0e8fda1a04b','6b6fae7bb8be9f70413f9688cc75d674','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6632f83d17bb9f023e148f6c018dc7','6b6ae5ca412a7cba8b1fd05a254e9529','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bf8ffcd06c3911e8530d0567c7260','ca412a7cba8b1fd05a254e9529','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6a5d1a8a5ca0488a7f55677531811d','6b6ae5ca412a7cba8b1fd05a254e9529','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b66c8837352592f6d92be4951e07a4f','6b6ac854f17d53e5e67436e1c2bb6cf3','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b64f35cb2927aa077863ffc36363d05','54f17d53e5e67436e1c2bb6cf3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b67d87db3ed6967d5ea96e1b525c37c','6b6ac854f17d53e5e67436e1c2bb6cf3','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b603dc528727be50f22ced058c45737','6b6135b75baed6f2e8bbb5491dc23a13','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b69d0709c66d0c2c6765683d670fbc0','b75baed6f2e8bbb5491dc23a13','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b69a1825e619c0fb2bd98b0bd7c19f3','6b6135b75baed6f2e8bbb5491dc23a13','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6aefd951f457806cf55d64f7fddd8c','6b6253909f5da902f197944c76e3c1ed','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6dd57c50c31dee2d97ef0638476693','909f5da902f197944c76e3c1ed','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b600727739881cd9ea3e7474dc573b1','6b6253909f5da902f197944c76e3c1ed','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b690791e75312d62daf8b5e8da88347','6b6912031a5fe6dfac77e87e6cc85862','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6c4d892fe62072a2cfbcf3d88fed48','031a5fe6dfac77e87e6cc85862','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6f75348556c21619fc55bf0176395c','6b6912031a5fe6dfac77e87e6cc85862','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b63b2930c5affb059f548a7b9ff0e67','6b60634012124b8a21164381971e540a','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b67cb768bec28dff13a9cbda8b4b982','4012124b8a21164381971e540a','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b618ac9e03bf2f01d48809a73067ebb','6b60634012124b8a21164381971e540a','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6aef1d2968e1edab086463fbf4f915','6b6013c6f1244b82342981d4994a8b59','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ada36dd73015e7620c56aa384de34','c6f1244b82342981d4994a8b59','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6c1226bb0decc3a33ee12d467ce010','6b6013c6f1244b82342981d4994a8b59','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b64b06dcb879c30aa19869b7841a8ea','6b6a0e77921d0f72a41de928e7932afd','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b63e2ae7ded9b7d93771fedfec0c208','77921d0f72a41de928e7932afd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b62853580540cca7855555471dde4d2','6b6a0e77921d0f72a41de928e7932afd','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b621bb02251a1736bf5071f6615a45c','6b69dacad0a698d45cea4258debefc6e','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6fea63d056c6a4a581a9a0e3ab9aa1','cad0a698d45cea4258debefc6e','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b655402261122c2fc65a1a7e51c75f2','6b69dacad0a698d45cea4258debefc6e','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b69cbcadd89707ad5d8f0f41e4a4f92','6b602f33be1f188a04d6e488f0f2218c','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b641579cffb8708e17b0bd974b40efe','33be1f188a04d6e488f0f2218c','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6999e280a1a519d65b1b3012079242','6b602f33be1f188a04d6e488f0f2218c','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6bd55f3a4c5398e0f25c9981c2ed2c','6b6e735dda4d85e6b53896cc19d83d2d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6d7ce39063e1485f6aae36b4dfa822','5dda4d85e6b53896cc19d83d2d','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b62c0388c5eadba99ce6461c031193c','6b6e735dda4d85e6b53896cc19d83d2d','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6d798bca8365a8d10aec8da1f65dd7','6b6598c0a259c544820195658b0ee8a1','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b61a310aa4726b5d60637fbbab28a4d','c0a259c544820195658b0ee8a1','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6712be7316f5196fd1f197e1b6d709','6b6598c0a259c544820195658b0ee8a1','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b62807bc8a7701369eb305a11ca12f2','6b602e5149e1b2964af04726d7459a9d','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6dfeac60241d70f0c9666507e8f60e','5149e1b2964af04726d7459a9d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b666652fe56a7a1eb1d4985c17d0073','6b602e5149e1b2964af04726d7459a9d','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6316eb6cf4d2b740c332e450bdf3cc','6b623382ca8168d32512cbd368eed733','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6c960dce4e46acacc6ac022f83d698','82ca8168d32512cbd368eed733','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b62d0b25f73ada25df3ed9d597b6550','6b623382ca8168d32512cbd368eed733','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6abb3762f9c52f2da8bdca25e0fc78','6b61045c863d78381d5d6dea5f041fe2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d3ef70c9f58acfd4ec9e8fa541c89','5c863d78381d5d6dea5f041fe2','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6745c74ea84782ca97a9d7e4124df7','6b61045c863d78381d5d6dea5f041fe2','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b60c1c24fca4b03abf0b129ddb1703c','6b6d5d6fed01d8bd2c9ceeef2ac0c53f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b649e52d5d69119d4457b225831ccc5','6fed01d8bd2c9ceeef2ac0c53f','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b64a3d02a844bc7b38db450f28a75ec','6b6d5d6fed01d8bd2c9ceeef2ac0c53f','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b66c71b8ae1280d92d10ee6a9a10f6a','6b6f490cb0ded8099d867ef893cdf5ae','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b66ac66907455a8975bc6fce2b8e2fa','0cb0ded8099d867ef893cdf5ae','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b605649bc5e04496f811496583bf0e3','6b6f490cb0ded8099d867ef893cdf5ae','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b68ffbe0de62cec0aaf8d04b67f5bba','6b65491f4c8727fe33346d910fc46871','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6f614acf06ce8ad09ae5579c0353a0','1f4c8727fe33346d910fc46871','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b65571e7c159f2e12e5bd5d705eeee2','6b65491f4c8727fe33346d910fc46871','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6fe587993a7dfbf8784ea5b2727f2d','6b6a4e990f792e7ed04309b945d2e680','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b60c9078daed5b54040c2c6cb7760','990f792e7ed04309b945d2e680','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b67161e4126a89038207e200923fb90','6b6a4e990f792e7ed04309b945d2e680','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6815d05d15a56b18210efa8cc26ff7','6b6fe17423e259b07175e99dbbca1416','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b658920e3a2258e447c89e62c1ba1b1','7423e259b07175e99dbbca1416','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b62c327adfc5ab23c6896a422bc31b4','6b6fe17423e259b07175e99dbbca1416','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b630e3a94b21b8dff96f254c2d97085','6b6c97028e88aaca4f6dadf3a42d6383','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b65b3d85b529afb67587a9b8ba20f95','028e88aaca4f6dadf3a42d6383','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6fccab06f09a8a65a7da822a918def','6b6c97028e88aaca4f6dadf3a42d6383','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6d5be4dcfa217fd58c428b9fdd1ad2','6b6a9ae93399ec2570b9fd3ee02b14cb','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b658ba4447ab269135bc35c0d8dfc4c','e93399ec2570b9fd3ee02b14cb','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b685d2b172c949429321181b223b780','6b6a9ae93399ec2570b9fd3ee02b14cb','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6526b626f3483f3e9c6a947bef611b','6b6f73d9dd5fd0665da8b10b147039be','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b67a7b251aa8547ecde527ad9d9e1b7','d9dd5fd0665da8b10b147039be','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6004c0d49fcf67f485c668fcfece26','6b6f73d9dd5fd0665da8b10b147039be','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6a3a3da2c38dd0374278f868bda28d','6b6b95fc8b6ec3c0c027c216f3e5ad37','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6264e759ccbc6d09242df76012ed5e','fc8b6ec3c0c027c216f3e5ad37','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b63181317520272818a57886b72d44d','6b6b95fc8b6ec3c0c027c216f3e5ad37','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b659ea11e98a6e96a9c5002ffe2654d','6b68ae6b51d8b75af48f053310f56696','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6638fabca4d28c5520bea0d4bf1594','6b51d8b75af48f053310f56696','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6300d59faa9aabdc99e147dd89026f','6b68ae6b51d8b75af48f053310f56696','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b672f14c1a4ebcfa2987c9640e706af','6b6b925a0cc2580783bf9363154adea9','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b663a78528b537a6812c62a92820523','5a0cc2580783bf9363154adea9','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b621e294d1cb8644da5beb00aa7aa9c','6b6b925a0cc2580783bf9363154adea9','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b629fc062377c2e8009ed62a76f04b6','6b61aa85b177b9cdec0205cdab2aec9d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b67442430238956f6198142cfd3c2af','85b177b9cdec0205cdab2aec9d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6ca108a84d4970348fff2f84c09409','6b61aa85b177b9cdec0205cdab2aec9d','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b61e9dc5cd119ce3e2293b280dcd009','6b65b4bf78fcbc67b40eb1947cf90125','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6103cca3f5c721a57f14d6536610da','bf78fcbc67b40eb1947cf90125','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6de8c56162c13e2f06b8f36e34959d','6b65b4bf78fcbc67b40eb1947cf90125','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6967986d1242cdd084bc450f5e0c07','6b649e6aba95315fe4e157a856edb1e8','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6341444e6ba88cb0139b6c9ffedf68','6aba95315fe4e157a856edb1e8','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b656772f91ca6c32c8f7147414b21a3','6b649e6aba95315fe4e157a856edb1e8','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6270b42ab0fdd111b6e94676fdaa02','6b668bb2a75f99cdd1a39f07aadd8786','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d46a80a19fa41424f50d8a8629ade','b2a75f99cdd1a39f07aadd8786','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6cc3b1911d69e5c31c14e31c896f0f','6b668bb2a75f99cdd1a39f07aadd8786','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b67488db3ff9066f7acd128225e5410','6b61e9ad4544e69846a72bd6f7335f97','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6fcf61f17ad322d267e28c2b6858bd','ad4544e69846a72bd6f7335f97','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b65ba405b352a1dffe02784acbd6125','6b61e9ad4544e69846a72bd6f7335f97','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6f018ae8c9691d8b83935ea6f7a1eb','6b66d919442e2bc6592b83b727bf93d8','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6b4c371ba52492a7379ea6a3ea2775','19442e2bc6592b83b727bf93d8','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b65d26087cb59682ce3125350c110a7','6b66d919442e2bc6592b83b727bf93d8','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b67ce45349804892e11449eb14cbd9c','6b67473ee6dfe37fa4377f32d5930552','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b601d34b0f0c0ce4411f60b34e73163','3ee6dfe37fa4377f32d5930552','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6eff547182db6811b51e2ba14b0b74','6b67473ee6dfe37fa4377f32d5930552','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b64f6a362c8f48ab458fbc777b0a610','6b63b4373f3c979b9f8720c1ba9854c4','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b6693639de717230daa60fca399e07e','373f3c979b9f8720c1ba9854c4','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b66465bedb599db8205a07fe8cc9255','6b63b4373f3c979b9f8720c1ba9854c4','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b681e78267dc0510cd299ef28a238d9','6b60a8493b17cbb10d836e5da0039bdc','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b66cf00bccfacfe1f81547a6a372499','493b17cbb10d836e5da0039bdc','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6d02e32ebf5517355a8b0c61de3fff','6b60a8493b17cbb10d836e5da0039bdc','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b674861d3d16d1d8baa35a549e1488b','6b642ba2fa917fa000dccfc5c50b7eae','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b66367a3d2722fbf4db85a1d05ed131','a2fa917fa000dccfc5c50b7eae','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6ba05d91fb9c287a8c33b014576c1a','6b642ba2fa917fa000dccfc5c50b7eae','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b65b7e844c60bbfd3ab93915da187d7','6b692ce84e8d09d1deee90ddbcabf70f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b66b9818d4e96d2b33dbec06be37747','e84e8d09d1deee90ddbcabf70f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b634e788773ed7613699c5359eb1910','6b692ce84e8d09d1deee90ddbcabf70f','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b64103470db454a0ea027f55fb697ce','6b653b4362631a0d9f8521773f6ab881','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6dc5910b9fa76b157e02e6218085fc','4362631a0d9f8521773f6ab881','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b65a3dccdeb20107ad44be88d763b2d','6b653b4362631a0d9f8521773f6ab881','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6f20dfa30e4d2c1140ce6be16bb368','6b6178261744a8afa0febc65e6bcdf32','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b61f9b561e251d54982ba30309762b6','261744a8afa0febc65e6bcdf32','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b648d93e1bf9dfc7bdb6c183c124366','6b6178261744a8afa0febc65e6bcdf32','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6e60d00e0e08eb69c5ec728a65a4cf','6b6866d0d4601418584829afafd9e9ba','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6e3f0ebea3b274a4ccc213443d76a5','d0d4601418584829afafd9e9ba','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b615361e8be4d70c3d60004f4af9379','6b6866d0d4601418584829afafd9e9ba','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6011115476639e4fd9fad6eabfa8ff','6b60ba51ce02c457274a08ba5ae7f758','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b665bb41748dbb43c73ab54b55c8f83','51ce02c457274a08ba5ae7f758','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6ee345f48f96597492d5dedc268264','6b60ba51ce02c457274a08ba5ae7f758','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6e8dd18aaa0730cf2e970056545994','6b646c0fa7634192de44a6940ae4a2a0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6f79dcc363c3b888ac9f0908cf0917','0fa7634192de44a6940ae4a2a0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6e8c777b110c0e80712191ecb3daae','6b646c0fa7634192de44a6940ae4a2a0','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6348973ab59bc99813eff1b95bce1f','6b6b53ff8d23c9203456a8f0a0db6886','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6bee18a1c0285450a919c8dd70d208','ff8d23c9203456a8f0a0db6886','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b64ce6468d8613ad3b7879538598d38','6b6b53ff8d23c9203456a8f0a0db6886','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b624cf6b44f6b07a7974058e8a78273','6b62bb34c2ce323f0993cb64d8ec4f8d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ce3b12ca90dd55c6f7de06623cd66','34c2ce323f0993cb64d8ec4f8d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b63458a473a9fff78849ce2a62b8654','6b62bb34c2ce323f0993cb64d8ec4f8d','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b67ad1adc656109004a77fc06635b2a','6b6ab7fe23424897e6eccab305c2dc5f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6e282049e43430d47fc30bb3370557','fe23424897e6eccab305c2dc5f','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6ed9f3259f39ca7348e91d7e2754c2','6b6ab7fe23424897e6eccab305c2dc5f','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b60bfd2f9a971efd78267fe3e656aed','6b633d215e282c4478fb1d60e48e1e4a','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b61dfca70f92d81bede861889de2fbc','215e282c4478fb1d60e48e1e4a','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6c3fe904b5e874309f7d90db4c01d8','6b633d215e282c4478fb1d60e48e1e4a','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b62b371ab96ab4892d503442d435a30','6b650b39cd4fc636f66a5b08c3067f35','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6c0aca94e45092f6ac8df166fa675d','39cd4fc636f66a5b08c3067f35','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b617864359c4d063a52ab35227a8975','6b650b39cd4fc636f66a5b08c3067f35','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b67ad48c06b0b0796078caadf7f0aae','6b65ab29aad7bb8077128bbcc8d0ad07','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b64167f6c2fdd085609579ea5d996d5','29aad7bb8077128bbcc8d0ad07','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6f66b3251dda83c22db27c685802a5','6b65ab29aad7bb8077128bbcc8d0ad07','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6ee4d5b980fe9f4f4b5beceab1cb44','6b690e7da7f7d9c1eb22eb3d110f2cee','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6d004073959d9befc7fcd2805b12d6','7da7f7d9c1eb22eb3d110f2cee','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6b14e9771756f65a12580d7c58e4ea','6b690e7da7f7d9c1eb22eb3d110f2cee','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6590a57a9171cd007f90eab59ae615','6b69d4c9fe9bd15cf41ea65cb682d988','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b667b019fe8d093887079b3188e4f3f','c9fe9bd15cf41ea65cb682d988','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6ab530198907ae8fdaf362bdb10a5a','6b69d4c9fe9bd15cf41ea65cb682d988','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6aad934d72ecb190c69da23a8d3922','6b6c3e7137bef887ed947476209494ac','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6a73b9ec9b519fe427e7920fdb0314','7137bef887ed947476209494ac','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b62c6acf1d69cb606a0677ffe38acdb','6b6c3e7137bef887ed947476209494ac','6b6e77de7a04de54f1aa63cfeca2f487','Used',0,'','','','2016-07-19 14:11:15'),('6b6340db3c860b43108561627be6dda4','6b678617420cb3f943f0d4f96d491caa','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6347d8c6e531be5959b019e55045fd','17420cb3f943f0d4f96d491caa','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b66744abc997b060da22f3ae14abff8','6b678617420cb3f943f0d4f96d491caa','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b698ea497cc07d803a02cfaaa0933ef','6b6003e77b8e1e2f5380001c2f31e3c3','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b650c6bb70d0818e88a42130824714a','e77b8e1e2f5380001c2f31e3c3','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6bf62648fd949367e498581ef9fe7f','6b6003e77b8e1e2f5380001c2f31e3c3','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b660b64c1b30699d138f9dc0eef9903','6b6a128d8052e9c7a2622020ed469fde','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6905414b4549deda0e241414596ece','8d8052e9c7a2622020ed469fde','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b69f31051e2d6633028e6d9d3c5d2f2','6b6a128d8052e9c7a2622020ed469fde','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6d69d11ca20c863a3d773e6b10c46e','6b640745f395619b2cd7399447397429','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b6065074a3b48832feae74fc4d2a5f2','45f395619b2cd7399447397429','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6b83179a6f283f9aa2762d2d057d2c','6b640745f395619b2cd7399447397429','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b663b6b81e5596dce98f8a2085916c9','6b698c33118caee4ca0882c33f513d2f','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 30',0,'','','','2016-07-19 14:11:15'),('6b601332be9b93eb6696749de5746ec0','33118caee4ca0882c33f513d2f','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6e28433d909d4924bf9ac4d92e731f','6b698c33118caee4ca0882c33f513d2f','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b65a884194d6bae0d46937b58810c4e','6b6cb6bbefb49c60cecded0f9c469e99','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b650eb976d66e4b707879a61f193a95','bbefb49c60cecded0f9c469e99','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b62c494f33283b19627036fc7404e21','6b6cb6bbefb49c60cecded0f9c469e99','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b673a9613e3ce4be346902c2f3b7f31','6b6583ba63f51f00c02de40ed3af8c6c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b6c4e9c6f1570919798bd1d829f4ca8','ba63f51f00c02de40ed3af8c6c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d354f52de0f428783d6d039866363','6b6583ba63f51f00c02de40ed3af8c6c','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b682d90011c6cd994f33250922b1159','6b621d8a5db809b602a19728daf4ed86','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b648f9223210284a1da8c2506e96eb5','8a5db809b602a19728daf4ed86','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6e2235bc1d06436a3355dc61b95278','6b621d8a5db809b602a19728daf4ed86','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b611b150991fd6d7950e0a7ec179ccd','6b66cc12510e76ec75eda0427f6fe2c5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b634e6b10ad5b98751dc4667a56783d','12510e76ec75eda0427f6fe2c5','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b640edd6d0f8ca9fd225770e16bda9c','6b66cc12510e76ec75eda0427f6fe2c5','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b64b66e428c17b9a01da339b65c234d','6b656541e0597988f1c10d94d805a150','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 32',0,'','','','2016-07-19 14:11:15'),('6b635c8bb5b8d733b058f09462ce6969','41e0597988f1c10d94d805a150','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6eb2bd5eb94fc50f74e4956c403f64','6b656541e0597988f1c10d94d805a150','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6bcedce020a256f484f3cd4fa9fac5','6b63eeb197d156848d68e9c139b63b08','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b63374b13f333771645fb3b063e7ba6','b197d156848d68e9c139b63b08','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6a5ec65cda3ab9a630548b0589e454','6b63eeb197d156848d68e9c139b63b08','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6259acb61d7c27ca23cf43f4d8285f','6b6391295d1684af0978588fdd5b933c','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6e87268f1f0919bc4403166e852b4d','295d1684af0978588fdd5b933c','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b64d204d42654dd5d00b2db6bcd7cb7','6b6391295d1684af0978588fdd5b933c','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b656723bb4978546e66b44da69821c8','6b69504443730c874d56330a8f82481d','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b637a3c4b7ac6932cc42712a6535bad','4443730c874d56330a8f82481d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b66cd5ccaf6a210a304bb60ceb0dc58','6b69504443730c874d56330a8f82481d','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6d3e3bd709ab0123e0f238dc193083','6b6615c46c0715107388531b95d845f5','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6d0ef1665bfc743e6ba14384c10477','c46c0715107388531b95d845f5','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b64b7c2ce26ceb69cd63634ae20623d','6b6615c46c0715107388531b95d845f5','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6e5affe2b043ecb176fc5edee373f1','6b61e50aa933a96b5f6d0572d0083948','943d32fd45d6eba3e5c8cce511cc0e74','W 30/L 34',0,'','','','2016-07-19 14:11:15'),('6b6766545c4f5447afc4bb7c09140359','0aa933a96b5f6d0572d0083948','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6340606054f3891bb004e7457e16dc','6b61e50aa933a96b5f6d0572d0083948','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6e2031ab8099e105f8a23a4953fb4d','6b64cb975dd86d67053bf7393d4e72ce','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6404a39c07152c6d55ed8d8d4e34bc','975dd86d67053bf7393d4e72ce','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6403265f30f60e9a6b4c97ddb366a0','6b64cb975dd86d67053bf7393d4e72ce','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b610f6289a929a8db43776dbe833bbb','6b671a235912d98d898510d07d7266b8','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6df5f0c1b6cddc61eb1b6e23a8c277','235912d98d898510d07d7266b8','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6fb3dac3af0cfc5d6f5fdd3da830a1','6b671a235912d98d898510d07d7266b8','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b69f51703332cd33b28d5d5ef32ed14','6b6349e9e96c8b0bfbcd450f811b927f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6f642292c38f677d1bec3122785cfd','e9e96c8b0bfbcd450f811b927f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b68065d3a6e0935561c9bf72c736056','6b6349e9e96c8b0bfbcd450f811b927f','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b68c8ca104dedb3fba625ba0563142e','6b6e9cdecdef288f2fd178f3ddbd4654','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6797be8b4acbbba92bd9ceef97363d','decdef288f2fd178f3ddbd4654','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6e2a34ff22b874d296c80e2473b50c','6b6e9cdecdef288f2fd178f3ddbd4654','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6f0ac33480579014d4c535df2bfe44','6b659450811fff23b791328dc6e6260f','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 30',0,'','','','2016-07-19 14:11:15'),('6b6fee25f3d2de30137681c2ceef84b4','50811fff23b791328dc6e6260f','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6f455d6bbebe17d27af324c4097905','6b659450811fff23b791328dc6e6260f','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b60c0bcf669e86e5cecc927b5bb481a','6b6fb953360af172a90e5e53bc4e2d01','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6d1a7fe8659608f03f74445be2ebad','53360af172a90e5e53bc4e2d01','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b0be5feea96ed0982555cd120608f','6b6fb953360af172a90e5e53bc4e2d01','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b691d52a2e3a24e36b438c07409a2c0','6b6d843d49b15185b3ef633808477fbd','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b698378ec7db223056e45fb63461726','3d49b15185b3ef633808477fbd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b68ec33106aedc92102783831b0cea3','6b6d843d49b15185b3ef633808477fbd','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b646cf00bee975621a89bbe71557ce3','6b6801c7186376d9125965a40f82e848','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6e9262bfe2987be883a660f6de23e1','c7186376d9125965a40f82e848','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b67495e459a10728ca6dedd161353c5','6b6801c7186376d9125965a40f82e848','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b66554ceb89604b9e57d4290cb4d2c6','6b68e12dad243b64be0a7b2999b14085','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b6a4b673d0ceaa35a25cda184a994c8','2dad243b64be0a7b2999b14085','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b680666b91295e5d42bc7e8282b6800','6b68e12dad243b64be0a7b2999b14085','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b62669c2977e778a54ecd101855bdad','6b66f4b02ad619cdadb7ea04b6c19cc2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 32',0,'','','','2016-07-19 14:11:15'),('6b66aef782136974a9489839f2cd4f40','b02ad619cdadb7ea04b6c19cc2','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b60e28d29f626e96c5ef48ac55fa036','6b66f4b02ad619cdadb7ea04b6c19cc2','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b640fba48d9fcd0172be5edab209442','6b6019bfe1f1806e4d86b171e29c7354','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b64b9a292af3c2ac6f9443789b71629','bfe1f1806e4d86b171e29c7354','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6ec9ce211f82a976c134741f6f55e5','6b6019bfe1f1806e4d86b171e29c7354','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b60e3888c66ee910853b81d0467c86f','6b69eae5bc0a5f235a00f87bef2dd0ea','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b62cbc03f10c434e07edf0cd275897b','e5bc0a5f235a00f87bef2dd0ea','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b61657b823ce62766965b905406e1d0','6b69eae5bc0a5f235a00f87bef2dd0ea','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b62dbfbb43c527e732855fd0a85c004','6b69dab619bfd2579c342c63b8a065ee','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b688055a77a581cc76d72e34e6ffe7f','b619bfd2579c342c63b8a065ee','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b63cc09b7e7f335cc9d469eccca5d3f','6b69dab619bfd2579c342c63b8a065ee','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b62bd58cce386e924196af5cfd8d416','6b6460389fc2786880aaf5b7b82c3ac4','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b6a6fd2454a1567dafa89795bd5f067','389fc2786880aaf5b7b82c3ac4','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6384dfd2598db8e5cd2d2a1d9d2e90','6b6460389fc2786880aaf5b7b82c3ac4','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b667a4e3fe739386dfed7da412db64a','6b6c47c6c6ba8efe012dfb9fa7a862b2','943d32fd45d6eba3e5c8cce511cc0e74','W 31/L 34',0,'','','','2016-07-19 14:11:15'),('6b622b7cb51457928945e75a6559ad3e','c6c6ba8efe012dfb9fa7a862b2','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b66ed3daad8924d148ffd647963444f','6b6c47c6c6ba8efe012dfb9fa7a862b2','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6b0349122ba5e09e187e543284e7a0','6b63fe7633ce058b9a19e3404b91f63d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6cf358ab66fc7d549305b1c39b7133','7633ce058b9a19e3404b91f63d','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b68accb67c3d0f79debd875876e1263','6b63fe7633ce058b9a19e3404b91f63d','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6d9524556d7631aa3c444082d129ba','6b66639d400bdd19f76ed54ceb14ae96','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6c0b3a75deaa136f510010afe21d1d','9d400bdd19f76ed54ceb14ae96','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b608cc32d9ee6e22ab8383f3bfa00ff','6b66639d400bdd19f76ed54ceb14ae96','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6627de6c554bb55a0cb5ec341e4893','6b6883ad889d576a9f4da1723b273657','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b627fdc4afbda4eb5b8a04aa3342633','ad889d576a9f4da1723b273657','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6a7ee1bce8c3f3689c485796b733c1','6b6883ad889d576a9f4da1723b273657','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b68170ec0f3667fddc5e1499a9e029e','6b691aaa336b7144faaeff63bca81883','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6667bd5d4d17d4a8c3211bc8374b88','aa336b7144faaeff63bca81883','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b63dd04c5ff7984ab366a54c5dcd1ba','6b691aaa336b7144faaeff63bca81883','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b608cf33d9f665501a3ae75a97a87ff','6b681be87aaa048aabf7130dbe2068d8','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 30',0,'','','','2016-07-19 14:11:15'),('6b6ecad44b5ad0e58cc68c9c17233ea9','e87aaa048aabf7130dbe2068d8','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b682de26bea35d27c8653de25643e28','6b681be87aaa048aabf7130dbe2068d8','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b68069eaca5850a3d6b7d6a55d51f6f','6b6495f1a76daa5c3d9828ba50c0364b','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b68af58dcb6916ea1652d89f5cd0283','f1a76daa5c3d9828ba50c0364b','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6178684a636ebc474652455827a21a','6b6495f1a76daa5c3d9828ba50c0364b','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6f732df934e87f7c739e5012225cbf','6b656e718a5ca57970f6a18d5b69d2c9','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6fd84a110234034fe03334ffe957c8','718a5ca57970f6a18d5b69d2c9','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b69a32cc4ff206aee6f84a97d320c38','6b656e718a5ca57970f6a18d5b69d2c9','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6512ab035ccd7d80c8a8fc3ce9eb35','6b6b3208cab03260712cd073e406391d','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6ceb25ef47af17db43f3508d3ea349','08cab03260712cd073e406391d','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6328f2d3069d81af31b3c88f24c910','6b6b3208cab03260712cd073e406391d','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b648c01906f9bbdf2ab82f33b81921f','6b64921bd7ba717bfbff5e4a8cb03bed','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6db1c7371ab87a2784dec4260a9066','1bd7ba717bfbff5e4a8cb03bed','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6cdc1df11baa402c229e1f7b86a424','6b64921bd7ba717bfbff5e4a8cb03bed','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6dfa322a601bf956afa5c04dda717b','6b6083371005843bc8c3385a85ccb4ec','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 32',0,'','','','2016-07-19 14:11:15'),('6b6b32bed99213327ea157f23f812941','371005843bc8c3385a85ccb4ec','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6b619c9d4c7f4f1d9f69a547b81b98','6b6083371005843bc8c3385a85ccb4ec','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b688a048cab260b051e7bc454c68c7a','6b6f16ff19cfc38e378c4c7a845932c0','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b66cfc70635306a32822a91315680c6','ff19cfc38e378c4c7a845932c0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6c6b1ae916701c27ca21713b5c4f83','6b6f16ff19cfc38e378c4c7a845932c0','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b619cec84966b67f11934a6aaabf192','6b6330477d650bb63dc1114ae6b1aa44','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b60cc68c876259f8242a59254742c87','477d650bb63dc1114ae6b1aa44','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6bb353e30b74105b780d17ab5bb4cb','6b6330477d650bb63dc1114ae6b1aa44','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6e2d6854c242d52255f8e6d7c62d79','6b65015dd60260d14973fe91fc0674e0','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b664994d8a7f9089067306b60e585b6','5dd60260d14973fe91fc0674e0','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b697b4a9cdf8c7f8b2afba2362a80c1','6b65015dd60260d14973fe91fc0674e0','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6a6d65251f9b7aa44dd25b21c1c554','6b66a947ac2383e738bcd9f4d8ce5aff','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b675310721471a565f79a20b0122a52','47ac2383e738bcd9f4d8ce5aff','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b699e69b0bcdb1a2c644ea5240c06fa','6b66a947ac2383e738bcd9f4d8ce5aff','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b65148bb4772a4696b086dfc78b46aa','6b60e17566a9a3cb22ab6a02d1a19b79','943d32fd45d6eba3e5c8cce511cc0e74','W 32/L 34',0,'','','','2016-07-19 14:11:15'),('6b601767347640d09b1294391550359d','7566a9a3cb22ab6a02d1a19b79','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6cd67ddb158f60b7014f8926570203','6b60e17566a9a3cb22ab6a02d1a19b79','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b681e3c39596a4de8cec29f076481ff','6b6912689dff60d48dc9ddbdf5cb7b05','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b62bc4f7ad2543e05b7d3e89d8ad031','689dff60d48dc9ddbdf5cb7b05','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b66a967dbf594a715f60f249474c6d6','6b6912689dff60d48dc9ddbdf5cb7b05','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b61c238783404fbedaea7390f424cc6','6b6e1d1279b7200d3fc1804372d41050','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b641b618621df9c704d21c9d3fbf078','1279b7200d3fc1804372d41050','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6f8f0761d057e1223fa5c019f05b22','6b6e1d1279b7200d3fc1804372d41050','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b63480db39ca41ba98aa034bc256d54','6b68b826432f098f1649df2aa2134c44','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6249f1ec8b5b33d79f0edaace40202','26432f098f1649df2aa2134c44','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6cd55f5ba86f6dd6a6b88ca537cf8c','6b68b826432f098f1649df2aa2134c44','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b619a07cdfadc18b8e4801528e7fca1','6b68cceeb63e8eb9b57af5a1ff1a4f7c','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b6f891b4c687e9be83f9930e1b49334','eeb63e8eb9b57af5a1ff1a4f7c','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b64ebe112d676e0cd8bc5db6c240814','6b68cceeb63e8eb9b57af5a1ff1a4f7c','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b64f5116ddca72d3824907c0c39035f','6b6053b5460127331e9e433cb09cac1f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 30',0,'','','','2016-07-19 14:11:15'),('6b61efcd654f7a04192f2804d6cb4572','b5460127331e9e433cb09cac1f','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b65b629613fbdd982940c221eeadfb8','6b6053b5460127331e9e433cb09cac1f','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b66e7d27da04eb62fbd82f4a026489f','6b66bc6affdb0a3124d6f3eb4e390455','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b60c4dcc8c3bd0c921e8ba353a28eb0','6affdb0a3124d6f3eb4e390455','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b32768838271070872d235f3caf18','6b66bc6affdb0a3124d6f3eb4e390455','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6cb735e19ac0ceac30c0ffaace0dc3','6b61cff3d809b120b92eae62c18816a1','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b6e7583e7507e8ad73c2de2d751c6fa','f3d809b120b92eae62c18816a1','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b69f17a77fcb24fba60ff2eaeb4f404','6b61cff3d809b120b92eae62c18816a1','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6dd175f78dbf60d995bc42f776b3e4','6b6cd81cd6cc48a5ef8cee0df5456bb6','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b63ec0b0052d6251cf0dbc5de9b444a','1cd6cc48a5ef8cee0df5456bb6','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b682fa5bdad4a381a005702bcb09075','6b6cd81cd6cc48a5ef8cee0df5456bb6','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b686887a2d761626f2eededc6a845d8','6b62fa89315ba6bbc485972cca1f191f','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b64ae6dae89e31d2e4ffaa0ca92b78b','89315ba6bbc485972cca1f191f','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b673d17b160e57348831b4175055076','6b62fa89315ba6bbc485972cca1f191f','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6cabc00c6113747ac78c262e45daf8','6b6ad7c1835d1266f7abb4f0dfbe8d82','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 32',0,'','','','2016-07-19 14:11:15'),('6b659af0283f31ed43dbbd3a09f4a6a2','c1835d1266f7abb4f0dfbe8d82','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6b6c2daaa8611aeaabe32aaf79bc0d','6b6ad7c1835d1266f7abb4f0dfbe8d82','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b62751846114ea5a845cf0fb7fdddd8','6b62aad75dc4364081d8b0be825203b0','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6426e1c400724cb8a73eebcbd715be','d75dc4364081d8b0be825203b0','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6d5c9778c3057474f92b5d99f62a4a','6b62aad75dc4364081d8b0be825203b0','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b66bf20eef723a6571eb0ca8825914e','6b621a1ecd0b707dea19b643f4cb091b','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b64f51ca0565b2aa23ef4e6fac0086c','1ecd0b707dea19b643f4cb091b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6fc6ada071b3a205fc8aa1346ba014','6b621a1ecd0b707dea19b643f4cb091b','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b670efc957dbef24594fac27746bb05','6b6d1b7d475f2526b3be13c7dc893cbe','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6f6bceb42591a2f49526c285f7e4db','7d475f2526b3be13c7dc893cbe','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b615120934028f25c8555be16b36bb3','6b6d1b7d475f2526b3be13c7dc893cbe','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6b8d9035738196453d61e368d5be2d','6b6fb0d352a7f0f0ad76f40607aa9708','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b63fb211f6c63601de361e4752815e9','d352a7f0f0ad76f40607aa9708','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6a4ba5df1b59203362ee6cee2d0761','6b6fb0d352a7f0f0ad76f40607aa9708','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b6b22bdfa3118baf7e17542cf6da386','6b692a410093a9c7772bcf56be5c1a8d','943d32fd45d6eba3e5c8cce511cc0e74','W 34/L 34',0,'','','','2016-07-19 14:11:15'),('6b6ef5073b6f82d3b3571f84420c2e41','410093a9c7772bcf56be5c1a8d','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6dd6f4612c402ebf8638948f5b9dd7','6b692a410093a9c7772bcf56be5c1a8d','6b6e77de7a04de54f1aa63cfeca2f487','Predded Green',0,'','','','2016-07-19 14:11:15'),('6b669046e67bca04ed2933532cc8f911','6b643aad27c4ecd79eeefb2f0e1ab3ae','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6cc538d88ebb32c52643971a2129fa','6b6d82213a358c396beb46db58d75272','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6627c1f34aeb5ab8502b51bb18bf62','6b6f2f6b7cc23c379de747fa38e95ed4','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6666989a4775d8f07ab5bbf9b71641','6b6957fa4a52fde76dc8184a1400f0d3','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b63d452fcc0e02eab1de65636539b1f','6b6bd811f3fe881bf890084de1a40c02','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b66d9919967d0f53ef4d7ed32d5e993','6b643aad27c4ecd79eeefb2f0e1ab3ae','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b65d0d268abc4663eccfccacafae828','6b6d82213a358c396beb46db58d75272','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b68722d02ce9f18ab2c254c080a20e3','6b6f2f6b7cc23c379de747fa38e95ed4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b612f156fe86df964cc8467f550bebe','6b6957fa4a52fde76dc8184a1400f0d3','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b139785ffb7e3aeb210b12f8acd3a','6b6bd811f3fe881bf890084de1a40c02','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6b5ae2859e68fffd03f2912d71b075','6b63c411baf377e8dc2b12d0f10730d4','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b628dcced41e6b29761b83f17fe35c6','6b63c411baf377e8dc2b12d0f10730d4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6addc496d216e495b774894ebdfcf1','6b60fe203a480f5471d62859786635df','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b61f8119f473cf28222b031923c4480','6b60fe203a480f5471d62859786635df','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b65239c9873ec61ac800eadc376aa7c','6b67d1f48b0e4c12a8ca25a291d1eae4','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6db6db8b90a2a9e4f337fcd1083fc9','6b67d1f48b0e4c12a8ca25a291d1eae4','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b60cf2c16aa34c34f2d13c150356864','6b6f8c444a04027d61defaa33b50deb5','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b654b780ca6101d2459de621f2032c1','6b6f8c444a04027d61defaa33b50deb5','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b64d98405ef4e9cc69c9fe884710b12','6b65f493a43c97508fc8e39bf9b92fcd','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6dce269b8135da6f3d6c9ab111ec94','6b65f493a43c97508fc8e39bf9b92fcd','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6a5fff10a8f0d8345586b35e8574cf','6b664d4295b7b8d141e03132ec72062c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6b13c812a06846bab680f306d782f8','6b664d4295b7b8d141e03132ec72062c','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b60255593a12bd5025a8ed7c9f53ac5','6b66d734cba19d0ea465bd827bd99575','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6b3a8e79bd50193b096ec0b1017fdc','6b66d734cba19d0ea465bd827bd99575','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6b5aae1d80167475d10e0d4e438a24','6b61fe1e5e33d42a1a7778ebc75e28f9','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6a82801cd4f63aeba636cecfba60e9','6b61fe1e5e33d42a1a7778ebc75e28f9','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b603b9f475f2ca0c8cf7d545007a7de','6b66de70718d91f0d36f3d79c4324aa5','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6b26592c2404323fd41ef9fff3de96','6b66de70718d91f0d36f3d79c4324aa5','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6c95353c3176960454221da50854fd','6b60d3cc622fc3617d72b7c2c5c926c6','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b68eaf5e0f34cd4ea8725624a09ba37','6b60d3cc622fc3617d72b7c2c5c926c6','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6c497abbb1318334555c23112b4a14','6b65d11aa5f91e5a1974363160e3809e','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b68aef5a86c0ee6a9034734c89e826b','6b65d11aa5f91e5a1974363160e3809e','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b65c9be8daedd5ededd575036749bec','6b6d15dd1052795281d4263a6b088203','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6f3018aef3aaebeb4f7d581f613fc0','6b6d15dd1052795281d4263a6b088203','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6d7653c29100a54cd81db24ef182df','6b63d11a538ddb354e2977586acce54d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6861369e28217472ff25f5cb166f78','6b63d11a538ddb354e2977586acce54d','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b62107d5041c5ae888d2984e3da84a7','6b682b13de2d0b868c0eb6979aca6831','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b637aa434df12094d530316aaa2075c','6b682b13de2d0b868c0eb6979aca6831','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b62d7a48076a6a3e0c76d608716d773','6b664aecb5dee2cec880b849be9f022c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6dcfab5f535e195028715cb0ea83e3','6b664aecb5dee2cec880b849be9f022c','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b623a57de6f39c41db4617eec568e35','6b677b3d8be778142ef0ce4a71aaf72d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6eee4fbddec5214bfd00ada6651b43','6b677b3d8be778142ef0ce4a71aaf72d','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6895becc3bca1e3f1620b454ba3f82','6b65fc4a422bcaa76197c80db4cfd51d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b625372818c1806ad0f3160ed6f40c3','6b65fc4a422bcaa76197c80db4cfd51d','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6f3a522aee14b44becb5639c6be6d2','6b6f3c04d930e3246cadc809f592f76e','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b611acb4db00dc08459cb0e09b8bfa9','6b6f3c04d930e3246cadc809f592f76e','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b685c1563cf5a34b057913415a75147','6b6e33037c6a6e4eb13cf936a6b63dee','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6b95f8f93a16689f8e7f9c41165422','6b6e33037c6a6e4eb13cf936a6b63dee','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b69c06ffcc3b0cba8b938c7eea9a2ff','6b611ebb645f2baaeab8cad5bfbf8a09','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6c78bc1262eede62d011dd503db2b7','6b611ebb645f2baaeab8cad5bfbf8a09','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6dbd31099b11182197205ed939454b','6b660e2ac4d79901d9367c490f4f7cf4','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'XS','','','2016-07-19 14:11:15'),('6b67922129e7b59041ad004ff6833a05','6b660e2ac4d79901d9367c490f4f7cf4','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'Clover','','','2016-07-19 14:11:15'),('6b67219025b9f6016621fe1304b3834b','6b6379a9e39321be9bec6b120ca2ae6a','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'S','','','2016-07-19 14:11:15'),('6b6987128e59c749f2aaabc9af87182c','6b6379a9e39321be9bec6b120ca2ae6a','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'Clover','','','2016-07-19 14:11:15'),('6b6a7b4ff83eff69f8a57510610cff23','6b61c8d544b8fa43b40db907e8520575','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'M','','','2016-07-19 14:11:15'),('6b66967958e417d9dcc6465718e677e8','6b61c8d544b8fa43b40db907e8520575','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'Clover','','','2016-07-19 14:11:15'),('6b62d6c5bc00d8c72a413c3faf0440ae','6b65c65f6dc3a692821776079686a9dd','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'L','','','2016-07-19 14:11:15'),('6b6bbcb5a2fff4ecdbd70e54cdd30140','6b65c65f6dc3a692821776079686a9dd','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'Clover','','','2016-07-19 14:11:15'),('6b66229a2c7d2a2168b6b65b298b292c','6b679ba1f246d4de2e569ce37a2cd666','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'XL','','','2016-07-19 14:11:15'),('6b6ce1496c5bf928260d647307a5b3c3','6b679ba1f246d4de2e569ce37a2cd666','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'Clover','','','2016-07-19 14:11:15'),('6b638fac3a81f0a9afab87f6ca49cf4f','6b638d6f1f0e86a0d5ecfc8c7d952711','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'XS','','','2016-07-19 14:11:15'),('6b690fd0fe0d96a1f02e8a6abb0177e9','6b638d6f1f0e86a0d5ecfc8c7d952711','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'Violet','','','2016-07-19 14:11:15'),('6b6b3ee884224d49052d22c3a04b7cd1','6b6845d4bc4d899ebb9310d12210ad30','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'S','','','2016-07-19 14:11:15'),('6b609aebc7d8658b87237c92edb8a6b3','6b6845d4bc4d899ebb9310d12210ad30','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'Violet','','','2016-07-19 14:11:15'),('6b694a5ad54272d959f1f2f7f1168528','6b656e13b102aa6c58288a704f53b16c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'M','','','2016-07-19 14:11:15'),('6b693f8d55803b71340889c32c00f49e','6b656e13b102aa6c58288a704f53b16c','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'Violet','','','2016-07-19 14:11:15'),('6b6690b2e2ac835b020ae162b0cf2c9a','6b6d966c899dd9977e88f842f67eb751','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'L','','','2016-07-19 14:11:15'),('6b690ebbecf436e3671322c3618fee6a','6b6d966c899dd9977e88f842f67eb751','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'Violet','','','2016-07-19 14:11:15'),('6b68b1afbaa4e003f0765bef65680f01','6b60d3cf6bcd898b1b66174b1cf66fd9','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'XL','','','2016-07-19 14:11:15'),('6b61fda1b708d4cfe8fdffc53df6f9e2','6b60d3cf6bcd898b1b66174b1cf66fd9','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'Violet','','','2016-07-19 14:11:15'),('6b6ee95bd0095ee30a71b05fa83318cd','6b6ca3b551acbf5b2b0e6e44bfd4e2b1','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6eb236c27b86966c1e20084c2687cb','6b6ca3b551acbf5b2b0e6e44bfd4e2b1','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b64f8f292bda675f7a7f58a993b5c88','6b65397ef48805a1146c55e628b0b550','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6c70829663593e84403054c34a2923','6b65397ef48805a1146c55e628b0b550','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b68bc88beb70b4bee2ae319d7e38e0a','6b6d9271089e858450b97edc2c4a18f9','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6befbc9349568fe75d295a8e61e53a','6b6d9271089e858450b97edc2c4a18f9','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b6156439ea7ea35c713878c44db5ff4','6b6479b233f196eb29a07cbb60ed6b61','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b66971128dadf5c43fb63b618d48af1','6b6479b233f196eb29a07cbb60ed6b61','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b6d0c0e9c98fddef86b326c7e094261','6b646dc25b3e05b36dea95bf1fdcd8c4','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6ac16b477d5667a93b11b41d7c6d50','6b646dc25b3e05b36dea95bf1fdcd8c4','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b6ab7a47a9cf00cf988e0f7628f6d47','6b667c30791dc05dfc0223038beeff74','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'XS','','','2016-07-19 14:11:15'),('6b624ce485c0dd07b449ca220a44bb9f','6b6cd2c22befa44da8b028c709eee944','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'S','','','2016-07-19 14:11:15'),('6b619d6cb842abfd5b9f73ba596152cd','6b6f9f7dc5b17d9b555db96a92eeb7a7','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'M','','','2016-07-19 14:11:15'),('6b6a7e8eabd486f7a900cacf93d49782','6b658df8dddb9f924f2c0cf52c716d0a','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'L','','','2016-07-19 14:11:15'),('6b6e251a0a750c99d208b17c4b5e34bc','6b6da1c656d89b5eeed486e355460d16','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'XL','','','2016-07-19 14:11:15'),('6b62400c4f5f720cec5e2fc0ccb05a5a','6b667c30791dc05dfc0223038beeff74','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('6b6ccaa90c8c8fdf28afbbd8b3eac19e','6b6cd2c22befa44da8b028c709eee944','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('6b679423eef45e42a7fc624a33de9588','6b6f9f7dc5b17d9b555db96a92eeb7a7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('6b6ad5ffe418c4beda588141c978c6cf','6b658df8dddb9f924f2c0cf52c716d0a','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('6b6bb98455dd55f9a308f2a5e634a238','6b6da1c656d89b5eeed486e355460d16','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'Black','','','2016-07-19 14:11:15'),('6b69dbb5e18acbee1822c6dbf4e5e656','6b66b8ae770f35abb390973d31a98228','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b69c4715c4239a9a8c3e61dc56028bf','6b66b8ae770f35abb390973d31a98228','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6533dc7721e467c337279e0a938521','6b69bf58761930f7ac42f175ff1ff579','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6eab31445a7e62342650eb0103cbfc','6b69bf58761930f7ac42f175ff1ff579','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6bdd2b88afa4eb4d49b5fb5b6a95ce','6b61fbfc2bbb35ff4987144372e3ef33','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b63210eea01754cbcbd3b7cacbe954b','6b61fbfc2bbb35ff4987144372e3ef33','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b60008a24d798f1eb6a46caf7d0b362','6b6b2e3c910874a5e3f06837bdb64547','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b626636deb325fe20dbf916219b0358','6b6b2e3c910874a5e3f06837bdb64547','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b605a39091d311ca0791de648136011','6b66cce9804c0af6e9c83cc9520ae63d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6b7abbb147d4fad3896578ea36604f','6b66cce9804c0af6e9c83cc9520ae63d','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6534aa740a5ac8df90bdf6a2670b54','6b60d24d712ec71db336e7eaf1c4f55b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6079100679aceca2ff5e1d0ebd33a9','6b60d24d712ec71db336e7eaf1c4f55b','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b69f8726ce6d24ea5deafe83c7caee9','6b6a6a5203b22d53eb56213804fe592f','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6bd7e50b51e6c2df60faddeb57714c','6b6a6a5203b22d53eb56213804fe592f','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b639ef40bb384f0cabea85d28ccd0f5','6b6af988f0ccbc0874bd8ffef8aa78ff','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6d81414f48c3114fecae587682207f','6b6af988f0ccbc0874bd8ffef8aa78ff','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6d8bd21c5def115577d30a3253f69d','6b683d3019dab7cf9853c1db5c9faf57','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6dfcce64891a4fa72614de34646946','6b683d3019dab7cf9853c1db5c9faf57','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6727798936b7987f5d2150ebec4c60','6b64a34c48f00564e527d24f47bf869e','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b646639104210e6e10ec9d4115604ba','6b64a34c48f00564e527d24f47bf869e','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b68f9bbee728b89bd98191887c9d816','6b6c98a1716ee0bb8bf0c0df9ebde2a3','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6d24a397898fa7cf9bfa4d7b370276','6b6c98a1716ee0bb8bf0c0df9ebde2a3','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b645cd08bf718d456d6a321f323d86f','6b6a0708eeb1225b877f3385b68b0dae','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6e0e97a93c82c6ce9a440c9965c2cb','6b6a0708eeb1225b877f3385b68b0dae','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6097728959004680d9274306f150c0','6b6b21f4969fef8851871195e6f35b0d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6807bebd7087a2048e3386887affd7','6b6b21f4969fef8851871195e6f35b0d','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b688f6d94a9676cc8995912d07c0c51','6b6e10a81a44f6042d0f5ecab5ccf740','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6dd1fbd616ad4ae36bd632cceba6a2','6b6e10a81a44f6042d0f5ecab5ccf740','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b62aa5d0c0bb753bec724b8ac218437','6b61326a5973c22a5b7bd0cabba3f6ca','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b63264d63fb0cf60db04baf6789f420','6b61326a5973c22a5b7bd0cabba3f6ca','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6f1ee21284adeb83ca60191f9b01b6','6b691094d20625524858d322275b9280','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6d0a9d079a7225cce92ef190e2f7af','6b691094d20625524858d322275b9280','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b682d7f564ce6c87a8f0766dbbe75bd','6b6e6cd3967aae63cb0bcdbf3556f4d2','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6ae7bbbc9075a3803432b78a8af9b9','6b6e6cd3967aae63cb0bcdbf3556f4d2','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b676d2dabe0d81419d45c1fd01209e7','6b62ff11912008a5a0278826c830385a','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6a31d84b9832f2654128cc0415927b','6b62ff11912008a5a0278826c830385a','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6589e9c74179d4780c7ab26248bbfd','6b64cdb4e14f292d21d2003489ba4b02','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6546932a98866c2483d5d47af1b18d','6b64cdb4e14f292d21d2003489ba4b02','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6586f287c56dd143f484350a44fc2d','6b62af397792b3f921d6f490a31a9b57','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b63838b36e366a9dd217ac11a89a55e','6b62af397792b3f921d6f490a31a9b57','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b671d88d2d40b5d6dc5ae1959326169','6b65c1610b292f076116595670b98fef','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6726bcd293bbe0f0206045c0f3a72d','6b65c1610b292f076116595670b98fef','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6d2de150c950d3781b843ff4f2685b','6b647c7bffdd66c9ecc55d276766292b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b65c52ce52e583e20435b6e227a7a21','6b647c7bffdd66c9ecc55d276766292b','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b67ac9367289c215ef9947f044bf309','6b696bf59d0586888a2a8766512c803b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6716b062a8071354e8d96563bcd3d2','6b696bf59d0586888a2a8766512c803b','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6c3abe807ff8486e7dc4753148baaf','6b6802dd009668bd613d1798e93aec6b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6977222d83ed107d03f817a803b286','6b6802dd009668bd613d1798e93aec6b','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6d9de32e80572b8223f969681925ce','6b688bb3a3f88a944b6b9ed510cbf80f','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6862a014c0d51b1211c411f6b7d76e','6b688bb3a3f88a944b6b9ed510cbf80f','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6b35e19a0e7873b6fdb09276195c23','6b6f97bfde19af19392e1febebe0fc58','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6dbbf0b815330921eef087ce52ba54','6b6f97bfde19af19392e1febebe0fc58','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b69ad1da0019c36217ddaf48bc8cbbc','6b62efe48162b9f62352a4573f0aca6d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b609e965f925ee75ea49eb0163f3636','6b62efe48162b9f62352a4573f0aca6d','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6a6381c334fcc47b9fbd81512de3fd','6b63406939572fac9673f31807098b52','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6efa8e0747f656713428bb65b2f2e3','6b63406939572fac9673f31807098b52','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b67e6aaaf9b547590448c29a37ca1ea','6b6a53accc477cf235ecffbf85d2efb1','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6a3c3203c08b4104d329853e9f6307','6b6a53accc477cf235ecffbf85d2efb1','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b648a5a59fffbae1f29d0da1afbdd60','6b6f246c164b8b891a1726b4be76df56','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b617d8fb206ee0e0438cb74983ac610','6b6f246c164b8b891a1726b4be76df56','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b62e7b4e08ef647a5343638091ef08d','6b6490d9fb8699aefbdcc0ac71752358','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b657e772f640c95c0d35f352a829605','6b6490d9fb8699aefbdcc0ac71752358','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b686f187eb7d01048d0d19b99d9c250','6b6cd3d962680e690b12f78d3f49a621','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b623f37a15a51db8b676970acbb89ea','6b6cd3d962680e690b12f78d3f49a621','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b69a05ca5b8f82d0c9840c4f8997ac7','6b6348e90971808d6f30a9ee65917a14','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b65aa777d26af0e367be5629e919d55','6b6348e90971808d6f30a9ee65917a14','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b691277db10f6da48ee8be0e3572954','6b684fe2682e9abe26626c877121ee97','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6d1baa1faf0a4f482af2a734064f25','6b684fe2682e9abe26626c877121ee97','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b6f4b38152a8e7526a1d9229019c9af','6b6c03b13f7d0c9b5820b2319f73dbaa','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b62aa2754bae4459e4daf65583d3921','6b6c03b13f7d0c9b5820b2319f73dbaa','9438ac75bac3e344628b14bf7ed82c15','Walnut',0,'','','','2016-07-19 14:11:15'),('6b673e79fec93439b0d05eadc7ca9a15','6b63b2b30559c282cd2c26b0b21a273c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b66e4351e843bf023601ae7648b9719','6b6d076f8d36332c83d654585fb21fb4','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6c1024f8f86c05751a145ef40f9143','6b693af59c6240a2ab55a10eed3fc2de','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6c56bfb58018453a7fac01c32a28a5','6b6dbf57f6c87d87822df759f146f6ef','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b67d5592e045dee453d6a928976beee','6b6f5a8994d45ed0aa9c567e7f2b5747','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b69c38a23422fc70d30447d27aeb4ca','6b63b2b30559c282cd2c26b0b21a273c','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6df4c0b564eef56e68332a57ecf227','6b6d076f8d36332c83d654585fb21fb4','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6e3b8c9f8c1386c0bb87e2da78ce71','6b693af59c6240a2ab55a10eed3fc2de','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6e8050bb27935ba2b081515c4f5549','6b6dbf57f6c87d87822df759f146f6ef','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6e3faf30f7162f60ee1b34493d9ede','6b6f5a8994d45ed0aa9c567e7f2b5747','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b63b7ab02e9c48fccefecf216f7a4d8','6b6a3ad59f9274e6f20033b356ce046a','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b66eb0ea7ed1353283449eb50d8cae5','6b6a3ad59f9274e6f20033b356ce046a','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e8a48c63d6b889c82d607d210306b','6b60bcd3ecb05314aa0f60a2fd0b9438','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b639450e24bb88f8856b660abf17062','6b60bcd3ecb05314aa0f60a2fd0b9438','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e52537dae4ef58713979cd1257bf3','6b66d215831352fa15491a213ca60820','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b68de9016f914211e427f34a193e85c','6b66d215831352fa15491a213ca60820','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b62973336e194e3599158fb0fb693d7','6b6273e2e8920ad75bac3036e2acaa6e','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6e1108df86b3e973c7a4c0cac336a6','6b6273e2e8920ad75bac3036e2acaa6e','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b692253bc2654ad14adb66822bd2b3e','6b63a5be3963237cf6883a4d98db2270','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b62f74801d5ae7d03418dcb2299edcb','6b63a5be3963237cf6883a4d98db2270','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6e053d845c76bfc1e55e2385008dd6','6b64ce6714fb600340abe99aa6c21d16','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b67259e5715375bec1719ed683e9f91','6b64ce6714fb600340abe99aa6c21d16','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6d749307776d9f4ce05e34fac6ca7c','6b61568ce191cccfbb8cde174d66ed20','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6e1709c5d3d6184c886ad37fa66063','6b61568ce191cccfbb8cde174d66ed20','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b68203069a2e3a45766c10e8d0e7136','6b6cf8ff342660741913d3eec697a8d8','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b68d923234b36a37a64a9f481f30cc5','6b6cf8ff342660741913d3eec697a8d8','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6e3320b2096a132452d872be49df10','6b65a9d185ac19df0ed8bac7e8ea7402','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b657842541ee167abf64790167f4ebf','6b65a9d185ac19df0ed8bac7e8ea7402','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6eba24a9b7bbaa3de7db4ac529b198','6b6b5400783632216bb35fbb172fef70','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b632794e7b71bc53c02bea155defcd1','6b6b5400783632216bb35fbb172fef70','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b63b72011b275c0a478b6adaf112119','6b6a775be741f93d1cec412ed1384a05','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b69926b921756c43555633cfbed1d96','6b6a775be741f93d1cec412ed1384a05','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b687a85eb40a60c25389a467a5c57f0','6b698669c25a543e9ac49c459295195c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6192e0227530544ec229a54f4374d2','6b698669c25a543e9ac49c459295195c','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6c3701504e6b0523bb32134c44dc60','6b65e0ba72771b84ba4ee94022169b43','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b646e8babdf7b6f7094b07f9c9b01f5','6b65e0ba72771b84ba4ee94022169b43','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6ad3a71298d6a1c56c4e9b620b57e1','6b644c0768bf564fc58093aa4ef61a3b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6c985b33629e55c5e5b4470d19fedf','6b644c0768bf564fc58093aa4ef61a3b','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b693cc6cdb3d0483d6ef80ddf19fbc4','6b6315c2e1fb2f3976f398f61c224e04','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6922e5f016a822266d2fb5d4239faa','6b6315c2e1fb2f3976f398f61c224e04','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6e563263d03affd262f076a612b4ac','6b6e2ae189b6abc84718883ccaeb7a9f','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6ddaa6e72f3174f644eff72c3a532c','6b6e2ae189b6abc84718883ccaeb7a9f','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6a5f96f25f070e64bce999d167370d','6b6c0511d878f3da6a72f3514cb86718','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b61891526db9145f741c7feeba9c020','6b6c0511d878f3da6a72f3514cb86718','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b640c7f5d6aaf742f45e218d81b6cd9','6b67a34bc8c9e578cfb50b2f1d84e225','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6746f5756bb6460550deef59e0a0ed','6b67a34bc8c9e578cfb50b2f1d84e225','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b67df59bbe923e6ae8cd3c41dc3793b','6b6ca8c9552e55b25353b597033e63d2','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b681848009edb0b3c4ba4e798409109','6b6ca8c9552e55b25353b597033e63d2','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b67b45de0233aac1233fb7084e35181','6b6886684335eb4282f84232ef8f52ce','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b634a36fe99d51ef97f14f28fe2c483','6b6886684335eb4282f84232ef8f52ce','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b638472b2c518b2a37df9cc65151e80','6b6e6fc5bda297fd1b9a04526ec4da60','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6f18c665bcb4f6d90592c4fb8fec0c','6b6e6fc5bda297fd1b9a04526ec4da60','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b652936e8acbd10eca175dd5ad81e22','6b6b956abb754ffbe382723639578ddc','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6e0f5c67322092b30cf89a57e4a2e4','6b6b956abb754ffbe382723639578ddc','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b61d07afe7e1764e5bd250360978e5f','6b69da1825901ff44f078330635d4f51','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b669979d5fb52ca8c919942387c08a7','6b69da1825901ff44f078330635d4f51','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b62ea349b3d15cc7d37df72835e5d75','6b6921b87b0dddbeccc33f5cabae0c56','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b64f7d9d58dba5af5b155d0a11e5aaf','6b6921b87b0dddbeccc33f5cabae0c56','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b628ee3b9958f2beb1ea9f46f481976','6b683e073cd52cfb1a902ede8346d4e0','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b68309188b862ea0b3bb67cd0a5cc6b','6b683e073cd52cfb1a902ede8346d4e0','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6ad221f71587b03d51166c2aacae27','6b69a848948fefee99d13bb466cbff7b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6ba152fa8234651064798f12a0ec8b','6b69a848948fefee99d13bb466cbff7b','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6d31cdd4ab0199ec4a755946afcde9','6b61887f5bc753058629cc217a8ce7ef','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b61ef2b2159c6353960639c63077ee8','6b61887f5bc753058629cc217a8ce7ef','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6ad345fd29d82f8fe23ff2e1604567','6b6a4baf9de2315243c3cf341d4458e9','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6d5e7a75b3366e5ff129c3a63d89fe','6b6a4baf9de2315243c3cf341d4458e9','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b697460b5878a56af997da9ae9563b5','6b6984d0fad3b93ea82d54682d59131b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6fd86de380aa81ccfbe98506f6f3d1','6b6984d0fad3b93ea82d54682d59131b','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6f444cc9d8cdc85a2ce9ec1d95333f','6b6cb8057dbe57f23bdd37b527dd8422','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6a34960ee560b35e99f2d8892309a0','6b6cb8057dbe57f23bdd37b527dd8422','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b63778e43030599d93dd47b90800555','6b69664875491fc8ab51d15f8e94b63f','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'XS','','','2016-07-19 14:11:15'),('6b61a017773f662a2ffe15cd141d4502','6b69664875491fc8ab51d15f8e94b63f','9438ac75bac3e344628b14bf7ed82c15','White',0,'White','','','2016-07-19 14:11:15'),('6b6032aee51733a8d52f946a163170ab','6b68f8516ba4d81bace5295830b7f5d6','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'S','','','2016-07-19 14:11:15'),('6b681fc3cdb72d598a6108b5feec1ed8','6b68f8516ba4d81bace5295830b7f5d6','9438ac75bac3e344628b14bf7ed82c15','White',0,'White','','','2016-07-19 14:11:15'),('6b6cde493c754c60a9ef67f80710d40d','6b69cad3472fb2b07f89291f8e416e4d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'M','','','2016-07-19 14:11:15'),('6b6c48b8495164ee1b483f0f010017aa','6b69cad3472fb2b07f89291f8e416e4d','9438ac75bac3e344628b14bf7ed82c15','White',0,'White','','','2016-07-19 14:11:15'),('6b6e543853ad50c67cb156aee6fab952','6b6c129c62119185c7779987e7d8cd5c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'L','','','2016-07-19 14:11:15'),('6b64702a75ed6935371be8f2ca4b5a8a','6b6c129c62119185c7779987e7d8cd5c','9438ac75bac3e344628b14bf7ed82c15','White',0,'White','','','2016-07-19 14:11:15'),('6b694e8baa598278734a4ac9877a3e40','6b62dc6bf5b7723743d514eb1b7a7f87','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'XL','','','2016-07-19 14:11:15'),('6b6a6636b56dd057ca7f6d5b166c3957','6b62dc6bf5b7723743d514eb1b7a7f87','9438ac75bac3e344628b14bf7ed82c15','White',0,'White','','','2016-07-19 14:11:15'),('6b6ef0e5c7695448458d40f1d4795b68','6b6b4e2141a3bf621e847e6a2c276981','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b689c3ffdbe80e407be89f1474743cd','6b6acb6eddc0b301c0d8e2963a5d4504','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6ee8a62df38a3d32a3fb99c9e5aeb5','6b6fef5b5f94046ce19f5aaa9066383f','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6111ebf800dcebe85e85d4a32f2eec','6b6b9f3031f3fed193f7d92ea140b1de','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6b9ecc5e39898e55a957e5c83e65c5','6b6b3965fd7f6dd301afc0c9a1601ec7','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6b1cf15501dd85662ccb6fd2ed6436','6b6b4e2141a3bf621e847e6a2c276981','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b675d69ad87bcf087b949989f42b6db','6b6acb6eddc0b301c0d8e2963a5d4504','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6bbbd119934ab689363f57a05e55c5','6b6fef5b5f94046ce19f5aaa9066383f','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b6af646e35008a63d6d3d8ba221c52c','6b6b9f3031f3fed193f7d92ea140b1de','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b643ed269f5a653569b1887a5b9f156','6b6b3965fd7f6dd301afc0c9a1601ec7','9438ac75bac3e344628b14bf7ed82c15','Schwarz',0,'','','','2016-07-19 14:11:15'),('6b68ba3654d115bed7f5a11f0be06d1f','6b6a3f44ae167462eee78de3d41ed238','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6fef61139a8a64c69b0df0780c9ed7','6b6a3f44ae167462eee78de3d41ed238','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d34303cf2e20bb428bebdbda2bf99','6b62c37751fb0f02e118020e8a6b9cce','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b66441683507346ad4eaf5c92ea803d','6b62c37751fb0f02e118020e8a6b9cce','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b65c43922a69f990a47ce034104aa73','6b66c197de076a3961dccdc79b65cbee','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6215109cf5ba2093d870532a5c53b8','6b66c197de076a3961dccdc79b65cbee','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b68b24bff67239fb189c1cbf691fb24','6b6d5d8844bd820449b2fa3bc5b99e8b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6eef399bd00d21e379d6eadb8a7652','6b6d5d8844bd820449b2fa3bc5b99e8b','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b60f2d205ce4b7a8199695121c6ba00','6b68f0a6606a6a558994346fe771fcff','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6be8444e925985ee87ba8b2b83e5d8','6b68f0a6606a6a558994346fe771fcff','9438ac75bac3e344628b14bf7ed82c15','Blau',0,'','','','2016-07-19 14:11:15'),('6b6d38592e5d79161422a3695df93014','6b6a37c431cd6379b8eefe46f0cf11e9','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6843fc491cdb013be16addaaf1d92d','6b6a37c431cd6379b8eefe46f0cf11e9','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b63dab36a0c6896ed518aea5503d296','6b6db12d057b468c28eb5523dd1dfb12','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b66ae87f3c369c50a8b6fb92e79085f','6b6db12d057b468c28eb5523dd1dfb12','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6598cf7841f7a4c4ca81c33865f906','6b6a86a83637c8043a579bf7f460b560','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6327dbb9d7965ab5f7d9479cfbbc42','6b6a86a83637c8043a579bf7f460b560','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b6a5fcc5ffddc65218e42c191e48d65','6b68bfa38487e8104c8adfba285f3e78','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b64a5dbf4aa1811c039adcb03ec56d1','6b68bfa38487e8104c8adfba285f3e78','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b68e8c43ac6ec0c2778f565ffe190cb','6b63ab0bcc02d41f8cf4d5ea0810c5ac','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b69d023dec7a93ffea28c9f8cbe0631','6b63ab0bcc02d41f8cf4d5ea0810c5ac','9438ac75bac3e344628b14bf7ed82c15','Smoke Gray',0,'','','','2016-07-19 14:11:15'),('6b61017a2b8d2a49f5cdab5ebbde208e','6b6033c7227d538401aa6e18d8dae2d0','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6922c0c1137436a12b3dac1702deb7','6b6033c7227d538401aa6e18d8dae2d0','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b65182b893f6198579dc448f5ca50a7','6b618b5db1c9c3751aa033b7cabd315b','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6b16ee2362d4f022b00c7abef96403','6b618b5db1c9c3751aa033b7cabd315b','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6eca5701fdb3eb2d8a1b32cf6f1ad8','6b6b991d1d1252ccaaf3f49a787fdbac','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6e43c457d09dae10d0b03c43e7fd68','6b6b991d1d1252ccaaf3f49a787fdbac','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6c19a4e204e9eba7653108d056aa17','6b6d4c5c13e8fabdbe9bf47974a6ee2c','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6931f7a10c011e6ca93f4aadaf1a49','6b6d4c5c13e8fabdbe9bf47974a6ee2c','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b6c349d82593cf55d969d88d7068348','6b6000825cc3f0771e3fc8db9a52f3e3','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b61d3b66a20798847f184d2b9d04fde','6b6000825cc3f0771e3fc8db9a52f3e3','9438ac75bac3e344628b14bf7ed82c15','Super Blue',0,'','','','2016-07-19 14:11:15'),('6b63d58cd0b31a3907349ae87d990788','6b68b33f88ff45e349bd12338d691f19','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6ef83e92bb3b81a2ce8a68aa4075b6','6b68b33f88ff45e349bd12338d691f19','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b614693086ee2c4690506ae233b6bb6','6b6743da0d71eed3b5bad57d77efaf1d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b6a33a5cb5ed54407ba18669ff7f615','6b6743da0d71eed3b5bad57d77efaf1d','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b67c26f36522e9d87289a9de2e0349f','6b61e49f00340bf48033a02b69445002','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b62d4a5668d3b805018903ec8a0b4dc','6b61e49f00340bf48033a02b69445002','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b65f958eb7e8893ac88f8d9ad70b201','6b6d012710a8b34774ea283a9a83e17a','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6f3846bc4326b47a493253a61994da','6b6d012710a8b34774ea283a9a83e17a','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b6ad58e8d6076c0c097d41ed98aab23','6b6001d8e0693354d335715c6f1a9acd','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b6ccfdeb3ead9f65c0c658b555ad25a','6b6001d8e0693354d335715c6f1a9acd','9438ac75bac3e344628b14bf7ed82c15','Dark Blue',0,'','','','2016-07-19 14:11:15'),('6b68256f3c38dc0182f607e66f255614','6b611132606188efe2d894b2f291a264','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b6d313629de7baca7d7a711e366ec3b','6b611132606188efe2d894b2f291a264','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6bcaccda2d8022439289c99b768394','6b6b81bb5e5b927b4d0f5898d56c7334','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b60b4b0f2f30a1ca46c2736082d73cf','6b6b81bb5e5b927b4d0f5898d56c7334','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6cfd45c9dd5ea2309263672fec3768','6b64f4eca6aae00862d4f8e7cbc39a28','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b61f90321cecca2676be84f91a7fec4','6b64f4eca6aae00862d4f8e7cbc39a28','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6a6efc6d11180b42401555d803cc5d','6b6b252c71c8b876243117780c5ef110','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b64a18c9475d569d63d9fbec85bad6c','6b6b252c71c8b876243117780c5ef110','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6853fdae5c353b01eecffb4a40ebc3','6b67b85d94628e541ba70451a81d95c2','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b67d0c57c2889e2cb9a15749261f642','6b67b85d94628e541ba70451a81d95c2','9438ac75bac3e344628b14bf7ed82c15','Clover',0,'','','','2016-07-19 14:11:15'),('6b6d852f411c82d1958f61aaca33be9a','6b69fa1780dd7711f93fae34ad0edfc8','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b684331dccc36ad7c58018501880866','6b69fa1780dd7711f93fae34ad0edfc8','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6260c8f2801100019772c8ccadfd44','6b67f37a5645392a7dcae6ccd49ee81d','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b65eeb81a9b33102cf1bb6e4331af70','6b67f37a5645392a7dcae6ccd49ee81d','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b65c47b08b4b3f967d7f01124460fd3','6b677c56a3cd2e4725d491e54b835482','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b6594fd4cb8fec940d2c565b7c1851c','6b677c56a3cd2e4725d491e54b835482','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6b78aea46ca1f15e97c13de1b5c293','6b69110187b5a20de755322868f5d685','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b60ebc972648d23eaf786ef1b4d412b','6b69110187b5a20de755322868f5d685','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b6cf48b1a9a7ee79aa841103b187689','6b6ab9a0948f5587513a6f7e56ab22b2','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b699aec8790b654fc321c15a96c4d5e','6b6ab9a0948f5587513a6f7e56ab22b2','9438ac75bac3e344628b14bf7ed82c15','Violet',0,'','','','2016-07-19 14:11:15'),('6b658e71668f534e2074afee90209b32','6b6149f81c65605fbddfeed9d19f58a9','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'','','','2016-07-19 14:11:15'),('6b66283fd3f15e54b079e0a8fc699902','6b6149f81c65605fbddfeed9d19f58a9','9438ac75bac3e344628b14bf7ed82c15','White',0,'','','','2016-07-19 14:11:15'),('6b6f62993ecd7799ffdf46c9b2715b1a','6b60aeaff5965e7c99166cbf903abbbc','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'','','','2016-07-19 14:11:15'),('6b640b886834e28eadf8ded928240f76','6b60aeaff5965e7c99166cbf903abbbc','9438ac75bac3e344628b14bf7ed82c15','White',0,'','','','2016-07-19 14:11:15'),('6b612724785d3dfffb9a835b6170bd66','6b6d6e4554c2567ab4a2f31513e71998','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'','','','2016-07-19 14:11:15'),('6b67ea3826270c5de397b176f5f87eb7','6b6d6e4554c2567ab4a2f31513e71998','9438ac75bac3e344628b14bf7ed82c15','White',0,'','','','2016-07-19 14:11:15'),('6b66635b8cc0905842ebaafc1eb45660','6b6a41f579e4036f65ba475cb74fa2a1','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'','','','2016-07-19 14:11:15'),('6b6c86985d0989a6a77d093431d4d4b4','6b6a41f579e4036f65ba475cb74fa2a1','9438ac75bac3e344628b14bf7ed82c15','White',0,'','','','2016-07-19 14:11:15'),('6b6f1a6dff7416f06f98e2b5471b428e','6b667d62b56b7e435f7d390840bd4ab5','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'','','','2016-07-19 14:11:15'),('6b67163d10430102c568243dcfcfdee1','6b667d62b56b7e435f7d390840bd4ab5','9438ac75bac3e344628b14bf7ed82c15','White',0,'','','','2016-07-19 14:11:15'),('6b61063998bb35a9333a49c56fdf5de9','6b639ae07ba1176e1d275e4eb83433fc','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XS',0,'XS','','','2016-07-19 14:11:15'),('6b64f2259d5940d451c6ce33e0851031','6b639ae07ba1176e1d275e4eb83433fc','9438ac75bac3e344628b14bf7ed82c15','Nocturne',0,'Nocturne','','','2016-07-19 14:11:15'),('6b632e39db27bacb4aa50717c2988322','6b6676229f642918aea304b6e4881553','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','S',0,'S','','','2016-07-19 14:11:15'),('6b6c14aa1cbc2a0febaf4c5c56de5315','6b6676229f642918aea304b6e4881553','9438ac75bac3e344628b14bf7ed82c15','Nocturne',0,'Nocturne','','','2016-07-19 14:11:15'),('6b6b54c79c6139ff6ed707d3b0a4dfe5','6b661dda79318ca64ca06e97e4fbcb0a','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','M',0,'M','','','2016-07-19 14:11:15'),('6b6351be9f92ee5772ea74f333d1d615','6b661dda79318ca64ca06e97e4fbcb0a','9438ac75bac3e344628b14bf7ed82c15','Nocturne',0,'Nocturne','','','2016-07-19 14:11:15'),('6b6c5f961345956da4fd6cbf3f68f834','6b6f0933802db44727dcefd88983afc5','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','L',0,'L','','','2016-07-19 14:11:15'),('6b60975feeeb95814cedde0cfe7f6ca8','6b6f0933802db44727dcefd88983afc5','9438ac75bac3e344628b14bf7ed82c15','Nocturne',0,'Nocturne','','','2016-07-19 14:11:15'),('6b6e49eb4f2de53d9c3b7e441804034a','6b6ced6d81841cc17291b9e919666e67','6b6bc9f9ab8b153d9bebc2ad6ca2aa13','XL',0,'XL','','','2016-07-19 14:11:15'),('6b6d5f7fcf1e149f4dc408a6acc9610e','6b6ced6d81841cc17291b9e919666e67','9438ac75bac3e344628b14bf7ed82c15','Nocturne',0,'Nocturne','','','2016-07-19 14:11:15'),('6cf1873e9a596cf4c74d7f802a18f861','b56369b1fc9d7b97f9c5fc343b349ece','8a142c3f14ef22a14.79693851','Allround',0,'Allround','','','2016-07-19 14:11:15'),('6cf1b8b5d2766a4d8a50819093d7d762','b56597806428de2f58b1c6c7d3e0e093','8a142c3f14ef22a14.79693851','Freeride, Freestyle, New-School',0,'Freeride, Freestyle, New-School','','','2016-07-19 14:11:15'),('6cf317b6129aeb142c9f5ad765e5dc3f','b5666b6d4bcb67c61dee4887bfba8351','8a142c3f14ef22a14.79693851','Freeride',0,'Freeride','','','2016-07-19 14:11:15'),('6cff5aa5797866ac2d0666a8d007bf78','b56764137ca959da9541bb28c1987d6c','8a142c3f14ef22a14.79693851','All-Terrain, Freeride',0,'All-terrain, Freeride','','','2016-07-19 14:11:15'),('6cf458b0c0195096649033f99260a96b','b56c560872da93602ff88c7267eb4774','8a142c3f14ef22a14.79693851','Allround',0,'Allround','','','2016-07-19 14:11:15'),('6cf112d2416e05bc3f83085bc85ceaa8','dc5480c47d8cd5a9eab9da5db9159cc6','8a142c3f14ef22a14.79693851','Allround',0,'Allround','','','2016-07-19 14:11:15'),('6cf96e54a359689dc6962696ca335d07','dc57391739360d306c8dfcb3a4295e19','8a142c3f14ef22a14.79693851','Freeride',0,'Freeride','','','2016-07-19 14:11:15'),('6cfac323d796dc0a4f4674ed641a4201','dc5b9cfeb5bd96fdbd9b4e43974661a1','8a142c3f14ef22a14.79693851','Old-School, Big Air',0,'Old-School, Big Air','','','2016-07-19 14:11:15'),('6cfb7598d69f843bebd28c185cb1ffe1','f4f0cb3606e231c3fdb34fcaee2d6d04','8a142c3f14ef22a14.79693851','Allround',0,'Allround','','','2016-07-19 14:11:15'),('6cf9400b9522ec01fb976643118fecee','f4fe052346b4ec271011e25c052682c5','8a142c3f14ef22a14.79693851','Freeride, Wakestyle, Wave',0,'Freeride, Wakestyle, Wave','','','2016-07-19 14:11:15'),('6cf2745e36d5be69be999bf0ea7114a9','fadc492a5807c56eb80b0507accd756b','8a142c3f14ef22a14.79693851','All-Terrain',0,'All-terrain','','','2016-07-19 14:11:15'),('6cfb209ffc0fd2e6fd807d14007a4479','fad21eb148918c8f4d9f0077fedff1ba','8a142c3f14ef22a14.79693851','Progressive Freestyle, Wakestyle',0,'Progressive Freestyle, Wakestyle','','','2016-07-19 14:11:15'),('6cfd7562f74fa8707cc3e45d1956eca6','dc5b9cfeb5bd96fdbd9b4e43974661a1','6cf89d2d73e666457d167cebfc3eb492','Kite',0,'kite','','','2016-07-19 14:11:15'),('6cfa5b635219efebe8f05e714300c592','fad21eb148918c8f4d9f0077fedff1ba','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche, CPR Control System, Pumpe',0,'kite, bag, CPR control system, pump','','','2016-07-19 14:11:15'),('6cf84d77200b19326bd77abe8d3a7bbf','fadc492a5807c56eb80b0507accd756b','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche',0,'kite, bag','','','2016-07-19 14:11:15'),('6cfab68e550007b6eeae2eacbcb8a35e','f4f0cb3606e231c3fdb34fcaee2d6d04','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche, CPR Control System, Pumpe',0,'kite, bag, CPR control system, pump','','','2016-07-19 14:11:15'),('6cfba3c38c437c3964f603d23c64e92f','f4fe052346b4ec271011e25c052682c5','6cf89d2d73e666457d167cebfc3eb492','Kite, Backpack, Reparaturset',0,'kite, backpack, repair kit','','','2016-07-19 14:11:15'),('6cfd1343cb5b540a28e48cbb0e641b0b','dc57391739360d306c8dfcb3a4295e19','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche',0,'kite, bag','','','2016-07-19 14:11:15'),('6cf9192d2f04de3c03f26b4433d86c23','dc5480c47d8cd5a9eab9da5db9159cc6','6cf89d2d73e666457d167cebfc3eb492','Kite, Global Bar, Tasche, Pumpe',0,'kite, global bar, bag, pump','','','2016-07-19 14:11:15'),('6cf3cfe50c89eb85188084fe5a4d7ee8','b56369b1fc9d7b97f9c5fc343b349ece','6cf89d2d73e666457d167cebfc3eb492','Kite, Backpack, Reparaturset',0,'kite, backpack, repair kit','','','2016-07-19 14:11:15'),('6cfab805fe5d7ad121311285c54bbf07','b5666b6d4bcb67c61dee4887bfba8351','6cf89d2d73e666457d167cebfc3eb492','Kite, Backpack, Reparaturset',0,'kite, backpack, repair kit','','','2016-07-19 14:11:15'),('6cf0d02ec640cab2775cf2bbb478b0ef','b56c560872da93602ff88c7267eb4774','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche, Reparaturset',0,'kite, bag, repair kit','','','2016-07-19 14:11:15'),('6cf5dd9f8f81ed1b33726e667b40c41b','b56597806428de2f58b1c6c7d3e0e093','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche, Reparaturset',0,'kite, bag, repair kit','','','2016-07-19 14:11:15'),('6cf9c2bb88fe313a513e6cea5a3bc4aa','b56764137ca959da9541bb28c1987d6c','6cf89d2d73e666457d167cebfc3eb492','Kite, Tasche, Reparaturset',0,'kite, bag, repair kit','','','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxobject2attribute` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxobject2category`
+--
+
+DROP TABLE IF EXISTS `oxobject2category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2category` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXCATNID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Category id (oxcategory)',
+  `OXPOS` int(11) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIME` int(11) NOT NULL DEFAULT '0' COMMENT 'Creation time',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  UNIQUE KEY `OXMAINIDX` (`OXCATNID`,`OXOBJECTID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXPOS` (`OXPOS`),
+  KEY `OXTIME` (`OXTIME`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between articles and categories';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxobject2category`
@@ -367,6 +1366,25 @@ INSERT INTO `oxobject2category` VALUES ('fad2b5808154dd3e10de1608752b7c6f','fad2
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxobject2delivery`
+--
+
+DROP TABLE IF EXISTS `oxobject2delivery`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2delivery` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXDELIVERYID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Delivery id (oxdelivery)',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Object id (table determined by oxtype)',
+  `OXTYPE` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Record type',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXDELIVERYID` (`OXDELIVERYID`,`OXTYPE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between delivery cost rules and objects (table determined by oxtype)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxobject2delivery`
 --
 
@@ -375,6 +1393,25 @@ LOCK TABLES `oxobject2delivery` WRITE;
 INSERT INTO `oxobject2delivery` VALUES ('1b842e73492c49fc1.89449037','1b842e73470578914.54719298','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('1b842e73518675688.37164512','1b842e734b62a4775.45738618','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('1b842e7365236d723.56675119','1b842e7352422a708.01472527','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('1b842e73652371be0.05571694','1b842e7352422a708.01472527','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('1b842e7379e4a8fe8.52771023','oxidstandard','a7c40f6320aeb2ec2.72885259','oxdelset','2016-07-19 14:11:15'),('1b842e7379e4ad6b4.73750214','oxidstandard','a7c40f6321c6f6109.43859248','oxdelset','2016-07-19 14:11:15'),('b0e42247b75236c85.30800643','oxidstandard','a7c40f631fc920687.20179984','oxdelset','2016-07-19 14:11:15'),('1b842e738a57b13d8.84689294','1b842e738970d31e3.71258328','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('1b842e738a57b53e5.95343864','1b842e738970d31e3.71258328','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('1b842e738a57b88d2.91633326','1b842e738970d31e3.71258328','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('1b842e738a57b13d8.84689291','1b842e738970d31e3.71258327','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('1b842e738a57b53e5.95343861','1b842e738970d31e3.71258327','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('1b842e738a57b88d2.91633321','1b842e738970d31e3.71258327','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('1b842e738b67c10d2.46463031','1b842e732a23255b1.91207750','a7c40f631fc920687.20179984','oxdelset','2016-07-19 14:11:15'),('1b842e738b67c10d2.46463030','1b842e732a23255b1.91207751','a7c40f631fc920687.20179984','oxdelset','2016-07-19 14:11:15'),('1b842e738b67c6567.02889856','1b842e732a23255b1.91207750','a7c40f6320aeb2ec2.72885259','oxdelset','2016-07-19 14:11:15'),('1b842e738b67c6567.02889857','1b842e732a23255b1.91207751','a7c40f6320aeb2ec2.72885259','oxdelset','2016-07-19 14:11:15'),('1b842e738b67c99e7.94996181','1b842e732a23255b1.91207750','a7c40f6321c6f6109.43859248','oxdelset','2016-07-19 14:11:15'),('1b842e738b67c99e7.94996180','1b842e732a23255b1.91207751','a7c40f6321c6f6109.43859248','oxdelset','2016-07-19 14:11:15'),('b0e42247b8d71f086.77687951','f324215af31591936.94392085','a7c40f631fc920687.20179984','oxdelset','2016-07-19 14:11:15'),('b0e42247b8d74bcc1.13991977','f324215af31591936.94392085','a7c40f6320aeb2ec2.72885259','oxdelset','2016-07-19 14:11:15'),('b0e42247b8d762574.83891789','f324215af31591936.94392085','a7c40f6321c6f6109.43859248','oxdelset','2016-07-19 14:11:15'),('ae04162c305b43e28.80521046','3033e968fb5b30930.92732498','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('ae04162c305b8a214.78574016','3033e968fb5b30930.92732498','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('ae04162c305b93482.59033720','3033e968fb5b30930.92732498','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('ae04162c30bf11d09.84389223','b763e957be61108f8.80080127','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('ae04162c30bf20431.70969824','b763e957be61108f8.80080127','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('ae04162c30bf29273.07047115','b763e957be61108f8.80080127','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('ae04162c31189e656.37716651','3033e968ea11e6761.68821765','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('ae04162c3118b0159.44708340','3033e968ea11e6761.68821765','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('ae04162c3118b8f10.17475457','3033e968ea11e6761.68821765','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('ae04162c316767f38.84312273','b763e957d6d42dd40.18579550','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('ae04162c31677dcf2.40358333','b763e957d6d42dd40.18579550','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('ae04162c316786d15.81085559','b763e957d6d42dd40.18579550','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxobject2delivery` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxobject2discount`
+--
+
+DROP TABLE IF EXISTS `oxobject2discount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2discount` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXDISCOUNTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Discount id (oxdiscount)',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Object id (table determined by oxtype)',
+  `OXTYPE` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Record type',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `oxobjectid` (`OXOBJECTID`),
+  KEY `oxdiscidx` (`OXDISCOUNTID`,`OXTYPE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between discounts and objects (table determined by oxtype)';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxobject2discount`
@@ -387,6 +1424,25 @@ INSERT INTO `oxobject2discount` VALUES ('4e542e4e8f60a0562.61817542','4e542e4e8d
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxobject2group`
+--
+
+DROP TABLE IF EXISTS `oxobject2group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2group` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id',
+  `OXGROUPSID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Group id',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXGROUPSID` (`OXGROUPSID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between users and groups';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxobject2group`
 --
 
@@ -395,6 +1451,25 @@ LOCK TABLES `oxobject2group` WRITE;
 INSERT INTO `oxobject2group` VALUES ('e913fdd8443ed43e1.51222316','oxbaseshop','oxdefaultadmin','oxidadmin','2016-07-19 14:11:09'),('f1d3fdd845d646ce0.54037160','oxbaseshop','oxidcashondel','oxidsmallcust','2016-07-19 14:11:15'),('f1d3fdd845d64f368.38782882','oxbaseshop','oxidcashondel','oxidmiddlecust','2016-07-19 14:11:15'),('f1d3fdd845d655500.24044370','oxbaseshop','oxidcashondel','oxidgoodcust','2016-07-19 14:11:15'),('f1d3fdd845d664a36.22008654','oxbaseshop','oxidcashondel','oxidforeigncustomer','2016-07-19 14:11:15'),('f1d3fdd845d66bfa6.86175113','oxbaseshop','oxidcashondel','oxidnewcustomer','2016-07-19 14:11:15'),('f1d3fdd845d671e32.96237048','oxbaseshop','oxidcashondel','oxidpowershopper','2016-07-19 14:11:15'),('f1d3fdd845d67e7c5.10668991','oxbaseshop','oxidcashondel','oxiddealer','2016-07-19 14:11:15'),('f1d3fdd845d6896c1.03162238','oxbaseshop','oxidcashondel','oxidnewsletter','2016-07-19 14:11:15'),('f1d3fdd845d691ec8.81166485','oxbaseshop','oxidcashondel','oxidadmin','2016-07-19 14:11:15'),('f1d3fdd845d69e885.91443232','oxbaseshop','oxidcashondel','oxidpriceb','2016-07-19 14:11:15'),('f1d3fdd845d6a67e0.02859671','oxbaseshop','oxidcashondel','oxidpricea','2016-07-19 14:11:15'),('f1d3fdd845d6ad995.44313456','oxbaseshop','oxidcashondel','oxidpricec','2016-07-19 14:11:15'),('c193fddd471979db5.85262084','oxbaseshop','oxiddebitnote','oxidsmallcust','2016-07-19 14:11:15'),('c193fddd471987391.56507198','oxbaseshop','oxiddebitnote','oxidnewcustomer','2016-07-19 14:11:15'),('c193fddd4719915f1.10073644','oxbaseshop','oxiddebitnote','oxidnewsletter','2016-07-19 14:11:15'),('c193fddd4719996f2.77898155','oxbaseshop','oxiddebitnote','oxidadmin','2016-07-19 14:11:15'),('c193fddd4831e2713.21232210','oxbaseshop','oxidcreditcard','oxidsmallcust','2016-07-19 14:11:15'),('c193fddd4831f6f46.50917349','oxbaseshop','oxidcreditcard','oxidmiddlecust','2016-07-19 14:11:15'),('c193fddd4831ff385.99230154','oxbaseshop','oxidcreditcard','oxidgoodcust','2016-07-19 14:11:15'),('c193fddd483207c10.92807988','oxbaseshop','oxidcreditcard','oxidforeigncustomer','2016-07-19 14:11:15'),('c193fddd483215d21.77186691','oxbaseshop','oxidcreditcard','oxidnewcustomer','2016-07-19 14:11:15'),('c193fddd48321e633.40782090','oxbaseshop','oxidcreditcard','oxidpowershopper','2016-07-19 14:11:15'),('c193fddd483225762.33412275','oxbaseshop','oxidcreditcard','oxiddealer','2016-07-19 14:11:15'),('c193fddd483233a87.07118337','oxbaseshop','oxidcreditcard','oxidnewsletter','2016-07-19 14:11:15'),('c193fddd48323bcb8.16273041','oxbaseshop','oxidcreditcard','oxidadmin','2016-07-19 14:11:15'),('c193fddd483242bc6.72020207','oxbaseshop','oxidcreditcard','oxidpriceb','2016-07-19 14:11:15'),('c193fddd483251c35.30210206','oxbaseshop','oxidcreditcard','oxidpricea','2016-07-19 14:11:15'),('c193fddd48325a223.07587162','oxbaseshop','oxidcreditcard','oxidpricec','2016-07-19 14:11:15'),('c193fddd4939c95b3.22730175','oxbaseshop','oxidinvoice','oxidnewcustomer','2016-07-19 14:11:15'),('c193fddd49772de88.87420931','oxbaseshop','oxidinvoice','oxidgoodcust','2016-07-19 14:11:15'),('c193fddd49b560bf7.83973615','oxbaseshop','oxidpayadvance','oxidblacklist','2016-07-19 14:11:15'),('c193fddd49b578c58.17144323','oxbaseshop','oxidpayadvance','oxidsmallcust','2016-07-19 14:11:15'),('c193fddd49b581dd2.00588439','oxbaseshop','oxidpayadvance','oxidmiddlecust','2016-07-19 14:11:15'),('c193fddd49b591ad7.64823006','oxbaseshop','oxidpayadvance','oxidgoodcust','2016-07-19 14:11:15'),('c193fddd49b599565.04338675','oxbaseshop','oxidpayadvance','oxidforeigncustomer','2016-07-19 14:11:15'),('c193fddd49b5a06b3.75268916','oxbaseshop','oxidpayadvance','oxidnewcustomer','2016-07-19 14:11:15'),('c193fddd49b5b5021.38970407','oxbaseshop','oxidpayadvance','oxidpowershopper','2016-07-19 14:11:15'),('c193fddd49b5bd575.90280311','oxbaseshop','oxidpayadvance','oxiddealer','2016-07-19 14:11:15'),('c193fddd49b5cc515.90816240','oxbaseshop','oxidpayadvance','oxidnewsletter','2016-07-19 14:11:15'),('c193fddd49b5d43e6.35256824','oxbaseshop','oxidpayadvance','oxidadmin','2016-07-19 14:11:15'),('c193fddd49b5db4e8.17741481','oxbaseshop','oxidpayadvance','oxidpriceb','2016-07-19 14:11:15'),('c193fddd49b5ed246.01214326','oxbaseshop','oxidpayadvance','oxidpricea','2016-07-19 14:11:15'),('c193fddd49b5f65d4.60703125','oxbaseshop','oxidpayadvance','oxidpricec','2016-07-19 14:11:15'),('dfc42e744180bf4a9.98598495','oxbaseshop','dfc42e74417f07347.45624764','oxidnewcustomer','2016-07-19 14:11:15'),('92044c0db9271e5b8.58103839','oxbaseshop','92044c0db9220e842.85595739','oxidnewcustomer','2016-07-19 14:11:15'),('e7a7197c7cf8e878e8ff2c18645788ab','oxbaseshop','e7af1c3b786fd02906ccd75698f4e6b9','oxidnewcustomer','2016-07-19 14:11:15'),('e7a3bc0ffde37901c6c1be9bdd43b9a5','oxbaseshop','e7af1c3b786fd02906ccd75698f4e6b9','oxidcustomer','2016-07-19 14:11:15'),('e7a50c8a8a31cb82b8ae4b38c64a78ba','oxbaseshop','e7af1c3b786fd02906ccd75698f4e6b9','oxidgoodcust','2016-07-19 14:11:15'),('e5d1d2defe53c30aeca0f86bde4ae531','oxbaseshop','e7af1c3b786fd02906ccd75698f4e6b9','oxidmiddlecust','2016-07-19 14:11:15'),('515d07c92d6f3178601adb83ab50d747','oxbaseshop','5158381d9da5cc40384c50600991c74f','oxidnewcustomer','2016-07-19 14:11:15'),('515eeb3573a79d8ff8dd90dcf9a3ac3e','oxbaseshop','5158381d9da5cc40384c50600991c74f','oxidnotyetordered','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxobject2group` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxobject2list`
+--
+
+DROP TABLE IF EXISTS `oxobject2list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2list` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXLISTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Listmania id (oxrecommlists)',
+  `OXDESC` text NOT NULL COMMENT 'Description',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXLISTID` (`OXLISTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between articles and listmania lists';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxobject2list`
@@ -407,6 +1482,25 @@ INSERT INTO `oxobject2list` VALUES ('e7acb3ff7ae6644d2fac2bc7457b2046','b56369b1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxobject2payment`
+--
+
+DROP TABLE IF EXISTS `oxobject2payment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2payment` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXPAYMENTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Payment id (oxpayments)',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Object id (table determined by oxtype)',
+  `OXTYPE` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Record type',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXPAYMENTID` (`OXPAYMENTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between payments and objects (table determined by oxtype)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxobject2payment`
 --
 
@@ -415,6 +1509,25 @@ LOCK TABLES `oxobject2payment` WRITE;
 INSERT INTO `oxobject2payment` VALUES ('92d4214bf673df592.85542338','oxidpayadvance','a434214960877b879.20979568','oxdelset','2016-07-19 14:11:15'),('1b842e7375676dd84.15824521','oxidinvoice','oxidstandard','oxdelset','2016-07-19 14:11:15'),('1b842e737567681b7.32408586','oxidpayadvance','oxidstandard','oxdelset','2016-07-19 14:11:15'),('1b842e73756761653.33874589','oxiddebitnote','oxidstandard','oxdelset','2016-07-19 14:11:15'),('1b842e7375675b807.24061946','oxidcreditcard','oxidstandard','oxdelset','2016-07-19 14:11:15'),('f324215af5c89b870.26091752','oxidcreditcard','f324215af31591936.94392085','oxdelset','2016-07-19 14:11:15'),('f324215af5c8be899.90598822','oxiddebitnote','f324215af31591936.94392085','oxdelset','2016-07-19 14:11:15'),('1b842e737567541b1.16932982','oxidcashondel','oxidstandard','oxdelset','2016-07-19 14:11:15'),('0f941664de07fe713.78180932','oxiddebitnote','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('0f941664de081d815.03693723','oxiddebitnote','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('0f941664de082a1b0.85265324','oxiddebitnote','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('0f941664e70744a73.85113769','oxidcreditcard','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('0f941664e70758467.23169947','oxidcreditcard','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('0f941664e707657e4.30674465','oxidcreditcard','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('0f941664e9e60f698.58333517','oxidcashondel','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('0f941664ee2448a22.44967166','oxidinvoice','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('0f941664ee245e458.07911799','oxidinvoice','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('0f941664ee246ac84.39868591','oxidinvoice','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('0f941664efa30a021.06837665','oxidpayadvance','a7c40f631fc920687.20179984','oxcountry','2016-07-19 14:11:15'),('0f941664efa320ca8.35650805','oxidpayadvance','a7c40f6320aeb2ec2.72885259','oxcountry','2016-07-19 14:11:15'),('0f941664efa32d4e5.28625433','oxidpayadvance','a7c40f6321c6f6109.43859248','oxcountry','2016-07-19 14:11:15'),('1b842e738b3f1ca46.72529947','oxidcreditcard','1b842e732a23255b1.91207750','oxdelset','2016-07-19 14:11:15'),('1b842e738b3f1ca46.72529948','oxidcreditcard','1b842e732a23255b1.91207751','oxdelset','2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxobject2payment` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxobject2selectlist`
+--
+
+DROP TABLE IF EXISTS `oxobject2selectlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2selectlist` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXSELNID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Selection list id (oxselectlist)',
+  `OXSORT` int(5) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXOBJECTID` (`OXOBJECTID`),
+  KEY `OXSELNID` (`OXSELNID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shows many-to-many relationship between articles and selection lists';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxobject2selectlist`
@@ -426,6 +1539,24 @@ LOCK TABLES `oxobject2selectlist` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxobject2seodata`
+--
+
+DROP TABLE IF EXISTS `oxobject2seodata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxobject2seodata` (
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Objects id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXLANG` int(2) NOT NULL DEFAULT '0' COMMENT 'Language id',
+  `OXKEYWORDS` text NOT NULL COMMENT 'Keywords',
+  `OXDESCRIPTION` text NOT NULL COMMENT 'Description',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXOBJECTID`,`OXSHOPID`,`OXLANG`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Seo entries';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxobject2seodata`
 --
 
@@ -433,6 +1564,96 @@ LOCK TABLES `oxobject2seodata` WRITE;
 /*!40000 ALTER TABLE `oxobject2seodata` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxobject2seodata` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxorder`
+--
+
+DROP TABLE IF EXISTS `oxorder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxorder` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Order id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXORDERDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Order date',
+  `OXORDERNR` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Order number',
+  `OXBILLCOMPANY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: Company name',
+  `OXBILLEMAIL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: Email',
+  `OXBILLFNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: First name',
+  `OXBILLLNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: Last name',
+  `OXBILLSTREET` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: Street name',
+  `OXBILLSTREETNR` varchar(16) NOT NULL DEFAULT '' COMMENT 'Billing info: House number',
+  `OXBILLADDINFO` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: Additional info',
+  `OXBILLUSTID` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: VAT ID No.',
+  `OXBILLCITY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Billing info: City',
+  `OXBILLCOUNTRYID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Billing info: Country id (oxcountry)',
+  `OXBILLSTATEID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Billing info: US State id (oxstates)',
+  `OXBILLZIP` varchar(16) NOT NULL DEFAULT '' COMMENT 'Billing info: Zip code',
+  `OXBILLFON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Billing info: Phone number',
+  `OXBILLFAX` varchar(128) NOT NULL DEFAULT '' COMMENT 'Billing info: Fax number',
+  `OXBILLSAL` varchar(128) NOT NULL DEFAULT '' COMMENT 'Billing info: User title prefix (Mr/Mrs)',
+  `OXDELCOMPANY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shipping info: Company name',
+  `OXDELFNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shipping info: First name',
+  `OXDELLNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shipping info: Last name',
+  `OXDELSTREET` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shipping info: Street name',
+  `OXDELSTREETNR` varchar(16) NOT NULL DEFAULT '' COMMENT 'Shipping info: House number',
+  `OXDELADDINFO` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shipping info: Additional info',
+  `OXDELCITY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shipping info: City',
+  `OXDELCOUNTRYID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shipping info: Country id (oxcountry)',
+  `OXDELSTATEID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shipping info: US State id (oxstates)',
+  `OXDELZIP` varchar(16) NOT NULL DEFAULT '' COMMENT 'Shipping info: Zip code',
+  `OXDELFON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Shipping info: Phone number',
+  `OXDELFAX` varchar(128) NOT NULL DEFAULT '' COMMENT 'Shipping info: Fax number',
+  `OXDELSAL` varchar(128) NOT NULL DEFAULT '' COMMENT 'Shipping info: User title prefix (Mr/Mrs)',
+  `OXPAYMENTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User payment id (oxuserpayments)',
+  `OXPAYMENTTYPE` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Payment id (oxpayments)',
+  `OXTOTALNETSUM` double NOT NULL DEFAULT '0' COMMENT 'Total net sum',
+  `OXTOTALBRUTSUM` double NOT NULL DEFAULT '0' COMMENT 'Total brut sum',
+  `OXTOTALORDERSUM` double NOT NULL DEFAULT '0' COMMENT 'Total order sum',
+  `OXARTVAT1` double NOT NULL DEFAULT '0' COMMENT 'First VAT',
+  `OXARTVATPRICE1` double NOT NULL DEFAULT '0' COMMENT 'First calculated VAT price',
+  `OXARTVAT2` double NOT NULL DEFAULT '0' COMMENT 'Second VAT',
+  `OXARTVATPRICE2` double NOT NULL DEFAULT '0' COMMENT 'Second calculated VAT price',
+  `OXDELCOST` double NOT NULL DEFAULT '0' COMMENT 'Delivery price',
+  `OXDELVAT` double NOT NULL DEFAULT '0' COMMENT 'Delivery VAT',
+  `OXPAYCOST` double NOT NULL DEFAULT '0' COMMENT 'Payment cost',
+  `OXPAYVAT` double NOT NULL DEFAULT '0' COMMENT 'Payment VAT',
+  `OXWRAPCOST` double NOT NULL DEFAULT '0' COMMENT 'Wrapping cost',
+  `OXWRAPVAT` double NOT NULL DEFAULT '0' COMMENT 'Wrapping VAT',
+  `OXGIFTCARDCOST` double NOT NULL DEFAULT '0' COMMENT 'Giftcard cost',
+  `OXGIFTCARDVAT` double NOT NULL DEFAULT '0' COMMENT 'Giftcard VAT',
+  `OXCARDID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Gift card id (oxwrapping)',
+  `OXCARDTEXT` text NOT NULL COMMENT 'Gift card text',
+  `OXDISCOUNT` double NOT NULL DEFAULT '0' COMMENT 'Additional discount for order (abs)',
+  `OXEXPORT` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Is exported',
+  `OXBILLNR` varchar(128) NOT NULL DEFAULT '' COMMENT 'Invoice No.',
+  `OXBILLDATE` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Invoice sent date',
+  `OXTRACKCODE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Tracking code',
+  `OXSENDDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Order shipping date',
+  `OXREMARK` text NOT NULL COMMENT 'User remarks',
+  `OXVOUCHERDISCOUNT` double NOT NULL DEFAULT '0' COMMENT 'Coupon (voucher) discount price',
+  `OXCURRENCY` varchar(32) NOT NULL DEFAULT '' COMMENT 'Currency',
+  `OXCURRATE` double NOT NULL DEFAULT '0' COMMENT 'Currency rate',
+  `OXFOLDER` varchar(32) NOT NULL DEFAULT '' COMMENT 'Folder: ORDERFOLDER_FINISHED, ORDERFOLDER_NEW, ORDERFOLDER_PROBLEMS',
+  `OXTRANSID` varchar(64) NOT NULL DEFAULT '' COMMENT 'Paypal: Transaction id',
+  `OXPAYID` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '',
+  `OXXID` varchar(64) NOT NULL DEFAULT '',
+  `OXPAID` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Time, when order was paid',
+  `OXSTORNO` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Order cancelled',
+  `OXIP` varchar(39) NOT NULL DEFAULT '' COMMENT 'User ip address',
+  `OXTRANSSTATUS` varchar(30) NOT NULL DEFAULT '' COMMENT 'Order status: NOT_FINISHED, OK, ERROR',
+  `OXLANG` int(2) NOT NULL DEFAULT '0' COMMENT 'Language id',
+  `OXINVOICENR` int(11) NOT NULL DEFAULT '0' COMMENT 'Invoice number',
+  `OXDELTYPE` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Delivery id (oxdeliveryset)',
+  `OXTSPROTECTID` char(64) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Trusted shop protection id',
+  `OXTSPROTECTCOSTS` double NOT NULL DEFAULT '0' COMMENT 'Trusted shop protection cost',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXISNETTOMODE` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Order created in netto mode',
+  PRIMARY KEY (`OXID`),
+  KEY `MAINIDX` (`OXSHOPID`,`OXSTORNO`,`OXORDERDATE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Shop orders information';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxorder`
@@ -445,6 +1666,65 @@ INSERT INTO `oxorder` VALUES ('7d090db46a124f48cb7e6836ceef3f66','oxbaseshop','e
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxorderarticles`
+--
+
+DROP TABLE IF EXISTS `oxorderarticles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxorderarticles` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Order article id',
+  `OXORDERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Order id (oxorder)',
+  `OXAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Amount',
+  `OXARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXARTNUM` varchar(255) NOT NULL DEFAULT '' COMMENT 'Article number',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title',
+  `OXSHORTDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Short description',
+  `OXSELVARIANT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Selected variant',
+  `OXNETPRICE` double NOT NULL DEFAULT '0' COMMENT 'Full netto price (oxnprice * oxamount)',
+  `OXBRUTPRICE` double NOT NULL DEFAULT '0' COMMENT 'Full brutto price (oxbprice * oxamount)',
+  `OXVATPRICE` double NOT NULL DEFAULT '0' COMMENT 'Calculated VAT price',
+  `OXVAT` double NOT NULL DEFAULT '0' COMMENT 'VAT',
+  `OXPERSPARAM` text NOT NULL COMMENT 'Serialized persistent parameters',
+  `OXPRICE` double NOT NULL DEFAULT '0' COMMENT 'Base price',
+  `OXBPRICE` double NOT NULL DEFAULT '0' COMMENT 'Brutto price for one item',
+  `OXNPRICE` double NOT NULL DEFAULT '0' COMMENT 'Netto price for one item',
+  `OXWRAPID` varchar(32) NOT NULL DEFAULT '' COMMENT 'Wrapping id (oxwrapping)',
+  `OXEXTURL` varchar(255) NOT NULL DEFAULT '' COMMENT 'External URL to other information about the article',
+  `OXURLDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Text for external URL',
+  `OXURLIMG` varchar(128) NOT NULL DEFAULT '' COMMENT 'External URL image',
+  `OXTHUMB` varchar(128) NOT NULL DEFAULT '' COMMENT 'Thumbnail filename',
+  `OXPIC1` varchar(128) NOT NULL DEFAULT '' COMMENT '1# Picture filename',
+  `OXPIC2` varchar(128) NOT NULL DEFAULT '' COMMENT '2# Picture filename',
+  `OXPIC3` varchar(128) NOT NULL DEFAULT '' COMMENT '3# Picture filename',
+  `OXPIC4` varchar(128) NOT NULL DEFAULT '' COMMENT '4# Picture filename',
+  `OXPIC5` varchar(128) NOT NULL DEFAULT '' COMMENT '5# Picture filename',
+  `OXWEIGHT` double NOT NULL DEFAULT '0' COMMENT 'Weight (kg)',
+  `OXSTOCK` double NOT NULL DEFAULT '-1' COMMENT 'Articles quantity in stock',
+  `OXDELIVERY` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Date, when the product will be available again if it is sold out',
+  `OXINSERT` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Creation time',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXLENGTH` double NOT NULL DEFAULT '0' COMMENT 'Article dimensions: Length',
+  `OXWIDTH` double NOT NULL DEFAULT '0' COMMENT 'Article dimensions: Width',
+  `OXHEIGHT` double NOT NULL DEFAULT '0' COMMENT 'Article dimensions: Height',
+  `OXFILE` varchar(128) NOT NULL DEFAULT '' COMMENT 'File, shown in article media list',
+  `OXSEARCHKEYS` varchar(255) NOT NULL DEFAULT '' COMMENT 'Search terms',
+  `OXTEMPLATE` varchar(128) NOT NULL DEFAULT '' COMMENT 'Alternative template filename (use default, if empty)',
+  `OXQUESTIONEMAIL` varchar(255) NOT NULL DEFAULT '' COMMENT 'E-mail for question',
+  `OXISSEARCH` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is article shown in search',
+  `OXFOLDER` varchar(32) NOT NULL DEFAULT '' COMMENT 'Folder: ORDERFOLDER_FINISHED, ORDERFOLDER_NEW, ORDERFOLDER_PROBLEMS',
+  `OXSUBCLASS` varchar(32) NOT NULL DEFAULT '' COMMENT 'Subclass',
+  `OXSTORNO` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Order cancelled',
+  `OXORDERSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops), in which order was done',
+  `OXISBUNDLE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Bundled article',
+  PRIMARY KEY (`OXID`),
+  KEY `OXORDERID` (`OXORDERID`),
+  KEY `OXARTID` (`OXARTID`),
+  KEY `OXARTNUM` (`OXARTNUM`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Ordered articles information';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxorderarticles`
 --
 
@@ -455,6 +1735,36 @@ INSERT INTO `oxorderarticles` VALUES ('7d010996ab5656e369a63cdccb5f56e7','7d090d
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxorderfiles`
+--
+
+DROP TABLE IF EXISTS `oxorderfiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxorderfiles` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Order file id',
+  `OXORDERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Order id (oxorder)',
+  `OXFILENAME` varchar(128) NOT NULL COMMENT 'Filename',
+  `OXFILEID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'File id (oxfiles)',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Shop id (oxshops)',
+  `OXORDERARTICLEID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Ordered article id (oxorderarticles)',
+  `OXFIRSTDOWNLOAD` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'First time downloaded time',
+  `OXLASTDOWNLOAD` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Last time downloaded time',
+  `OXDOWNLOADCOUNT` int(10) unsigned NOT NULL COMMENT 'Downloads count',
+  `OXMAXDOWNLOADCOUNT` int(10) unsigned NOT NULL COMMENT 'Maximum count of downloads',
+  `OXDOWNLOADEXPIRATIONTIME` int(10) unsigned NOT NULL COMMENT 'Download expiration time in hours',
+  `OXLINKEXPIRATIONTIME` int(10) unsigned NOT NULL COMMENT 'Link expiration time in hours',
+  `OXRESETCOUNT` int(10) unsigned NOT NULL COMMENT 'Count of resets',
+  `OXVALIDUNTIL` datetime NOT NULL COMMENT 'Download is valid until time specified',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXORDERID` (`OXORDERID`),
+  KEY `OXFILEID` (`OXFILEID`),
+  KEY `OXORDERARTICLEID` (`OXORDERARTICLEID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Files, given to users to download after order';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxorderfiles`
 --
 
@@ -462,6 +1772,43 @@ LOCK TABLES `oxorderfiles` WRITE;
 /*!40000 ALTER TABLE `oxorderfiles` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxorderfiles` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxpayments`
+--
+
+DROP TABLE IF EXISTS `oxpayments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxpayments` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Payment id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active',
+  `OXDESC` varchar(128) NOT NULL DEFAULT '' COMMENT 'Description (multilanguage)',
+  `OXADDSUM` double NOT NULL DEFAULT '0' COMMENT 'Price Surcharge/Reduction amount',
+  `OXADDSUMTYPE` enum('abs','%') NOT NULL DEFAULT 'abs' COMMENT 'Price Surcharge/Reduction type (abs|%)',
+  `OXADDSUMRULES` int(11) NOT NULL DEFAULT '0' COMMENT 'Base of price surcharge/reduction: 1 - Value of all goods in cart, 2 - Discounts, 4 - Vouchers, 8 - Shipping costs, 16 - Gift Wrapping/Greeting Card',
+  `OXFROMBONI` int(11) NOT NULL DEFAULT '0' COMMENT 'Minimal Credit Rating ',
+  `OXFROMAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Purchase Price: From',
+  `OXTOAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Purchase Price: To',
+  `OXVALDESC` text NOT NULL COMMENT 'Payment additional fields, separated by "field1__@@field2" (multilanguage)',
+  `OXCHECKED` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Selected as the default method',
+  `OXDESC_1` varchar(128) NOT NULL DEFAULT '',
+  `OXVALDESC_1` text NOT NULL,
+  `OXDESC_2` varchar(128) NOT NULL DEFAULT '',
+  `OXVALDESC_2` text NOT NULL,
+  `OXDESC_3` varchar(128) NOT NULL DEFAULT '',
+  `OXVALDESC_3` text NOT NULL,
+  `OXLONGDESC` text NOT NULL COMMENT 'Long description (multilanguage)',
+  `OXLONGDESC_1` text NOT NULL,
+  `OXLONGDESC_2` text NOT NULL,
+  `OXLONGDESC_3` text NOT NULL,
+  `OXSORT` int(5) NOT NULL DEFAULT '0' COMMENT 'Sorting',
+  `OXTSPAYMENTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Trusted shop payment id',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXACTIVE` (`OXACTIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Payment methods';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxpayments`
@@ -474,6 +1821,28 @@ INSERT INTO `oxpayments` VALUES ('oxidcashondel',1,'Nachnahme',7.5,'abs',0,0,0,1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxprice2article`
+--
+
+DROP TABLE IF EXISTS `oxprice2article`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxprice2article` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXADDABS` double NOT NULL DEFAULT '0' COMMENT 'Price, that will be used for specified article if basket amount is between oxamount and oxamountto',
+  `OXADDPERC` double NOT NULL DEFAULT '0' COMMENT 'Discount, that will be used for specified article if basket amount is between oxamount and oxamountto',
+  `OXAMOUNT` double NOT NULL DEFAULT '0' COMMENT 'Quantity: From',
+  `OXAMOUNTTO` double NOT NULL DEFAULT '0' COMMENT 'Quantity: To',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSHOPID` (`OXSHOPID`),
+  KEY `OXARTID` (`OXARTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Article scale prices';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxprice2article`
 --
 
@@ -484,6 +1853,29 @@ INSERT INTO `oxprice2article` VALUES ('fc702ff04ebcbf64f86c665838e15b6a','oxbase
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxpricealarm`
+--
+
+DROP TABLE IF EXISTS `oxpricealarm`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxpricealarm` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Price alarm id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXEMAIL` varchar(128) NOT NULL DEFAULT '' COMMENT 'Recipient email',
+  `OXARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXPRICE` double NOT NULL DEFAULT '0' COMMENT 'Expected (user) price, when notification email should be sent',
+  `OXCURRENCY` varchar(32) NOT NULL DEFAULT '' COMMENT 'Currency',
+  `OXLANG` int(2) NOT NULL DEFAULT '0' COMMENT 'Language id',
+  `OXINSERT` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Creation time',
+  `OXSENDED` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Time, when notification was sent',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Price fall alarm requests';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxpricealarm`
 --
 
@@ -491,6 +1883,26 @@ LOCK TABLES `oxpricealarm` WRITE;
 /*!40000 ALTER TABLE `oxpricealarm` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxpricealarm` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxratings`
+--
+
+DROP TABLE IF EXISTS `oxratings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxratings` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Rating id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXTYPE` enum('oxarticle','oxrecommlist') NOT NULL COMMENT 'Rating type (oxarticle, oxrecommlist)',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article or Listmania id (oxarticles or oxrecommlists)',
+  `OXRATING` int(1) NOT NULL DEFAULT '0' COMMENT 'Rating',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `oxobjectsearch` (`OXTYPE`,`OXOBJECTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Articles and Listmania ratings';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxratings`
@@ -503,6 +1915,27 @@ INSERT INTO `oxratings` VALUES ('e7aa4c3a8508491a7e875f26b51fe4d0','oxbaseshop',
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxrecommlists`
+--
+
+DROP TABLE IF EXISTS `oxrecommlists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxrecommlists` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Listmania id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXAUTHOR` varchar(255) NOT NULL DEFAULT '' COMMENT 'Author first and last name',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title',
+  `OXDESC` text NOT NULL COMMENT 'Description',
+  `OXRATINGCNT` int(11) NOT NULL DEFAULT '0' COMMENT 'Rating votes count',
+  `OXRATING` double NOT NULL DEFAULT '0' COMMENT 'Rating',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Listmania';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxrecommlists`
 --
 
@@ -511,6 +1944,27 @@ LOCK TABLES `oxrecommlists` WRITE;
 INSERT INTO `oxrecommlists` VALUES ('e7a0b1906e0d94e05693f06b0b6fcc32','oxbaseshop','e7af1c3b786fd02906ccd75698f4e6b9','Marc Muster','Kite-Equipment','',0,0,'2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxrecommlists` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxremark`
+--
+
+DROP TABLE IF EXISTS `oxremark`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxremark` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXPARENTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXTYPE` enum('o','r','n','c') NOT NULL DEFAULT 'r' COMMENT 'Record type: o - order, r - remark, n - nesletter, c - registration',
+  `OXHEADER` varchar(255) NOT NULL DEFAULT '' COMMENT 'Header (default: Creation time)',
+  `OXTEXT` text NOT NULL COMMENT 'Remark text',
+  `OXCREATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Creation time',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXPARENTID` (`OXPARENTID`),
+  KEY `OXTYPE` (`OXTYPE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='User History';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxremark`
@@ -523,6 +1977,29 @@ INSERT INTO `oxremark` VALUES ('e7a798db99a5c61a3e56526e947f9d59','e7af1c3b786fd
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxreviews`
+--
+
+DROP TABLE IF EXISTS `oxreviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxreviews` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Review id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Active',
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article or Listmania id (oxarticles or oxrecommlist)',
+  `OXTYPE` enum('oxarticle','oxrecommlist') NOT NULL COMMENT 'Review type (oxarticle, oxrecommlist)',
+  `OXTEXT` text NOT NULL COMMENT 'Review text',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXCREATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Creation time',
+  `OXLANG` tinyint(3) NOT NULL DEFAULT '0' COMMENT 'Language id',
+  `OXRATING` int(1) NOT NULL DEFAULT '0' COMMENT 'Rating',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `oxobjectsearch` (`OXTYPE`,`OXOBJECTID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Articles and Listmania reviews';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxreviews`
 --
 
@@ -533,6 +2010,30 @@ INSERT INTO `oxreviews` VALUES ('e7af435915814c63c0d6e9084804ac04',0,'b56369b1fc
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxselectlist`
+--
+
+DROP TABLE IF EXISTS `oxselectlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxselectlist` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Selection list id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTITLE` varchar(254) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXIDENT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Working Title',
+  `OXVALDESC` text NOT NULL COMMENT 'List fields, separated by "[field_name]!P![price]__@@[field_name]__@@" (multilanguage)',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXVALDESC_1` text NOT NULL,
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXVALDESC_2` text NOT NULL,
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXVALDESC_3` text NOT NULL,
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Selection lists';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxselectlist`
 --
 
@@ -540,6 +2041,33 @@ LOCK TABLES `oxselectlist` WRITE;
 /*!40000 ALTER TABLE `oxselectlist` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxselectlist` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxseo`
+--
+
+DROP TABLE IF EXISTS `oxseo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxseo` (
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Object id',
+  `OXIDENT` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Hashed seo url (md5)',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (multilanguage)',
+  `OXLANG` int(2) NOT NULL DEFAULT '0' COMMENT 'Language id',
+  `OXSTDURL` varchar(2048) NOT NULL COMMENT 'Primary url, not seo encoded',
+  `OXSEOURL` varchar(2048) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL COMMENT 'Old seo url',
+  `OXTYPE` enum('static','oxarticle','oxcategory','oxvendor','oxcontent','dynamic','oxmanufacturer') NOT NULL COMMENT 'Record type',
+  `OXFIXED` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Fixed',
+  `OXEXPIRED` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Expired',
+  `OXPARAMS` char(32) NOT NULL DEFAULT '' COMMENT 'Params',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXIDENT`,`OXSHOPID`,`OXLANG`),
+  UNIQUE KEY `search` (`OXTYPE`,`OXOBJECTID`,`OXSHOPID`,`OXLANG`,`OXPARAMS`),
+  KEY `OXOBJECTID` (`OXLANG`,`OXOBJECTID`,`OXSHOPID`),
+  KEY `SEARCHSTD` (`OXSTDURL`(100),`OXSHOPID`),
+  KEY `SEARCHSEO` (`OXSEOURL`(100))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Seo urls information';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxseo`
@@ -552,6 +2080,26 @@ INSERT INTO `oxseo` VALUES ('d3d9e8107af82d038f13908a971fb279','01c381c68e91fc5b
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxseohistory`
+--
+
+DROP TABLE IF EXISTS `oxseohistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxseohistory` (
+  `OXOBJECTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Object id',
+  `OXIDENT` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Hashed url (md5)',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id oxshops',
+  `OXLANG` int(2) NOT NULL DEFAULT '0' COMMENT 'Language id',
+  `OXHITS` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Hits',
+  `OXINSERT` timestamp NULL DEFAULT NULL COMMENT 'Creation time',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXIDENT`,`OXSHOPID`,`OXLANG`),
+  KEY `search` (`OXOBJECTID`,`OXSHOPID`,`OXLANG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Seo urls history. If url does not exists in oxseo, then checks here and redirects';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxseohistory`
 --
 
@@ -561,6 +2109,23 @@ LOCK TABLES `oxseohistory` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxseologs`
+--
+
+DROP TABLE IF EXISTS `oxseologs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxseologs` (
+  `OXSTDURL` text NOT NULL COMMENT 'Primary url, not seo encoded',
+  `OXIDENT` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Hashed seo url',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXLANG` int(11) NOT NULL COMMENT 'Language id',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXIDENT`,`OXSHOPID`,`OXLANG`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Seo logging. Logs bad requests';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxseologs`
 --
 
@@ -568,6 +2133,91 @@ LOCK TABLES `oxseologs` WRITE;
 /*!40000 ALTER TABLE `oxseologs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxseologs` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxshops`
+--
+
+DROP TABLE IF EXISTS `oxshops`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxshops` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Shop id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active',
+  `OXPRODUCTIVE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Productive Mode (if 0, debug info displayed)',
+  `OXDEFCURRENCY` varchar(32) NOT NULL DEFAULT '' COMMENT 'Default currency',
+  `OXDEFLANGUAGE` int(11) NOT NULL DEFAULT '0' COMMENT 'Default language id',
+  `OXNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shop name',
+  `OXTITLEPREFIX` varchar(255) NOT NULL DEFAULT '' COMMENT 'Seo title prefix (multilanguage)',
+  `OXTITLEPREFIX_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLEPREFIX_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLEPREFIX_3` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLESUFFIX` varchar(255) NOT NULL DEFAULT '' COMMENT 'Seo title suffix (multilanguage)',
+  `OXTITLESUFFIX_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLESUFFIX_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLESUFFIX_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSTARTTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Start page title (multilanguage)',
+  `OXSTARTTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSTARTTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSTARTTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXINFOEMAIL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Informational email address',
+  `OXORDEREMAIL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Order email address',
+  `OXOWNEREMAIL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Owner email address',
+  `OXORDERSUBJECT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Order email subject (multilanguage)',
+  `OXREGISTERSUBJECT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Registration email subject (multilanguage)',
+  `OXFORGOTPWDSUBJECT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Forgot password email subject (multilanguage)',
+  `OXSENDEDNOWSUBJECT` varchar(255) NOT NULL DEFAULT '' COMMENT 'Order sent email subject (multilanguage)',
+  `OXORDERSUBJECT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXREGISTERSUBJECT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXFORGOTPWDSUBJECT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSENDEDNOWSUBJECT_1` varchar(255) NOT NULL DEFAULT '',
+  `OXORDERSUBJECT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXREGISTERSUBJECT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXFORGOTPWDSUBJECT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSENDEDNOWSUBJECT_2` varchar(255) NOT NULL DEFAULT '',
+  `OXORDERSUBJECT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXREGISTERSUBJECT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXFORGOTPWDSUBJECT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSENDEDNOWSUBJECT_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSMTP` varchar(255) NOT NULL DEFAULT '' COMMENT 'SMTP server',
+  `OXSMTPUSER` varchar(128) NOT NULL DEFAULT '' COMMENT 'SMTP user',
+  `OXSMTPPWD` varchar(128) NOT NULL DEFAULT '' COMMENT 'SMTP password',
+  `OXCOMPANY` varchar(128) NOT NULL DEFAULT '' COMMENT 'Your company',
+  `OXSTREET` varchar(255) NOT NULL DEFAULT '' COMMENT 'Street',
+  `OXZIP` varchar(255) NOT NULL DEFAULT '' COMMENT 'ZIP code',
+  `OXCITY` varchar(255) NOT NULL DEFAULT '' COMMENT 'City',
+  `OXCOUNTRY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Country',
+  `OXBANKNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Bank name',
+  `OXBANKNUMBER` varchar(255) NOT NULL DEFAULT '' COMMENT 'Account Number',
+  `OXBANKCODE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Routing Number',
+  `OXVATNUMBER` varchar(255) NOT NULL DEFAULT '' COMMENT 'Sales Tax ID',
+  `OXTAXNUMBER` varchar(255) NOT NULL DEFAULT '' COMMENT 'Tax ID',
+  `OXBICCODE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Bank BIC',
+  `OXIBANNUMBER` varchar(255) NOT NULL DEFAULT '' COMMENT 'Bank IBAN',
+  `OXFNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'First name',
+  `OXLNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Last name',
+  `OXTELEFON` varchar(255) NOT NULL DEFAULT '' COMMENT 'Phone number',
+  `OXTELEFAX` varchar(255) NOT NULL DEFAULT '' COMMENT 'Fax number',
+  `OXURL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Shop url',
+  `OXDEFCAT` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Default category id',
+  `OXHRBNR` varchar(64) NOT NULL DEFAULT '' COMMENT 'CBR',
+  `OXCOURT` varchar(128) NOT NULL DEFAULT '' COMMENT 'District Court',
+  `OXADBUTLERID` varchar(64) NOT NULL DEFAULT '' COMMENT 'Adbutler code (belboon.de) - deprecated',
+  `OXAFFILINETID` varchar(64) NOT NULL DEFAULT '' COMMENT 'Affilinet code (webmasterplan.com) - deprecated',
+  `OXSUPERCLICKSID` varchar(64) NOT NULL DEFAULT '' COMMENT 'Superclix code (superclix.de) - deprecated',
+  `OXAFFILIWELTID` varchar(64) NOT NULL DEFAULT '' COMMENT 'Affiliwelt code (affiliwelt.net) - deprecated',
+  `OXAFFILI24ID` varchar(64) NOT NULL DEFAULT '' COMMENT 'Affili24 code (affili24.com) - deprecated',
+  `OXEDITION` char(2) NOT NULL COMMENT 'Shop Edition (CE,PE,EE)',
+  `OXVERSION` char(16) NOT NULL COMMENT 'Shop Version',
+  `OXSEOACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Seo active (multilanguage)',
+  `OXSEOACTIVE_1` tinyint(1) NOT NULL DEFAULT '1',
+  `OXSEOACTIVE_2` tinyint(1) NOT NULL DEFAULT '1',
+  `OXSEOACTIVE_3` tinyint(1) NOT NULL DEFAULT '1',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXACTIVE` (`OXACTIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shop config';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxshops`
@@ -580,6 +2230,27 @@ INSERT INTO `oxshops` VALUES ('oxbaseshop',1,0,'',0,'OXID eShop 4','OXID Surf- u
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxstates`
+--
+
+DROP TABLE IF EXISTS `oxstates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxstates` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'State id',
+  `OXCOUNTRYID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Country id (oxcountry)',
+  `OXTITLE` char(128) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXISOALPHA2` char(2) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'SEO short name',
+  `OXTITLE_1` char(128) NOT NULL DEFAULT '',
+  `OXTITLE_2` char(128) NOT NULL DEFAULT '',
+  `OXTITLE_3` char(128) NOT NULL DEFAULT '',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXCOUNTRYID` (`OXCOUNTRYID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='US States list';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxstates`
 --
 
@@ -588,6 +2259,23 @@ LOCK TABLES `oxstates` WRITE;
 INSERT INTO `oxstates` VALUES ('AB','8f241f11095649d18.02676059','Alberta','AB','Alberta','','','2016-07-19 14:11:11'),('BC','8f241f11095649d18.02676059','Britisch-Kolumbien','BC','British Columbia','','','2016-07-19 14:11:11'),('MB','8f241f11095649d18.02676059','Manitoba','MB','Manitoba','','','2016-07-19 14:11:11'),('NB','8f241f11095649d18.02676059','Neubraunschweig','NB','New Brunswick','','','2016-07-19 14:11:11'),('NF','8f241f11095649d18.02676059','Neufundland und Labrador','NF','Newfoundland and Labrador','','','2016-07-19 14:11:11'),('NT','8f241f11095649d18.02676059','Nordwest-Territorien','NT','Northwest Territories','','','2016-07-19 14:11:11'),('NS','8f241f11095649d18.02676059','Nova Scotia','NS','Nova Scotia','','','2016-07-19 14:11:11'),('NU','8f241f11095649d18.02676059','Nunavut','NU','Nunavut','','','2016-07-19 14:11:11'),('ON','8f241f11095649d18.02676059','Ontario','ON','Ontario','','','2016-07-19 14:11:11'),('PE','8f241f11095649d18.02676059','Prince Edward Island','PE','Prince Edward Island','','','2016-07-19 14:11:11'),('QC','8f241f11095649d18.02676059','Quebec','QC','Quebec','','','2016-07-19 14:11:11'),('SK','8f241f11095649d18.02676059','Saskatchewan','SK','Saskatchewan','','','2016-07-19 14:11:11'),('YK','8f241f11095649d18.02676059','Yukon','YK','Yukon','','','2016-07-19 14:11:11'),('AL','8f241f11096877ac0.98748826','Alabama','AL','Alabama','','','2016-07-19 14:11:11'),('AK','8f241f11096877ac0.98748826','Alaska','AK','Alaska','','','2016-07-19 14:11:11'),('AS','8f241f11096877ac0.98748826','Amerikanisch-Samoa','AS','American Samoa','','','2016-07-19 14:11:11'),('AZ','8f241f11096877ac0.98748826','Arizona','AZ','Arizona','','','2016-07-19 14:11:11'),('AR','8f241f11096877ac0.98748826','Arkansas','AR','Arkansas','','','2016-07-19 14:11:11'),('CA','8f241f11096877ac0.98748826','Kalifornien','CA','California','','','2016-07-19 14:11:11'),('CO','8f241f11096877ac0.98748826','Colorado','CO','Colorado','','','2016-07-19 14:11:11'),('CT','8f241f11096877ac0.98748826','Connecticut','CT','Connecticut','','','2016-07-19 14:11:11'),('DE','8f241f11096877ac0.98748826','Delaware','DE','Delaware','','','2016-07-19 14:11:11'),('DC','8f241f11096877ac0.98748826','District of Columbia','DC','District of Columbia','','','2016-07-19 14:11:11'),('FM','8f241f11096877ac0.98748826','Föderierten Staaten von Mikronesien','FM','Federated States of Micronesia','','','2016-07-19 14:11:11'),('FL','8f241f11096877ac0.98748826','Florida','FL','Florida','','','2016-07-19 14:11:11'),('GA','8f241f11096877ac0.98748826','Georgia','GA','Georgia','','','2016-07-19 14:11:11'),('GU','8f241f11096877ac0.98748826','Guam','GU','Guam','','','2016-07-19 14:11:11'),('HI','8f241f11096877ac0.98748826','Hawaii','HI','Hawaii','','','2016-07-19 14:11:11'),('ID','8f241f11096877ac0.98748826','Idaho','ID','Idaho','','','2016-07-19 14:11:11'),('IL','8f241f11096877ac0.98748826','Illinois','IL','Illinois','','','2016-07-19 14:11:11'),('IN','8f241f11096877ac0.98748826','Indiana','IN','Indiana','','','2016-07-19 14:11:11'),('IA','8f241f11096877ac0.98748826','Iowa','IA','Iowa','','','2016-07-19 14:11:11'),('KS','8f241f11096877ac0.98748826','Kansas','KS','Kansas','','','2016-07-19 14:11:11'),('KY','8f241f11096877ac0.98748826','Kentucky','KY','Kentucky','','','2016-07-19 14:11:11'),('LA','8f241f11096877ac0.98748826','Louisiana','LA','Louisiana','','','2016-07-19 14:11:11'),('ME','8f241f11096877ac0.98748826','Maine','ME','Maine','','','2016-07-19 14:11:11'),('MH','8f241f11096877ac0.98748826','Marshallinseln','MH','Marshall Islands','','','2016-07-19 14:11:11'),('MD','8f241f11096877ac0.98748826','Maryland','MD','Maryland','','','2016-07-19 14:11:11'),('MA','8f241f11096877ac0.98748826','Massachusetts','MA','Massachusetts','','','2016-07-19 14:11:11'),('MI','8f241f11096877ac0.98748826','Michigan','MI','Michigan','','','2016-07-19 14:11:11'),('MN','8f241f11096877ac0.98748826','Minnesota','MN','Minnesota','','','2016-07-19 14:11:11'),('MS','8f241f11096877ac0.98748826','Mississippi','MS','Mississippi','','','2016-07-19 14:11:11'),('MO','8f241f11096877ac0.98748826','Missouri','MO','Missouri','','','2016-07-19 14:11:11'),('MT','8f241f11096877ac0.98748826','Montana','MT','Montana','','','2016-07-19 14:11:11'),('NE','8f241f11096877ac0.98748826','Nebraska','NE','Nebraska','','','2016-07-19 14:11:11'),('NV','8f241f11096877ac0.98748826','Nevada','NV','Nevada','','','2016-07-19 14:11:11'),('NH','8f241f11096877ac0.98748826','New Hampshire','NH','New Hampshire','','','2016-07-19 14:11:11'),('NJ','8f241f11096877ac0.98748826','New Jersey','NJ','New Jersey','','','2016-07-19 14:11:11'),('NM','8f241f11096877ac0.98748826','Neumexiko','NM','New Mexico','','','2016-07-19 14:11:11'),('NY','8f241f11096877ac0.98748826','New York','NY','New York','','','2016-07-19 14:11:11'),('NC','8f241f11096877ac0.98748826','North Carolina','NC','North Carolina','','','2016-07-19 14:11:11'),('ND','8f241f11096877ac0.98748826','North Dakota','ND','North Dakota','','','2016-07-19 14:11:11'),('MP','8f241f11096877ac0.98748826','Nördlichen Marianen','MP','Northern Mariana Islands','','','2016-07-19 14:11:11'),('OH','8f241f11096877ac0.98748826','Ohio','OH','Ohio','','','2016-07-19 14:11:11'),('OK','8f241f11096877ac0.98748826','Oklahoma','OK','Oklahoma','','','2016-07-19 14:11:11'),('OR','8f241f11096877ac0.98748826','Oregon','OR','Oregon','','','2016-07-19 14:11:11'),('PW','8f241f11096877ac0.98748826','Palau','PW','Palau','','','2016-07-19 14:11:11'),('PA','8f241f11096877ac0.98748826','Pennsylvania','PA','Pennsylvania','','','2016-07-19 14:11:11'),('PR','8f241f11096877ac0.98748826','Puerto Rico','PR','Puerto Rico','','','2016-07-19 14:11:11'),('RI','8f241f11096877ac0.98748826','Rhode Island','RI','Rhode Island','','','2016-07-19 14:11:11'),('SC','8f241f11096877ac0.98748826','Südkarolina','SC','South Carolina','','','2016-07-19 14:11:11'),('SD','8f241f11096877ac0.98748826','Süddakota','SD','South Dakota','','','2016-07-19 14:11:11'),('TN','8f241f11096877ac0.98748826','Tennessee','TN','Tennessee','','','2016-07-19 14:11:11'),('TX','8f241f11096877ac0.98748826','Texas','TX','Texas','','','2016-07-19 14:11:11'),('UT','8f241f11096877ac0.98748826','Utah','UT','Utah','','','2016-07-19 14:11:11'),('VT','8f241f11096877ac0.98748826','Vermont','VT','Vermont','','','2016-07-19 14:11:11'),('VI','8f241f11096877ac0.98748826','Jungferninseln','VI','Virgin Islands','','','2016-07-19 14:11:11'),('VA','8f241f11096877ac0.98748826','Virginia','VA','Virginia','','','2016-07-19 14:11:11'),('WA','8f241f11096877ac0.98748826','Washington','WA','Washington','','','2016-07-19 14:11:11'),('WV','8f241f11096877ac0.98748826','West Virginia','WV','West Virginia','','','2016-07-19 14:11:11'),('WI','8f241f11096877ac0.98748826','Wisconsin','WI','Wisconsin','','','2016-07-19 14:11:11'),('WY','8f241f11096877ac0.98748826','Wyoming','WY','Wyoming','','','2016-07-19 14:11:11'),('AA','8f241f11096877ac0.98748826','Armed Forces Americas','AA','Armed Forces Americas','','','2016-07-19 14:11:11'),('AE','8f241f11096877ac0.98748826','Armed Forces','AE','Armed Forces','','','2016-07-19 14:11:11'),('AP','8f241f11096877ac0.98748826','Armed Forces Pacific','AP','Armed Forces Pacific','','','2016-07-19 14:11:11');
 /*!40000 ALTER TABLE `oxstates` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxstatistics`
+--
+
+DROP TABLE IF EXISTS `oxstatistics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxstatistics` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Record id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXTITLE` char(32) NOT NULL DEFAULT '' COMMENT 'Title',
+  `OXVALUE` text NOT NULL COMMENT 'Serialized array of reports',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Statistics reports';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxstatistics`
@@ -600,6 +2288,28 @@ INSERT INTO `oxstatistics` VALUES ('79c3fbcc7793ee6a2.42827424','oxbaseshop','Re
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxtplblocks`
+--
+
+DROP TABLE IF EXISTS `oxtplblocks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxtplblocks` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Block id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is active',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Shop id (oxshops)',
+  `OXTEMPLATE` char(255) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Template filename (with rel. path), where block is located',
+  `OXBLOCKNAME` char(128) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Block name',
+  `OXPOS` int(11) NOT NULL COMMENT 'Sorting',
+  `OXFILE` char(255) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Module template filename, where block replacement is located',
+  `OXMODULE` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Module, which uses this template',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `search` (`OXACTIVE`,`OXTEMPLATE`,`OXPOS`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Module template blocks';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxtplblocks`
 --
 
@@ -608,6 +2318,58 @@ LOCK TABLES `oxtplblocks` WRITE;
 INSERT INTO `oxtplblocks` VALUES ('aba2417d4a2846a07c1575a20479c927',1,'oxbaseshop','order_overview.tpl','admin_order_overview_export',1,'views/admin/blocks/order_overview.tpl','invoicepdf','2016-07-19 14:11:11');
 /*!40000 ALTER TABLE `oxtplblocks` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxuser`
+--
+
+DROP TABLE IF EXISTS `oxuser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxuser` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'User id',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is active',
+  `OXRIGHTS` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User rights: user, malladmin',
+  `OXSHOPID` char(32) NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXUSERNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Username',
+  `OXPASSWORD` varchar(128) NOT NULL DEFAULT '' COMMENT 'Hashed password',
+  `OXPASSSALT` char(128) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Password salt',
+  `OXCUSTNR` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Customer number',
+  `OXUSTID` varchar(255) NOT NULL DEFAULT '' COMMENT 'VAT ID No.',
+  `OXCOMPANY` varchar(255) NOT NULL DEFAULT '' COMMENT 'Company',
+  `OXFNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'First name',
+  `OXLNAME` varchar(255) NOT NULL DEFAULT '' COMMENT 'Last name',
+  `OXSTREET` varchar(255) NOT NULL DEFAULT '' COMMENT 'Street',
+  `OXSTREETNR` varchar(16) NOT NULL DEFAULT '' COMMENT 'House number',
+  `OXADDINFO` varchar(255) NOT NULL DEFAULT '' COMMENT 'Additional info',
+  `OXCITY` varchar(255) NOT NULL DEFAULT '' COMMENT 'City',
+  `OXCOUNTRYID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Country id (oxcountry)',
+  `OXSTATEID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'State id (oxstates)',
+  `OXZIP` varchar(16) NOT NULL DEFAULT '' COMMENT 'ZIP code',
+  `OXFON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Phone number',
+  `OXFAX` varchar(128) NOT NULL DEFAULT '' COMMENT 'Fax number',
+  `OXSAL` varchar(128) NOT NULL DEFAULT '' COMMENT 'User title (Mr/Mrs)',
+  `OXBONI` int(11) NOT NULL DEFAULT '0' COMMENT 'Credit points',
+  `OXCREATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Creation time',
+  `OXREGISTER` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Registration time',
+  `OXPRIVFON` varchar(64) NOT NULL DEFAULT '' COMMENT 'Personal phone number',
+  `OXMOBFON` varchar(64) NOT NULL DEFAULT '' COMMENT 'Mobile phone number',
+  `OXBIRTHDATE` date NOT NULL DEFAULT '0000-00-00' COMMENT 'Birthday date',
+  `OXURL` varchar(255) NOT NULL DEFAULT '' COMMENT 'Url',
+  `OXUPDATEKEY` varchar(32) NOT NULL DEFAULT '' COMMENT 'Update key',
+  `OXUPDATEEXP` int(11) NOT NULL DEFAULT '0' COMMENT 'Update key expiration time',
+  `OXPOINTS` double NOT NULL DEFAULT '0' COMMENT 'User points (for registration, invitation, etc)',
+  `OXFBID` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Facebook id (used for openid login)',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  UNIQUE KEY `OXUSERNAME` (`OXUSERNAME`,`OXSHOPID`),
+  KEY `OXPASSWORD` (`OXPASSWORD`),
+  KEY `OXCUSTNR` (`OXCUSTNR`),
+  KEY `OXACTIVE` (`OXACTIVE`),
+  KEY `OXLNAME` (`OXLNAME`),
+  KEY `OXUPDATEEXP` (`OXUPDATEEXP`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Shop administrators and users';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxuser`
@@ -620,6 +2382,27 @@ INSERT INTO `oxuser` VALUES ('oxdefaultadmin',1,'malladmin','oxbaseshop','admin'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxuserbasketitems`
+--
+
+DROP TABLE IF EXISTS `oxuserbasketitems`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxuserbasketitems` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Item id',
+  `OXBASKETID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Basket id (oxuserbaskets)',
+  `OXARTID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Article id (oxarticles)',
+  `OXAMOUNT` char(32) NOT NULL DEFAULT '' COMMENT 'Amount',
+  `OXSELLIST` varchar(255) NOT NULL DEFAULT '' COMMENT 'Selection list',
+  `OXPERSPARAM` text NOT NULL COMMENT 'Serialized persistent parameters',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXBASKETID` (`OXBASKETID`),
+  KEY `OXARTID` (`OXARTID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User basket items';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxuserbasketitems`
 --
 
@@ -627,6 +2410,27 @@ LOCK TABLES `oxuserbasketitems` WRITE;
 /*!40000 ALTER TABLE `oxuserbasketitems` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxuserbasketitems` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxuserbaskets`
+--
+
+DROP TABLE IF EXISTS `oxuserbaskets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxuserbaskets` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Basket id',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Basket title',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  `OXPUBLIC` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Is public',
+  `OXUPDATE` int(11) NOT NULL DEFAULT '0' COMMENT 'Update timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXUPDATE` (`OXUPDATE`),
+  KEY `OXTITLE` (`OXTITLE`),
+  KEY `OXUSERID` (`OXUSERID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Active User baskets';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxuserbaskets`
@@ -638,6 +2442,24 @@ LOCK TABLES `oxuserbaskets` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxuserpayments`
+--
+
+DROP TABLE IF EXISTS `oxuserpayments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxuserpayments` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Payment id',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxusers)',
+  `OXPAYMENTSID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Payment id (oxpayments)',
+  `OXVALUE` blob NOT NULL COMMENT 'DYN payment values array as string',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXUSERID` (`OXUSERID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User payments';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxuserpayments`
 --
 
@@ -645,6 +2467,1980 @@ LOCK TABLES `oxuserpayments` WRITE;
 /*!40000 ALTER TABLE `oxuserpayments` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxuserpayments` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary table structure for view `oxv_oxactions`
+--
+
+DROP TABLE IF EXISTS `oxv_oxactions`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxactions`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxactions` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXLONGDESC_1` tinyint NOT NULL,
+  `OXLONGDESC_2` tinyint NOT NULL,
+  `OXLONGDESC_3` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXPIC` tinyint NOT NULL,
+  `OXPIC_1` tinyint NOT NULL,
+  `OXPIC_2` tinyint NOT NULL,
+  `OXPIC_3` tinyint NOT NULL,
+  `OXLINK` tinyint NOT NULL,
+  `OXLINK_1` tinyint NOT NULL,
+  `OXLINK_2` tinyint NOT NULL,
+  `OXLINK_3` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxactions_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxactions_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxactions_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxactions_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXPIC` tinyint NOT NULL,
+  `OXLINK` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxactions_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxactions_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxactions_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxactions_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXPIC` tinyint NOT NULL,
+  `OXLINK` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxartextends`
+--
+
+DROP TABLE IF EXISTS `oxv_oxartextends`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxartextends`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxartextends` (
+  `OXID` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXLONGDESC_1` tinyint NOT NULL,
+  `OXLONGDESC_2` tinyint NOT NULL,
+  `OXLONGDESC_3` tinyint NOT NULL,
+  `OXTAGS` tinyint NOT NULL,
+  `OXTAGS_1` tinyint NOT NULL,
+  `OXTAGS_2` tinyint NOT NULL,
+  `OXTAGS_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxartextends_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxartextends_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxartextends_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxartextends_de` (
+  `OXID` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTAGS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxartextends_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxartextends_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxartextends_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxartextends_en` (
+  `OXID` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTAGS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxarticles`
+--
+
+DROP TABLE IF EXISTS `oxv_oxarticles`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxarticles`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxarticles` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXPARENTID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXARTNUM` tinyint NOT NULL,
+  `OXEAN` tinyint NOT NULL,
+  `OXDISTEAN` tinyint NOT NULL,
+  `OXMPN` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXBLFIXEDPRICE` tinyint NOT NULL,
+  `OXPRICEA` tinyint NOT NULL,
+  `OXPRICEB` tinyint NOT NULL,
+  `OXPRICEC` tinyint NOT NULL,
+  `OXBPRICE` tinyint NOT NULL,
+  `OXTPRICE` tinyint NOT NULL,
+  `OXUNITNAME` tinyint NOT NULL,
+  `OXUNITQUANTITY` tinyint NOT NULL,
+  `OXEXTURL` tinyint NOT NULL,
+  `OXURLDESC` tinyint NOT NULL,
+  `OXURLIMG` tinyint NOT NULL,
+  `OXVAT` tinyint NOT NULL,
+  `OXTHUMB` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXPIC1` tinyint NOT NULL,
+  `OXPIC2` tinyint NOT NULL,
+  `OXPIC3` tinyint NOT NULL,
+  `OXPIC4` tinyint NOT NULL,
+  `OXPIC5` tinyint NOT NULL,
+  `OXPIC6` tinyint NOT NULL,
+  `OXPIC7` tinyint NOT NULL,
+  `OXPIC8` tinyint NOT NULL,
+  `OXPIC9` tinyint NOT NULL,
+  `OXPIC10` tinyint NOT NULL,
+  `OXPIC11` tinyint NOT NULL,
+  `OXPIC12` tinyint NOT NULL,
+  `OXWEIGHT` tinyint NOT NULL,
+  `OXSTOCK` tinyint NOT NULL,
+  `OXSTOCKFLAG` tinyint NOT NULL,
+  `OXSTOCKTEXT` tinyint NOT NULL,
+  `OXNOSTOCKTEXT` tinyint NOT NULL,
+  `OXDELIVERY` tinyint NOT NULL,
+  `OXINSERT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL,
+  `OXLENGTH` tinyint NOT NULL,
+  `OXWIDTH` tinyint NOT NULL,
+  `OXHEIGHT` tinyint NOT NULL,
+  `OXFILE` tinyint NOT NULL,
+  `OXSEARCHKEYS` tinyint NOT NULL,
+  `OXTEMPLATE` tinyint NOT NULL,
+  `OXQUESTIONEMAIL` tinyint NOT NULL,
+  `OXISSEARCH` tinyint NOT NULL,
+  `OXISCONFIGURABLE` tinyint NOT NULL,
+  `OXVARNAME` tinyint NOT NULL,
+  `OXVARSTOCK` tinyint NOT NULL,
+  `OXVARCOUNT` tinyint NOT NULL,
+  `OXVARSELECT` tinyint NOT NULL,
+  `OXVARMINPRICE` tinyint NOT NULL,
+  `OXVARMAXPRICE` tinyint NOT NULL,
+  `OXVARNAME_1` tinyint NOT NULL,
+  `OXVARSELECT_1` tinyint NOT NULL,
+  `OXVARNAME_2` tinyint NOT NULL,
+  `OXVARSELECT_2` tinyint NOT NULL,
+  `OXVARNAME_3` tinyint NOT NULL,
+  `OXVARSELECT_3` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXSHORTDESC_1` tinyint NOT NULL,
+  `OXURLDESC_1` tinyint NOT NULL,
+  `OXSEARCHKEYS_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXSHORTDESC_2` tinyint NOT NULL,
+  `OXURLDESC_2` tinyint NOT NULL,
+  `OXSEARCHKEYS_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXSHORTDESC_3` tinyint NOT NULL,
+  `OXURLDESC_3` tinyint NOT NULL,
+  `OXSEARCHKEYS_3` tinyint NOT NULL,
+  `OXBUNDLEID` tinyint NOT NULL,
+  `OXFOLDER` tinyint NOT NULL,
+  `OXSUBCLASS` tinyint NOT NULL,
+  `OXSTOCKTEXT_1` tinyint NOT NULL,
+  `OXSTOCKTEXT_2` tinyint NOT NULL,
+  `OXSTOCKTEXT_3` tinyint NOT NULL,
+  `OXNOSTOCKTEXT_1` tinyint NOT NULL,
+  `OXNOSTOCKTEXT_2` tinyint NOT NULL,
+  `OXNOSTOCKTEXT_3` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXSOLDAMOUNT` tinyint NOT NULL,
+  `OXNONMATERIAL` tinyint NOT NULL,
+  `OXFREESHIPPING` tinyint NOT NULL,
+  `OXREMINDACTIVE` tinyint NOT NULL,
+  `OXREMINDAMOUNT` tinyint NOT NULL,
+  `OXAMITEMID` tinyint NOT NULL,
+  `OXAMTASKID` tinyint NOT NULL,
+  `OXVENDORID` tinyint NOT NULL,
+  `OXMANUFACTURERID` tinyint NOT NULL,
+  `OXSKIPDISCOUNTS` tinyint NOT NULL,
+  `OXRATING` tinyint NOT NULL,
+  `OXRATINGCNT` tinyint NOT NULL,
+  `OXMINDELTIME` tinyint NOT NULL,
+  `OXMAXDELTIME` tinyint NOT NULL,
+  `OXDELTIMEUNIT` tinyint NOT NULL,
+  `OXUPDATEPRICE` tinyint NOT NULL,
+  `OXUPDATEPRICEA` tinyint NOT NULL,
+  `OXUPDATEPRICEB` tinyint NOT NULL,
+  `OXUPDATEPRICEC` tinyint NOT NULL,
+  `OXUPDATEPRICETIME` tinyint NOT NULL,
+  `OXISDOWNLOADABLE` tinyint NOT NULL,
+  `OXSHOWCUSTOMAGREEMENT` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxarticles_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxarticles_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxarticles_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxarticles_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXPARENTID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXARTNUM` tinyint NOT NULL,
+  `OXEAN` tinyint NOT NULL,
+  `OXDISTEAN` tinyint NOT NULL,
+  `OXMPN` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXBLFIXEDPRICE` tinyint NOT NULL,
+  `OXPRICEA` tinyint NOT NULL,
+  `OXPRICEB` tinyint NOT NULL,
+  `OXPRICEC` tinyint NOT NULL,
+  `OXBPRICE` tinyint NOT NULL,
+  `OXTPRICE` tinyint NOT NULL,
+  `OXUNITNAME` tinyint NOT NULL,
+  `OXUNITQUANTITY` tinyint NOT NULL,
+  `OXEXTURL` tinyint NOT NULL,
+  `OXURLDESC` tinyint NOT NULL,
+  `OXURLIMG` tinyint NOT NULL,
+  `OXVAT` tinyint NOT NULL,
+  `OXTHUMB` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXPIC1` tinyint NOT NULL,
+  `OXPIC2` tinyint NOT NULL,
+  `OXPIC3` tinyint NOT NULL,
+  `OXPIC4` tinyint NOT NULL,
+  `OXPIC5` tinyint NOT NULL,
+  `OXPIC6` tinyint NOT NULL,
+  `OXPIC7` tinyint NOT NULL,
+  `OXPIC8` tinyint NOT NULL,
+  `OXPIC9` tinyint NOT NULL,
+  `OXPIC10` tinyint NOT NULL,
+  `OXPIC11` tinyint NOT NULL,
+  `OXPIC12` tinyint NOT NULL,
+  `OXWEIGHT` tinyint NOT NULL,
+  `OXSTOCK` tinyint NOT NULL,
+  `OXSTOCKFLAG` tinyint NOT NULL,
+  `OXSTOCKTEXT` tinyint NOT NULL,
+  `OXNOSTOCKTEXT` tinyint NOT NULL,
+  `OXDELIVERY` tinyint NOT NULL,
+  `OXINSERT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL,
+  `OXLENGTH` tinyint NOT NULL,
+  `OXWIDTH` tinyint NOT NULL,
+  `OXHEIGHT` tinyint NOT NULL,
+  `OXFILE` tinyint NOT NULL,
+  `OXSEARCHKEYS` tinyint NOT NULL,
+  `OXTEMPLATE` tinyint NOT NULL,
+  `OXQUESTIONEMAIL` tinyint NOT NULL,
+  `OXISSEARCH` tinyint NOT NULL,
+  `OXISCONFIGURABLE` tinyint NOT NULL,
+  `OXVARNAME` tinyint NOT NULL,
+  `OXVARSTOCK` tinyint NOT NULL,
+  `OXVARCOUNT` tinyint NOT NULL,
+  `OXVARSELECT` tinyint NOT NULL,
+  `OXVARMINPRICE` tinyint NOT NULL,
+  `OXVARMAXPRICE` tinyint NOT NULL,
+  `OXBUNDLEID` tinyint NOT NULL,
+  `OXFOLDER` tinyint NOT NULL,
+  `OXSUBCLASS` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXSOLDAMOUNT` tinyint NOT NULL,
+  `OXNONMATERIAL` tinyint NOT NULL,
+  `OXFREESHIPPING` tinyint NOT NULL,
+  `OXREMINDACTIVE` tinyint NOT NULL,
+  `OXREMINDAMOUNT` tinyint NOT NULL,
+  `OXAMITEMID` tinyint NOT NULL,
+  `OXAMTASKID` tinyint NOT NULL,
+  `OXVENDORID` tinyint NOT NULL,
+  `OXMANUFACTURERID` tinyint NOT NULL,
+  `OXSKIPDISCOUNTS` tinyint NOT NULL,
+  `OXRATING` tinyint NOT NULL,
+  `OXRATINGCNT` tinyint NOT NULL,
+  `OXMINDELTIME` tinyint NOT NULL,
+  `OXMAXDELTIME` tinyint NOT NULL,
+  `OXDELTIMEUNIT` tinyint NOT NULL,
+  `OXUPDATEPRICE` tinyint NOT NULL,
+  `OXUPDATEPRICEA` tinyint NOT NULL,
+  `OXUPDATEPRICEB` tinyint NOT NULL,
+  `OXUPDATEPRICEC` tinyint NOT NULL,
+  `OXUPDATEPRICETIME` tinyint NOT NULL,
+  `OXISDOWNLOADABLE` tinyint NOT NULL,
+  `OXSHOWCUSTOMAGREEMENT` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxarticles_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxarticles_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxarticles_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxarticles_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXPARENTID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXARTNUM` tinyint NOT NULL,
+  `OXEAN` tinyint NOT NULL,
+  `OXDISTEAN` tinyint NOT NULL,
+  `OXMPN` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXBLFIXEDPRICE` tinyint NOT NULL,
+  `OXPRICEA` tinyint NOT NULL,
+  `OXPRICEB` tinyint NOT NULL,
+  `OXPRICEC` tinyint NOT NULL,
+  `OXBPRICE` tinyint NOT NULL,
+  `OXTPRICE` tinyint NOT NULL,
+  `OXUNITNAME` tinyint NOT NULL,
+  `OXUNITQUANTITY` tinyint NOT NULL,
+  `OXEXTURL` tinyint NOT NULL,
+  `OXURLDESC` tinyint NOT NULL,
+  `OXURLIMG` tinyint NOT NULL,
+  `OXVAT` tinyint NOT NULL,
+  `OXTHUMB` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXPIC1` tinyint NOT NULL,
+  `OXPIC2` tinyint NOT NULL,
+  `OXPIC3` tinyint NOT NULL,
+  `OXPIC4` tinyint NOT NULL,
+  `OXPIC5` tinyint NOT NULL,
+  `OXPIC6` tinyint NOT NULL,
+  `OXPIC7` tinyint NOT NULL,
+  `OXPIC8` tinyint NOT NULL,
+  `OXPIC9` tinyint NOT NULL,
+  `OXPIC10` tinyint NOT NULL,
+  `OXPIC11` tinyint NOT NULL,
+  `OXPIC12` tinyint NOT NULL,
+  `OXWEIGHT` tinyint NOT NULL,
+  `OXSTOCK` tinyint NOT NULL,
+  `OXSTOCKFLAG` tinyint NOT NULL,
+  `OXSTOCKTEXT` tinyint NOT NULL,
+  `OXNOSTOCKTEXT` tinyint NOT NULL,
+  `OXDELIVERY` tinyint NOT NULL,
+  `OXINSERT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL,
+  `OXLENGTH` tinyint NOT NULL,
+  `OXWIDTH` tinyint NOT NULL,
+  `OXHEIGHT` tinyint NOT NULL,
+  `OXFILE` tinyint NOT NULL,
+  `OXSEARCHKEYS` tinyint NOT NULL,
+  `OXTEMPLATE` tinyint NOT NULL,
+  `OXQUESTIONEMAIL` tinyint NOT NULL,
+  `OXISSEARCH` tinyint NOT NULL,
+  `OXISCONFIGURABLE` tinyint NOT NULL,
+  `OXVARNAME` tinyint NOT NULL,
+  `OXVARSTOCK` tinyint NOT NULL,
+  `OXVARCOUNT` tinyint NOT NULL,
+  `OXVARSELECT` tinyint NOT NULL,
+  `OXVARMINPRICE` tinyint NOT NULL,
+  `OXVARMAXPRICE` tinyint NOT NULL,
+  `OXBUNDLEID` tinyint NOT NULL,
+  `OXFOLDER` tinyint NOT NULL,
+  `OXSUBCLASS` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXSOLDAMOUNT` tinyint NOT NULL,
+  `OXNONMATERIAL` tinyint NOT NULL,
+  `OXFREESHIPPING` tinyint NOT NULL,
+  `OXREMINDACTIVE` tinyint NOT NULL,
+  `OXREMINDAMOUNT` tinyint NOT NULL,
+  `OXAMITEMID` tinyint NOT NULL,
+  `OXAMTASKID` tinyint NOT NULL,
+  `OXVENDORID` tinyint NOT NULL,
+  `OXMANUFACTURERID` tinyint NOT NULL,
+  `OXSKIPDISCOUNTS` tinyint NOT NULL,
+  `OXRATING` tinyint NOT NULL,
+  `OXRATINGCNT` tinyint NOT NULL,
+  `OXMINDELTIME` tinyint NOT NULL,
+  `OXMAXDELTIME` tinyint NOT NULL,
+  `OXDELTIMEUNIT` tinyint NOT NULL,
+  `OXUPDATEPRICE` tinyint NOT NULL,
+  `OXUPDATEPRICEA` tinyint NOT NULL,
+  `OXUPDATEPRICEB` tinyint NOT NULL,
+  `OXUPDATEPRICEC` tinyint NOT NULL,
+  `OXUPDATEPRICETIME` tinyint NOT NULL,
+  `OXISDOWNLOADABLE` tinyint NOT NULL,
+  `OXSHOWCUSTOMAGREEMENT` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxattribute`
+--
+
+DROP TABLE IF EXISTS `oxv_oxattribute`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxattribute`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxattribute` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL,
+  `OXDISPLAYINBASKET` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxattribute_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxattribute_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxattribute_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxattribute_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL,
+  `OXDISPLAYINBASKET` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxattribute_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxattribute_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxattribute_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxattribute_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL,
+  `OXDISPLAYINBASKET` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcategories`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcategories`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcategories`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcategories` (
+  `OXID` tinyint NOT NULL,
+  `OXPARENTID` tinyint NOT NULL,
+  `OXLEFT` tinyint NOT NULL,
+  `OXRIGHT` tinyint NOT NULL,
+  `OXROOTID` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXHIDDEN` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTHUMB` tinyint NOT NULL,
+  `OXTHUMB_1` tinyint NOT NULL,
+  `OXTHUMB_2` tinyint NOT NULL,
+  `OXTHUMB_3` tinyint NOT NULL,
+  `OXEXTLINK` tinyint NOT NULL,
+  `OXTEMPLATE` tinyint NOT NULL,
+  `OXDEFSORT` tinyint NOT NULL,
+  `OXDEFSORTMODE` tinyint NOT NULL,
+  `OXPRICEFROM` tinyint NOT NULL,
+  `OXPRICETO` tinyint NOT NULL,
+  `OXACTIVE_1` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXDESC_1` tinyint NOT NULL,
+  `OXLONGDESC_1` tinyint NOT NULL,
+  `OXACTIVE_2` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXDESC_2` tinyint NOT NULL,
+  `OXLONGDESC_2` tinyint NOT NULL,
+  `OXACTIVE_3` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXDESC_3` tinyint NOT NULL,
+  `OXLONGDESC_3` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXPROMOICON` tinyint NOT NULL,
+  `OXVAT` tinyint NOT NULL,
+  `OXSKIPDISCOUNTS` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcategories_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcategories_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcategories_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcategories_de` (
+  `OXID` tinyint NOT NULL,
+  `OXPARENTID` tinyint NOT NULL,
+  `OXLEFT` tinyint NOT NULL,
+  `OXRIGHT` tinyint NOT NULL,
+  `OXROOTID` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXHIDDEN` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTHUMB` tinyint NOT NULL,
+  `OXEXTLINK` tinyint NOT NULL,
+  `OXTEMPLATE` tinyint NOT NULL,
+  `OXDEFSORT` tinyint NOT NULL,
+  `OXDEFSORTMODE` tinyint NOT NULL,
+  `OXPRICEFROM` tinyint NOT NULL,
+  `OXPRICETO` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXPROMOICON` tinyint NOT NULL,
+  `OXVAT` tinyint NOT NULL,
+  `OXSKIPDISCOUNTS` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcategories_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcategories_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcategories_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcategories_en` (
+  `OXID` tinyint NOT NULL,
+  `OXPARENTID` tinyint NOT NULL,
+  `OXLEFT` tinyint NOT NULL,
+  `OXRIGHT` tinyint NOT NULL,
+  `OXROOTID` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXHIDDEN` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTHUMB` tinyint NOT NULL,
+  `OXEXTLINK` tinyint NOT NULL,
+  `OXTEMPLATE` tinyint NOT NULL,
+  `OXDEFSORT` tinyint NOT NULL,
+  `OXDEFSORTMODE` tinyint NOT NULL,
+  `OXPRICEFROM` tinyint NOT NULL,
+  `OXPRICETO` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXPROMOICON` tinyint NOT NULL,
+  `OXVAT` tinyint NOT NULL,
+  `OXSKIPDISCOUNTS` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcontents`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcontents`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcontents`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcontents` (
+  `OXID` tinyint NOT NULL,
+  `OXLOADID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXSNIPPET` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVE_1` tinyint NOT NULL,
+  `OXPOSITION` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXCONTENT` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXCONTENT_1` tinyint NOT NULL,
+  `OXACTIVE_2` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXCONTENT_2` tinyint NOT NULL,
+  `OXACTIVE_3` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXCONTENT_3` tinyint NOT NULL,
+  `OXCATID` tinyint NOT NULL,
+  `OXFOLDER` tinyint NOT NULL,
+  `OXTERMVERSION` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcontents_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcontents_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcontents_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcontents_de` (
+  `OXID` tinyint NOT NULL,
+  `OXLOADID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXSNIPPET` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXPOSITION` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXCONTENT` tinyint NOT NULL,
+  `OXCATID` tinyint NOT NULL,
+  `OXFOLDER` tinyint NOT NULL,
+  `OXTERMVERSION` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcontents_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcontents_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcontents_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcontents_en` (
+  `OXID` tinyint NOT NULL,
+  `OXLOADID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXSNIPPET` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXPOSITION` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXCONTENT` tinyint NOT NULL,
+  `OXCATID` tinyint NOT NULL,
+  `OXFOLDER` tinyint NOT NULL,
+  `OXTERMVERSION` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcountry`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcountry`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcountry`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcountry` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXISOALPHA2` tinyint NOT NULL,
+  `OXISOALPHA3` tinyint NOT NULL,
+  `OXUNNUM3` tinyint NOT NULL,
+  `OXVATINPREFIX` tinyint NOT NULL,
+  `OXORDER` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXSHORTDESC_1` tinyint NOT NULL,
+  `OXSHORTDESC_2` tinyint NOT NULL,
+  `OXSHORTDESC_3` tinyint NOT NULL,
+  `OXLONGDESC_1` tinyint NOT NULL,
+  `OXLONGDESC_2` tinyint NOT NULL,
+  `OXLONGDESC_3` tinyint NOT NULL,
+  `OXVATSTATUS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcountry_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcountry_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcountry_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcountry_de` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXISOALPHA2` tinyint NOT NULL,
+  `OXISOALPHA3` tinyint NOT NULL,
+  `OXUNNUM3` tinyint NOT NULL,
+  `OXVATINPREFIX` tinyint NOT NULL,
+  `OXORDER` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXVATSTATUS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxcountry_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxcountry_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcountry_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxcountry_en` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXISOALPHA2` tinyint NOT NULL,
+  `OXISOALPHA3` tinyint NOT NULL,
+  `OXUNNUM3` tinyint NOT NULL,
+  `OXVATINPREFIX` tinyint NOT NULL,
+  `OXORDER` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXVATSTATUS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdelivery`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdelivery`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdelivery`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdelivery` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXDELTYPE` tinyint NOT NULL,
+  `OXPARAM` tinyint NOT NULL,
+  `OXPARAMEND` tinyint NOT NULL,
+  `OXFIXED` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXFINALIZE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdelivery_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdelivery_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdelivery_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdelivery_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXDELTYPE` tinyint NOT NULL,
+  `OXPARAM` tinyint NOT NULL,
+  `OXPARAMEND` tinyint NOT NULL,
+  `OXFIXED` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXFINALIZE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdelivery_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdelivery_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdelivery_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdelivery_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXDELTYPE` tinyint NOT NULL,
+  `OXPARAM` tinyint NOT NULL,
+  `OXPARAMEND` tinyint NOT NULL,
+  `OXFIXED` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXFINALIZE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdeliveryset`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdeliveryset`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdeliveryset`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdeliveryset` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdeliveryset_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdeliveryset_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdeliveryset_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdeliveryset_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdeliveryset_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdeliveryset_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdeliveryset_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdeliveryset_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdiscount`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdiscount`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdiscount`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdiscount` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXAMOUNT` tinyint NOT NULL,
+  `OXAMOUNTTO` tinyint NOT NULL,
+  `OXPRICETO` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXITMARTID` tinyint NOT NULL,
+  `OXITMAMOUNT` tinyint NOT NULL,
+  `OXITMMULTIPLE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdiscount_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdiscount_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdiscount_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdiscount_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXAMOUNT` tinyint NOT NULL,
+  `OXAMOUNTTO` tinyint NOT NULL,
+  `OXPRICETO` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXITMARTID` tinyint NOT NULL,
+  `OXITMAMOUNT` tinyint NOT NULL,
+  `OXITMMULTIPLE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxdiscount_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxdiscount_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdiscount_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxdiscount_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXAMOUNT` tinyint NOT NULL,
+  `OXAMOUNTTO` tinyint NOT NULL,
+  `OXPRICETO` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXITMARTID` tinyint NOT NULL,
+  `OXITMAMOUNT` tinyint NOT NULL,
+  `OXITMMULTIPLE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxgroups`
+--
+
+DROP TABLE IF EXISTS `oxv_oxgroups`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxgroups`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxgroups` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxgroups_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxgroups_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxgroups_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxgroups_de` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxgroups_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxgroups_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxgroups_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxgroups_en` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxlinks`
+--
+
+DROP TABLE IF EXISTS `oxv_oxlinks`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxlinks`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxlinks` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXURLDESC` tinyint NOT NULL,
+  `OXURLDESC_1` tinyint NOT NULL,
+  `OXURLDESC_2` tinyint NOT NULL,
+  `OXURLDESC_3` tinyint NOT NULL,
+  `OXINSERT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxlinks_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxlinks_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxlinks_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxlinks_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXURLDESC` tinyint NOT NULL,
+  `OXINSERT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxlinks_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxlinks_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxlinks_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxlinks_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXURLDESC` tinyint NOT NULL,
+  `OXINSERT` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxmanufacturers`
+--
+
+DROP TABLE IF EXISTS `oxv_oxmanufacturers`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmanufacturers`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxmanufacturers` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXSHORTDESC_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXSHORTDESC_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXSHORTDESC_3` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxmanufacturers_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxmanufacturers_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmanufacturers_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxmanufacturers_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxmanufacturers_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxmanufacturers_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmanufacturers_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxmanufacturers_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxmediaurls`
+--
+
+DROP TABLE IF EXISTS `oxv_oxmediaurls`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmediaurls`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxmediaurls` (
+  `OXID` tinyint NOT NULL,
+  `OXOBJECTID` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXDESC_1` tinyint NOT NULL,
+  `OXDESC_2` tinyint NOT NULL,
+  `OXDESC_3` tinyint NOT NULL,
+  `OXISUPLOADED` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxmediaurls_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxmediaurls_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmediaurls_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxmediaurls_de` (
+  `OXID` tinyint NOT NULL,
+  `OXOBJECTID` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXISUPLOADED` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxmediaurls_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxmediaurls_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmediaurls_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxmediaurls_en` (
+  `OXID` tinyint NOT NULL,
+  `OXOBJECTID` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXISUPLOADED` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxnews`
+--
+
+DROP TABLE IF EXISTS `oxv_oxnews`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxnews`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxnews` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXDATE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXACTIVE_1` tinyint NOT NULL,
+  `OXSHORTDESC_1` tinyint NOT NULL,
+  `OXLONGDESC_1` tinyint NOT NULL,
+  `OXACTIVE_2` tinyint NOT NULL,
+  `OXSHORTDESC_2` tinyint NOT NULL,
+  `OXLONGDESC_2` tinyint NOT NULL,
+  `OXACTIVE_3` tinyint NOT NULL,
+  `OXSHORTDESC_3` tinyint NOT NULL,
+  `OXLONGDESC_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxnews_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxnews_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxnews_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxnews_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXDATE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxnews_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxnews_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxnews_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxnews_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVEFROM` tinyint NOT NULL,
+  `OXACTIVETO` tinyint NOT NULL,
+  `OXDATE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxobject2attribute`
+--
+
+DROP TABLE IF EXISTS `oxv_oxobject2attribute`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxobject2attribute`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxobject2attribute` (
+  `OXID` tinyint NOT NULL,
+  `OXOBJECTID` tinyint NOT NULL,
+  `OXATTRID` tinyint NOT NULL,
+  `OXVALUE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXVALUE_1` tinyint NOT NULL,
+  `OXVALUE_2` tinyint NOT NULL,
+  `OXVALUE_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxobject2attribute_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxobject2attribute_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxobject2attribute_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxobject2attribute_de` (
+  `OXID` tinyint NOT NULL,
+  `OXOBJECTID` tinyint NOT NULL,
+  `OXATTRID` tinyint NOT NULL,
+  `OXVALUE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxobject2attribute_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxobject2attribute_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxobject2attribute_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxobject2attribute_en` (
+  `OXID` tinyint NOT NULL,
+  `OXOBJECTID` tinyint NOT NULL,
+  `OXATTRID` tinyint NOT NULL,
+  `OXVALUE` tinyint NOT NULL,
+  `OXPOS` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxpayments`
+--
+
+DROP TABLE IF EXISTS `oxv_oxpayments`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxpayments`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxpayments` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUMRULES` tinyint NOT NULL,
+  `OXFROMBONI` tinyint NOT NULL,
+  `OXFROMAMOUNT` tinyint NOT NULL,
+  `OXTOAMOUNT` tinyint NOT NULL,
+  `OXVALDESC` tinyint NOT NULL,
+  `OXCHECKED` tinyint NOT NULL,
+  `OXDESC_1` tinyint NOT NULL,
+  `OXVALDESC_1` tinyint NOT NULL,
+  `OXDESC_2` tinyint NOT NULL,
+  `OXVALDESC_2` tinyint NOT NULL,
+  `OXDESC_3` tinyint NOT NULL,
+  `OXVALDESC_3` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXLONGDESC_1` tinyint NOT NULL,
+  `OXLONGDESC_2` tinyint NOT NULL,
+  `OXLONGDESC_3` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXTSPAYMENTID` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxpayments_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxpayments_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxpayments_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxpayments_de` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUMRULES` tinyint NOT NULL,
+  `OXFROMBONI` tinyint NOT NULL,
+  `OXFROMAMOUNT` tinyint NOT NULL,
+  `OXTOAMOUNT` tinyint NOT NULL,
+  `OXVALDESC` tinyint NOT NULL,
+  `OXCHECKED` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXTSPAYMENTID` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxpayments_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxpayments_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxpayments_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxpayments_en` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXDESC` tinyint NOT NULL,
+  `OXADDSUM` tinyint NOT NULL,
+  `OXADDSUMTYPE` tinyint NOT NULL,
+  `OXADDSUMRULES` tinyint NOT NULL,
+  `OXFROMBONI` tinyint NOT NULL,
+  `OXFROMAMOUNT` tinyint NOT NULL,
+  `OXTOAMOUNT` tinyint NOT NULL,
+  `OXVALDESC` tinyint NOT NULL,
+  `OXCHECKED` tinyint NOT NULL,
+  `OXLONGDESC` tinyint NOT NULL,
+  `OXSORT` tinyint NOT NULL,
+  `OXTSPAYMENTID` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxselectlist`
+--
+
+DROP TABLE IF EXISTS `oxv_oxselectlist`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxselectlist`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxselectlist` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXIDENT` tinyint NOT NULL,
+  `OXVALDESC` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXVALDESC_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXVALDESC_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXVALDESC_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxselectlist_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxselectlist_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxselectlist_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxselectlist_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXIDENT` tinyint NOT NULL,
+  `OXVALDESC` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxselectlist_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxselectlist_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxselectlist_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxselectlist_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXIDENT` tinyint NOT NULL,
+  `OXVALDESC` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxshops`
+--
+
+DROP TABLE IF EXISTS `oxv_oxshops`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxshops`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxshops` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXPRODUCTIVE` tinyint NOT NULL,
+  `OXDEFCURRENCY` tinyint NOT NULL,
+  `OXDEFLANGUAGE` tinyint NOT NULL,
+  `OXNAME` tinyint NOT NULL,
+  `OXTITLEPREFIX` tinyint NOT NULL,
+  `OXTITLEPREFIX_1` tinyint NOT NULL,
+  `OXTITLEPREFIX_2` tinyint NOT NULL,
+  `OXTITLEPREFIX_3` tinyint NOT NULL,
+  `OXTITLESUFFIX` tinyint NOT NULL,
+  `OXTITLESUFFIX_1` tinyint NOT NULL,
+  `OXTITLESUFFIX_2` tinyint NOT NULL,
+  `OXTITLESUFFIX_3` tinyint NOT NULL,
+  `OXSTARTTITLE` tinyint NOT NULL,
+  `OXSTARTTITLE_1` tinyint NOT NULL,
+  `OXSTARTTITLE_2` tinyint NOT NULL,
+  `OXSTARTTITLE_3` tinyint NOT NULL,
+  `OXINFOEMAIL` tinyint NOT NULL,
+  `OXORDEREMAIL` tinyint NOT NULL,
+  `OXOWNEREMAIL` tinyint NOT NULL,
+  `OXORDERSUBJECT` tinyint NOT NULL,
+  `OXREGISTERSUBJECT` tinyint NOT NULL,
+  `OXFORGOTPWDSUBJECT` tinyint NOT NULL,
+  `OXSENDEDNOWSUBJECT` tinyint NOT NULL,
+  `OXORDERSUBJECT_1` tinyint NOT NULL,
+  `OXREGISTERSUBJECT_1` tinyint NOT NULL,
+  `OXFORGOTPWDSUBJECT_1` tinyint NOT NULL,
+  `OXSENDEDNOWSUBJECT_1` tinyint NOT NULL,
+  `OXORDERSUBJECT_2` tinyint NOT NULL,
+  `OXREGISTERSUBJECT_2` tinyint NOT NULL,
+  `OXFORGOTPWDSUBJECT_2` tinyint NOT NULL,
+  `OXSENDEDNOWSUBJECT_2` tinyint NOT NULL,
+  `OXORDERSUBJECT_3` tinyint NOT NULL,
+  `OXREGISTERSUBJECT_3` tinyint NOT NULL,
+  `OXFORGOTPWDSUBJECT_3` tinyint NOT NULL,
+  `OXSENDEDNOWSUBJECT_3` tinyint NOT NULL,
+  `OXSMTP` tinyint NOT NULL,
+  `OXSMTPUSER` tinyint NOT NULL,
+  `OXSMTPPWD` tinyint NOT NULL,
+  `OXCOMPANY` tinyint NOT NULL,
+  `OXSTREET` tinyint NOT NULL,
+  `OXZIP` tinyint NOT NULL,
+  `OXCITY` tinyint NOT NULL,
+  `OXCOUNTRY` tinyint NOT NULL,
+  `OXBANKNAME` tinyint NOT NULL,
+  `OXBANKNUMBER` tinyint NOT NULL,
+  `OXBANKCODE` tinyint NOT NULL,
+  `OXVATNUMBER` tinyint NOT NULL,
+  `OXTAXNUMBER` tinyint NOT NULL,
+  `OXBICCODE` tinyint NOT NULL,
+  `OXIBANNUMBER` tinyint NOT NULL,
+  `OXFNAME` tinyint NOT NULL,
+  `OXLNAME` tinyint NOT NULL,
+  `OXTELEFON` tinyint NOT NULL,
+  `OXTELEFAX` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXDEFCAT` tinyint NOT NULL,
+  `OXHRBNR` tinyint NOT NULL,
+  `OXCOURT` tinyint NOT NULL,
+  `OXADBUTLERID` tinyint NOT NULL,
+  `OXAFFILINETID` tinyint NOT NULL,
+  `OXSUPERCLICKSID` tinyint NOT NULL,
+  `OXAFFILIWELTID` tinyint NOT NULL,
+  `OXAFFILI24ID` tinyint NOT NULL,
+  `OXEDITION` tinyint NOT NULL,
+  `OXVERSION` tinyint NOT NULL,
+  `OXSEOACTIVE` tinyint NOT NULL,
+  `OXSEOACTIVE_1` tinyint NOT NULL,
+  `OXSEOACTIVE_2` tinyint NOT NULL,
+  `OXSEOACTIVE_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxshops_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxshops_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxshops_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxshops_de` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXPRODUCTIVE` tinyint NOT NULL,
+  `OXDEFCURRENCY` tinyint NOT NULL,
+  `OXDEFLANGUAGE` tinyint NOT NULL,
+  `OXNAME` tinyint NOT NULL,
+  `OXTITLEPREFIX` tinyint NOT NULL,
+  `OXTITLESUFFIX` tinyint NOT NULL,
+  `OXSTARTTITLE` tinyint NOT NULL,
+  `OXINFOEMAIL` tinyint NOT NULL,
+  `OXORDEREMAIL` tinyint NOT NULL,
+  `OXOWNEREMAIL` tinyint NOT NULL,
+  `OXORDERSUBJECT` tinyint NOT NULL,
+  `OXREGISTERSUBJECT` tinyint NOT NULL,
+  `OXFORGOTPWDSUBJECT` tinyint NOT NULL,
+  `OXSENDEDNOWSUBJECT` tinyint NOT NULL,
+  `OXSMTP` tinyint NOT NULL,
+  `OXSMTPUSER` tinyint NOT NULL,
+  `OXSMTPPWD` tinyint NOT NULL,
+  `OXCOMPANY` tinyint NOT NULL,
+  `OXSTREET` tinyint NOT NULL,
+  `OXZIP` tinyint NOT NULL,
+  `OXCITY` tinyint NOT NULL,
+  `OXCOUNTRY` tinyint NOT NULL,
+  `OXBANKNAME` tinyint NOT NULL,
+  `OXBANKNUMBER` tinyint NOT NULL,
+  `OXBANKCODE` tinyint NOT NULL,
+  `OXVATNUMBER` tinyint NOT NULL,
+  `OXTAXNUMBER` tinyint NOT NULL,
+  `OXBICCODE` tinyint NOT NULL,
+  `OXIBANNUMBER` tinyint NOT NULL,
+  `OXFNAME` tinyint NOT NULL,
+  `OXLNAME` tinyint NOT NULL,
+  `OXTELEFON` tinyint NOT NULL,
+  `OXTELEFAX` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXDEFCAT` tinyint NOT NULL,
+  `OXHRBNR` tinyint NOT NULL,
+  `OXCOURT` tinyint NOT NULL,
+  `OXADBUTLERID` tinyint NOT NULL,
+  `OXAFFILINETID` tinyint NOT NULL,
+  `OXSUPERCLICKSID` tinyint NOT NULL,
+  `OXAFFILIWELTID` tinyint NOT NULL,
+  `OXAFFILI24ID` tinyint NOT NULL,
+  `OXEDITION` tinyint NOT NULL,
+  `OXVERSION` tinyint NOT NULL,
+  `OXSEOACTIVE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxshops_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxshops_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxshops_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxshops_en` (
+  `OXID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXPRODUCTIVE` tinyint NOT NULL,
+  `OXDEFCURRENCY` tinyint NOT NULL,
+  `OXDEFLANGUAGE` tinyint NOT NULL,
+  `OXNAME` tinyint NOT NULL,
+  `OXTITLEPREFIX` tinyint NOT NULL,
+  `OXTITLESUFFIX` tinyint NOT NULL,
+  `OXSTARTTITLE` tinyint NOT NULL,
+  `OXINFOEMAIL` tinyint NOT NULL,
+  `OXORDEREMAIL` tinyint NOT NULL,
+  `OXOWNEREMAIL` tinyint NOT NULL,
+  `OXORDERSUBJECT` tinyint NOT NULL,
+  `OXREGISTERSUBJECT` tinyint NOT NULL,
+  `OXFORGOTPWDSUBJECT` tinyint NOT NULL,
+  `OXSENDEDNOWSUBJECT` tinyint NOT NULL,
+  `OXSMTP` tinyint NOT NULL,
+  `OXSMTPUSER` tinyint NOT NULL,
+  `OXSMTPPWD` tinyint NOT NULL,
+  `OXCOMPANY` tinyint NOT NULL,
+  `OXSTREET` tinyint NOT NULL,
+  `OXZIP` tinyint NOT NULL,
+  `OXCITY` tinyint NOT NULL,
+  `OXCOUNTRY` tinyint NOT NULL,
+  `OXBANKNAME` tinyint NOT NULL,
+  `OXBANKNUMBER` tinyint NOT NULL,
+  `OXBANKCODE` tinyint NOT NULL,
+  `OXVATNUMBER` tinyint NOT NULL,
+  `OXTAXNUMBER` tinyint NOT NULL,
+  `OXBICCODE` tinyint NOT NULL,
+  `OXIBANNUMBER` tinyint NOT NULL,
+  `OXFNAME` tinyint NOT NULL,
+  `OXLNAME` tinyint NOT NULL,
+  `OXTELEFON` tinyint NOT NULL,
+  `OXTELEFAX` tinyint NOT NULL,
+  `OXURL` tinyint NOT NULL,
+  `OXDEFCAT` tinyint NOT NULL,
+  `OXHRBNR` tinyint NOT NULL,
+  `OXCOURT` tinyint NOT NULL,
+  `OXADBUTLERID` tinyint NOT NULL,
+  `OXAFFILINETID` tinyint NOT NULL,
+  `OXSUPERCLICKSID` tinyint NOT NULL,
+  `OXAFFILIWELTID` tinyint NOT NULL,
+  `OXAFFILI24ID` tinyint NOT NULL,
+  `OXEDITION` tinyint NOT NULL,
+  `OXVERSION` tinyint NOT NULL,
+  `OXSEOACTIVE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxstates`
+--
+
+DROP TABLE IF EXISTS `oxv_oxstates`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxstates`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxstates` (
+  `OXID` tinyint NOT NULL,
+  `OXCOUNTRYID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXISOALPHA2` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxstates_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxstates_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxstates_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxstates_de` (
+  `OXID` tinyint NOT NULL,
+  `OXCOUNTRYID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXISOALPHA2` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxstates_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxstates_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxstates_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxstates_en` (
+  `OXID` tinyint NOT NULL,
+  `OXCOUNTRYID` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXISOALPHA2` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxvendor`
+--
+
+DROP TABLE IF EXISTS `oxv_oxvendor`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxvendor`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxvendor` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXTITLE_1` tinyint NOT NULL,
+  `OXSHORTDESC_1` tinyint NOT NULL,
+  `OXTITLE_2` tinyint NOT NULL,
+  `OXSHORTDESC_2` tinyint NOT NULL,
+  `OXTITLE_3` tinyint NOT NULL,
+  `OXSHORTDESC_3` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxvendor_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxvendor_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxvendor_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxvendor_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxvendor_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxvendor_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxvendor_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxvendor_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXICON` tinyint NOT NULL,
+  `OXTITLE` tinyint NOT NULL,
+  `OXSHORTDESC` tinyint NOT NULL,
+  `OXSHOWSUFFIX` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxwrapping`
+--
+
+DROP TABLE IF EXISTS `oxv_oxwrapping`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxwrapping`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxwrapping` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXACTIVE_1` tinyint NOT NULL,
+  `OXACTIVE_2` tinyint NOT NULL,
+  `OXACTIVE_3` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXNAME` tinyint NOT NULL,
+  `OXNAME_1` tinyint NOT NULL,
+  `OXNAME_2` tinyint NOT NULL,
+  `OXNAME_3` tinyint NOT NULL,
+  `OXPIC` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxwrapping_de`
+--
+
+DROP TABLE IF EXISTS `oxv_oxwrapping_de`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxwrapping_de`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxwrapping_de` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXNAME` tinyint NOT NULL,
+  `OXPIC` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `oxv_oxwrapping_en`
+--
+
+DROP TABLE IF EXISTS `oxv_oxwrapping_en`;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxwrapping_en`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `oxv_oxwrapping_en` (
+  `OXID` tinyint NOT NULL,
+  `OXSHOPID` tinyint NOT NULL,
+  `OXACTIVE` tinyint NOT NULL,
+  `OXTYPE` tinyint NOT NULL,
+  `OXNAME` tinyint NOT NULL,
+  `OXPIC` tinyint NOT NULL,
+  `OXPRICE` tinyint NOT NULL,
+  `OXTIMESTAMP` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `oxvendor`
+--
+
+DROP TABLE IF EXISTS `oxvendor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxvendor` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Vendor id',
+  `OXSHOPID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active',
+  `OXICON` varchar(128) NOT NULL DEFAULT '' COMMENT 'Icon filename',
+  `OXTITLE` varchar(255) NOT NULL DEFAULT '' COMMENT 'Title (multilanguage)',
+  `OXSHORTDESC` varchar(255) NOT NULL DEFAULT '' COMMENT 'Short description (multilanguage)',
+  `OXTITLE_1` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_1` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_2` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_2` varchar(255) NOT NULL DEFAULT '',
+  `OXTITLE_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSHORTDESC_3` varchar(255) NOT NULL DEFAULT '',
+  `OXSHOWSUFFIX` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Show SEO Suffix in Category',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXACTIVE` (`OXACTIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Distributors list';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxvendor`
@@ -657,6 +4453,31 @@ INSERT INTO `oxvendor` VALUES ('a57c56e3ba710eafb2225e98f058d989','oxbaseshop',1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxvouchers`
+--
+
+DROP TABLE IF EXISTS `oxvouchers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxvouchers` (
+  `OXDATEUSED` date DEFAULT NULL COMMENT 'Date, when coupon was used (set on order complete)',
+  `OXORDERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Order id (oxorder)',
+  `OXUSERID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'User id (oxuser)',
+  `OXRESERVED` int(11) NOT NULL DEFAULT '0' COMMENT 'Time, when coupon is added to basket',
+  `OXVOUCHERNR` varchar(255) NOT NULL DEFAULT '' COMMENT 'Coupon number',
+  `OXVOUCHERSERIEID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Coupon Series id (oxvoucherseries)',
+  `OXDISCOUNT` float(9,2) DEFAULT NULL COMMENT 'Discounted amount (if discount was used)',
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Coupon id',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXVOUCHERSERIEID` (`OXVOUCHERSERIEID`),
+  KEY `OXORDERID` (`OXORDERID`),
+  KEY `OXUSERID` (`OXUSERID`),
+  KEY `OXVOUCHERNR` (`OXVOUCHERNR`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Generated coupons';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxvouchers`
 --
 
@@ -664,6 +4485,34 @@ LOCK TABLES `oxvouchers` WRITE;
 /*!40000 ALTER TABLE `oxvouchers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oxvouchers` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `oxvoucherseries`
+--
+
+DROP TABLE IF EXISTS `oxvoucherseries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxvoucherseries` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Series id',
+  `OXSHOPID` char(32) NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXSERIENR` varchar(255) NOT NULL DEFAULT '' COMMENT 'Series name',
+  `OXSERIEDESCRIPTION` varchar(255) NOT NULL DEFAULT '' COMMENT 'Description',
+  `OXDISCOUNT` float(9,2) NOT NULL DEFAULT '0.00' COMMENT 'Discount amount',
+  `OXDISCOUNTTYPE` enum('percent','absolute') NOT NULL DEFAULT 'absolute' COMMENT 'Discount type (percent, absolute)',
+  `OXBEGINDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Valid from',
+  `OXENDDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Valid to',
+  `OXALLOWSAMESERIES` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Coupons of this series can be used with single order',
+  `OXALLOWOTHERSERIES` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Coupons of different series can be used with single order',
+  `OXALLOWUSEANOTHER` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Coupons of this series can be used in multiple orders',
+  `OXMINIMUMVALUE` float(9,2) NOT NULL DEFAULT '0.00' COMMENT 'Minimum Order Sum ',
+  `OXCALCULATEONCE` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Calculate only once (valid only for product or category vouchers)',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`),
+  KEY `OXSERIENR` (`OXSERIENR`),
+  KEY `OXSHOPID` (`OXSHOPID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Coupon series';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `oxvoucherseries`
@@ -675,6 +4524,32 @@ LOCK TABLES `oxvoucherseries` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `oxwrapping`
+--
+
+DROP TABLE IF EXISTS `oxwrapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oxwrapping` (
+  `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Wrapping id',
+  `OXSHOPID` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' COMMENT 'Shop id (oxshops)',
+  `OXACTIVE` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Active (multilanguage)',
+  `OXACTIVE_1` tinyint(1) NOT NULL DEFAULT '1',
+  `OXACTIVE_2` tinyint(1) NOT NULL DEFAULT '1',
+  `OXACTIVE_3` tinyint(1) NOT NULL DEFAULT '1',
+  `OXTYPE` varchar(4) NOT NULL DEFAULT 'WRAP' COMMENT 'Wrapping type: WRAP,CARD',
+  `OXNAME` varchar(128) NOT NULL DEFAULT '' COMMENT 'Name (multilanguage)',
+  `OXNAME_1` varchar(128) NOT NULL DEFAULT '',
+  `OXNAME_2` varchar(128) NOT NULL DEFAULT '',
+  `OXNAME_3` varchar(128) NOT NULL DEFAULT '',
+  `OXPIC` varchar(128) NOT NULL DEFAULT '' COMMENT 'Image filename',
+  `OXPRICE` double NOT NULL DEFAULT '0' COMMENT 'Price',
+  `OXTIMESTAMP` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp',
+  PRIMARY KEY (`OXID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Wrappings';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `oxwrapping`
 --
 
@@ -683,13 +4558,1268 @@ LOCK TABLES `oxwrapping` WRITE;
 INSERT INTO `oxwrapping` VALUES ('a6840cc0ec80b3991.74884864','oxbaseshop',1,1,1,1,'WRAP','Rote Sterne','Red stars','','','img_geschenkpapier_1_wp.gif',2.95,'2016-07-19 14:11:15'),('81b40cf076351c229.14252649','oxbaseshop',1,1,1,1,'CARD','Die Bombe','The bomb','','','desaster_wp.gif',2.5,'2016-07-19 14:11:15'),('81b40cf0cd383d3a9.70988998','oxbaseshop',1,1,1,1,'CARD','Haifisch','Shark','','','img_ecard_03_wp.jpg',3,'2016-07-19 14:11:15'),('81b40cf210343d625.49755120','oxbaseshop',1,1,1,1,'WRAP','Gelbe Sterne','Yellow stars','','','img_geschenkpapier_1_gelb_wp.gif',2.95,'2016-07-19 14:11:15');
 /*!40000 ALTER TABLE `oxwrapping` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `oxv_oxactions`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxactions`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxactions`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxactions` AS select `oxactions`.`OXID` AS `OXID`,`oxactions`.`OXSHOPID` AS `OXSHOPID`,`oxactions`.`OXTYPE` AS `OXTYPE`,`oxactions`.`OXTITLE` AS `OXTITLE`,`oxactions`.`OXTITLE_1` AS `OXTITLE_1`,`oxactions`.`OXTITLE_2` AS `OXTITLE_2`,`oxactions`.`OXTITLE_3` AS `OXTITLE_3`,`oxactions`.`OXLONGDESC` AS `OXLONGDESC`,`oxactions`.`OXLONGDESC_1` AS `OXLONGDESC_1`,`oxactions`.`OXLONGDESC_2` AS `OXLONGDESC_2`,`oxactions`.`OXLONGDESC_3` AS `OXLONGDESC_3`,`oxactions`.`OXACTIVE` AS `OXACTIVE`,`oxactions`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxactions`.`OXACTIVETO` AS `OXACTIVETO`,`oxactions`.`OXPIC` AS `OXPIC`,`oxactions`.`OXPIC_1` AS `OXPIC_1`,`oxactions`.`OXPIC_2` AS `OXPIC_2`,`oxactions`.`OXPIC_3` AS `OXPIC_3`,`oxactions`.`OXLINK` AS `OXLINK`,`oxactions`.`OXLINK_1` AS `OXLINK_1`,`oxactions`.`OXLINK_2` AS `OXLINK_2`,`oxactions`.`OXLINK_3` AS `OXLINK_3`,`oxactions`.`OXSORT` AS `OXSORT`,`oxactions`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxactions` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxactions_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxactions_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxactions_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxactions_de` AS select `oxactions`.`OXID` AS `OXID`,`oxactions`.`OXSHOPID` AS `OXSHOPID`,`oxactions`.`OXTYPE` AS `OXTYPE`,`oxactions`.`OXTITLE` AS `OXTITLE`,`oxactions`.`OXLONGDESC` AS `OXLONGDESC`,`oxactions`.`OXACTIVE` AS `OXACTIVE`,`oxactions`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxactions`.`OXACTIVETO` AS `OXACTIVETO`,`oxactions`.`OXPIC` AS `OXPIC`,`oxactions`.`OXLINK` AS `OXLINK`,`oxactions`.`OXSORT` AS `OXSORT`,`oxactions`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxactions` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxactions_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxactions_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxactions_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxactions_en` AS select `oxactions`.`OXID` AS `OXID`,`oxactions`.`OXSHOPID` AS `OXSHOPID`,`oxactions`.`OXTYPE` AS `OXTYPE`,`oxactions`.`OXTITLE_1` AS `OXTITLE`,`oxactions`.`OXLONGDESC_1` AS `OXLONGDESC`,`oxactions`.`OXACTIVE` AS `OXACTIVE`,`oxactions`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxactions`.`OXACTIVETO` AS `OXACTIVETO`,`oxactions`.`OXPIC_1` AS `OXPIC`,`oxactions`.`OXLINK_1` AS `OXLINK`,`oxactions`.`OXSORT` AS `OXSORT`,`oxactions`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxactions` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxartextends`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxartextends`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxartextends`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxartextends` AS select `oxartextends`.`OXID` AS `OXID`,`oxartextends`.`OXLONGDESC` AS `OXLONGDESC`,`oxartextends`.`OXLONGDESC_1` AS `OXLONGDESC_1`,`oxartextends`.`OXLONGDESC_2` AS `OXLONGDESC_2`,`oxartextends`.`OXLONGDESC_3` AS `OXLONGDESC_3`,`oxartextends`.`OXTAGS` AS `OXTAGS`,`oxartextends`.`OXTAGS_1` AS `OXTAGS_1`,`oxartextends`.`OXTAGS_2` AS `OXTAGS_2`,`oxartextends`.`OXTAGS_3` AS `OXTAGS_3`,`oxartextends`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxartextends` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxartextends_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxartextends_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxartextends_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxartextends_de` AS select `oxartextends`.`OXID` AS `OXID`,`oxartextends`.`OXLONGDESC` AS `OXLONGDESC`,`oxartextends`.`OXTAGS` AS `OXTAGS`,`oxartextends`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxartextends` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxartextends_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxartextends_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxartextends_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxartextends_en` AS select `oxartextends`.`OXID` AS `OXID`,`oxartextends`.`OXLONGDESC_1` AS `OXLONGDESC`,`oxartextends`.`OXTAGS_1` AS `OXTAGS`,`oxartextends`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxartextends` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxarticles`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxarticles`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxarticles`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxarticles` AS select `oxarticles`.`OXID` AS `OXID`,`oxarticles`.`OXSHOPID` AS `OXSHOPID`,`oxarticles`.`OXPARENTID` AS `OXPARENTID`,`oxarticles`.`OXACTIVE` AS `OXACTIVE`,`oxarticles`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxarticles`.`OXACTIVETO` AS `OXACTIVETO`,`oxarticles`.`OXARTNUM` AS `OXARTNUM`,`oxarticles`.`OXEAN` AS `OXEAN`,`oxarticles`.`OXDISTEAN` AS `OXDISTEAN`,`oxarticles`.`OXMPN` AS `OXMPN`,`oxarticles`.`OXTITLE` AS `OXTITLE`,`oxarticles`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxarticles`.`OXPRICE` AS `OXPRICE`,`oxarticles`.`OXBLFIXEDPRICE` AS `OXBLFIXEDPRICE`,`oxarticles`.`OXPRICEA` AS `OXPRICEA`,`oxarticles`.`OXPRICEB` AS `OXPRICEB`,`oxarticles`.`OXPRICEC` AS `OXPRICEC`,`oxarticles`.`OXBPRICE` AS `OXBPRICE`,`oxarticles`.`OXTPRICE` AS `OXTPRICE`,`oxarticles`.`OXUNITNAME` AS `OXUNITNAME`,`oxarticles`.`OXUNITQUANTITY` AS `OXUNITQUANTITY`,`oxarticles`.`OXEXTURL` AS `OXEXTURL`,`oxarticles`.`OXURLDESC` AS `OXURLDESC`,`oxarticles`.`OXURLIMG` AS `OXURLIMG`,`oxarticles`.`OXVAT` AS `OXVAT`,`oxarticles`.`OXTHUMB` AS `OXTHUMB`,`oxarticles`.`OXICON` AS `OXICON`,`oxarticles`.`OXPIC1` AS `OXPIC1`,`oxarticles`.`OXPIC2` AS `OXPIC2`,`oxarticles`.`OXPIC3` AS `OXPIC3`,`oxarticles`.`OXPIC4` AS `OXPIC4`,`oxarticles`.`OXPIC5` AS `OXPIC5`,`oxarticles`.`OXPIC6` AS `OXPIC6`,`oxarticles`.`OXPIC7` AS `OXPIC7`,`oxarticles`.`OXPIC8` AS `OXPIC8`,`oxarticles`.`OXPIC9` AS `OXPIC9`,`oxarticles`.`OXPIC10` AS `OXPIC10`,`oxarticles`.`OXPIC11` AS `OXPIC11`,`oxarticles`.`OXPIC12` AS `OXPIC12`,`oxarticles`.`OXWEIGHT` AS `OXWEIGHT`,`oxarticles`.`OXSTOCK` AS `OXSTOCK`,`oxarticles`.`OXSTOCKFLAG` AS `OXSTOCKFLAG`,`oxarticles`.`OXSTOCKTEXT` AS `OXSTOCKTEXT`,`oxarticles`.`OXNOSTOCKTEXT` AS `OXNOSTOCKTEXT`,`oxarticles`.`OXDELIVERY` AS `OXDELIVERY`,`oxarticles`.`OXINSERT` AS `OXINSERT`,`oxarticles`.`OXTIMESTAMP` AS `OXTIMESTAMP`,`oxarticles`.`OXLENGTH` AS `OXLENGTH`,`oxarticles`.`OXWIDTH` AS `OXWIDTH`,`oxarticles`.`OXHEIGHT` AS `OXHEIGHT`,`oxarticles`.`OXFILE` AS `OXFILE`,`oxarticles`.`OXSEARCHKEYS` AS `OXSEARCHKEYS`,`oxarticles`.`OXTEMPLATE` AS `OXTEMPLATE`,`oxarticles`.`OXQUESTIONEMAIL` AS `OXQUESTIONEMAIL`,`oxarticles`.`OXISSEARCH` AS `OXISSEARCH`,`oxarticles`.`OXISCONFIGURABLE` AS `OXISCONFIGURABLE`,`oxarticles`.`OXVARNAME` AS `OXVARNAME`,`oxarticles`.`OXVARSTOCK` AS `OXVARSTOCK`,`oxarticles`.`OXVARCOUNT` AS `OXVARCOUNT`,`oxarticles`.`OXVARSELECT` AS `OXVARSELECT`,`oxarticles`.`OXVARMINPRICE` AS `OXVARMINPRICE`,`oxarticles`.`OXVARMAXPRICE` AS `OXVARMAXPRICE`,`oxarticles`.`OXVARNAME_1` AS `OXVARNAME_1`,`oxarticles`.`OXVARSELECT_1` AS `OXVARSELECT_1`,`oxarticles`.`OXVARNAME_2` AS `OXVARNAME_2`,`oxarticles`.`OXVARSELECT_2` AS `OXVARSELECT_2`,`oxarticles`.`OXVARNAME_3` AS `OXVARNAME_3`,`oxarticles`.`OXVARSELECT_3` AS `OXVARSELECT_3`,`oxarticles`.`OXTITLE_1` AS `OXTITLE_1`,`oxarticles`.`OXSHORTDESC_1` AS `OXSHORTDESC_1`,`oxarticles`.`OXURLDESC_1` AS `OXURLDESC_1`,`oxarticles`.`OXSEARCHKEYS_1` AS `OXSEARCHKEYS_1`,`oxarticles`.`OXTITLE_2` AS `OXTITLE_2`,`oxarticles`.`OXSHORTDESC_2` AS `OXSHORTDESC_2`,`oxarticles`.`OXURLDESC_2` AS `OXURLDESC_2`,`oxarticles`.`OXSEARCHKEYS_2` AS `OXSEARCHKEYS_2`,`oxarticles`.`OXTITLE_3` AS `OXTITLE_3`,`oxarticles`.`OXSHORTDESC_3` AS `OXSHORTDESC_3`,`oxarticles`.`OXURLDESC_3` AS `OXURLDESC_3`,`oxarticles`.`OXSEARCHKEYS_3` AS `OXSEARCHKEYS_3`,`oxarticles`.`OXBUNDLEID` AS `OXBUNDLEID`,`oxarticles`.`OXFOLDER` AS `OXFOLDER`,`oxarticles`.`OXSUBCLASS` AS `OXSUBCLASS`,`oxarticles`.`OXSTOCKTEXT_1` AS `OXSTOCKTEXT_1`,`oxarticles`.`OXSTOCKTEXT_2` AS `OXSTOCKTEXT_2`,`oxarticles`.`OXSTOCKTEXT_3` AS `OXSTOCKTEXT_3`,`oxarticles`.`OXNOSTOCKTEXT_1` AS `OXNOSTOCKTEXT_1`,`oxarticles`.`OXNOSTOCKTEXT_2` AS `OXNOSTOCKTEXT_2`,`oxarticles`.`OXNOSTOCKTEXT_3` AS `OXNOSTOCKTEXT_3`,`oxarticles`.`OXSORT` AS `OXSORT`,`oxarticles`.`OXSOLDAMOUNT` AS `OXSOLDAMOUNT`,`oxarticles`.`OXNONMATERIAL` AS `OXNONMATERIAL`,`oxarticles`.`OXFREESHIPPING` AS `OXFREESHIPPING`,`oxarticles`.`OXREMINDACTIVE` AS `OXREMINDACTIVE`,`oxarticles`.`OXREMINDAMOUNT` AS `OXREMINDAMOUNT`,`oxarticles`.`OXAMITEMID` AS `OXAMITEMID`,`oxarticles`.`OXAMTASKID` AS `OXAMTASKID`,`oxarticles`.`OXVENDORID` AS `OXVENDORID`,`oxarticles`.`OXMANUFACTURERID` AS `OXMANUFACTURERID`,`oxarticles`.`OXSKIPDISCOUNTS` AS `OXSKIPDISCOUNTS`,`oxarticles`.`OXRATING` AS `OXRATING`,`oxarticles`.`OXRATINGCNT` AS `OXRATINGCNT`,`oxarticles`.`OXMINDELTIME` AS `OXMINDELTIME`,`oxarticles`.`OXMAXDELTIME` AS `OXMAXDELTIME`,`oxarticles`.`OXDELTIMEUNIT` AS `OXDELTIMEUNIT`,`oxarticles`.`OXUPDATEPRICE` AS `OXUPDATEPRICE`,`oxarticles`.`OXUPDATEPRICEA` AS `OXUPDATEPRICEA`,`oxarticles`.`OXUPDATEPRICEB` AS `OXUPDATEPRICEB`,`oxarticles`.`OXUPDATEPRICEC` AS `OXUPDATEPRICEC`,`oxarticles`.`OXUPDATEPRICETIME` AS `OXUPDATEPRICETIME`,`oxarticles`.`OXISDOWNLOADABLE` AS `OXISDOWNLOADABLE`,`oxarticles`.`OXSHOWCUSTOMAGREEMENT` AS `OXSHOWCUSTOMAGREEMENT` from `oxarticles` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxarticles_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxarticles_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxarticles_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxarticles_de` AS select `oxarticles`.`OXID` AS `OXID`,`oxarticles`.`OXSHOPID` AS `OXSHOPID`,`oxarticles`.`OXPARENTID` AS `OXPARENTID`,`oxarticles`.`OXACTIVE` AS `OXACTIVE`,`oxarticles`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxarticles`.`OXACTIVETO` AS `OXACTIVETO`,`oxarticles`.`OXARTNUM` AS `OXARTNUM`,`oxarticles`.`OXEAN` AS `OXEAN`,`oxarticles`.`OXDISTEAN` AS `OXDISTEAN`,`oxarticles`.`OXMPN` AS `OXMPN`,`oxarticles`.`OXTITLE` AS `OXTITLE`,`oxarticles`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxarticles`.`OXPRICE` AS `OXPRICE`,`oxarticles`.`OXBLFIXEDPRICE` AS `OXBLFIXEDPRICE`,`oxarticles`.`OXPRICEA` AS `OXPRICEA`,`oxarticles`.`OXPRICEB` AS `OXPRICEB`,`oxarticles`.`OXPRICEC` AS `OXPRICEC`,`oxarticles`.`OXBPRICE` AS `OXBPRICE`,`oxarticles`.`OXTPRICE` AS `OXTPRICE`,`oxarticles`.`OXUNITNAME` AS `OXUNITNAME`,`oxarticles`.`OXUNITQUANTITY` AS `OXUNITQUANTITY`,`oxarticles`.`OXEXTURL` AS `OXEXTURL`,`oxarticles`.`OXURLDESC` AS `OXURLDESC`,`oxarticles`.`OXURLIMG` AS `OXURLIMG`,`oxarticles`.`OXVAT` AS `OXVAT`,`oxarticles`.`OXTHUMB` AS `OXTHUMB`,`oxarticles`.`OXICON` AS `OXICON`,`oxarticles`.`OXPIC1` AS `OXPIC1`,`oxarticles`.`OXPIC2` AS `OXPIC2`,`oxarticles`.`OXPIC3` AS `OXPIC3`,`oxarticles`.`OXPIC4` AS `OXPIC4`,`oxarticles`.`OXPIC5` AS `OXPIC5`,`oxarticles`.`OXPIC6` AS `OXPIC6`,`oxarticles`.`OXPIC7` AS `OXPIC7`,`oxarticles`.`OXPIC8` AS `OXPIC8`,`oxarticles`.`OXPIC9` AS `OXPIC9`,`oxarticles`.`OXPIC10` AS `OXPIC10`,`oxarticles`.`OXPIC11` AS `OXPIC11`,`oxarticles`.`OXPIC12` AS `OXPIC12`,`oxarticles`.`OXWEIGHT` AS `OXWEIGHT`,`oxarticles`.`OXSTOCK` AS `OXSTOCK`,`oxarticles`.`OXSTOCKFLAG` AS `OXSTOCKFLAG`,`oxarticles`.`OXSTOCKTEXT` AS `OXSTOCKTEXT`,`oxarticles`.`OXNOSTOCKTEXT` AS `OXNOSTOCKTEXT`,`oxarticles`.`OXDELIVERY` AS `OXDELIVERY`,`oxarticles`.`OXINSERT` AS `OXINSERT`,`oxarticles`.`OXTIMESTAMP` AS `OXTIMESTAMP`,`oxarticles`.`OXLENGTH` AS `OXLENGTH`,`oxarticles`.`OXWIDTH` AS `OXWIDTH`,`oxarticles`.`OXHEIGHT` AS `OXHEIGHT`,`oxarticles`.`OXFILE` AS `OXFILE`,`oxarticles`.`OXSEARCHKEYS` AS `OXSEARCHKEYS`,`oxarticles`.`OXTEMPLATE` AS `OXTEMPLATE`,`oxarticles`.`OXQUESTIONEMAIL` AS `OXQUESTIONEMAIL`,`oxarticles`.`OXISSEARCH` AS `OXISSEARCH`,`oxarticles`.`OXISCONFIGURABLE` AS `OXISCONFIGURABLE`,`oxarticles`.`OXVARNAME` AS `OXVARNAME`,`oxarticles`.`OXVARSTOCK` AS `OXVARSTOCK`,`oxarticles`.`OXVARCOUNT` AS `OXVARCOUNT`,`oxarticles`.`OXVARSELECT` AS `OXVARSELECT`,`oxarticles`.`OXVARMINPRICE` AS `OXVARMINPRICE`,`oxarticles`.`OXVARMAXPRICE` AS `OXVARMAXPRICE`,`oxarticles`.`OXBUNDLEID` AS `OXBUNDLEID`,`oxarticles`.`OXFOLDER` AS `OXFOLDER`,`oxarticles`.`OXSUBCLASS` AS `OXSUBCLASS`,`oxarticles`.`OXSORT` AS `OXSORT`,`oxarticles`.`OXSOLDAMOUNT` AS `OXSOLDAMOUNT`,`oxarticles`.`OXNONMATERIAL` AS `OXNONMATERIAL`,`oxarticles`.`OXFREESHIPPING` AS `OXFREESHIPPING`,`oxarticles`.`OXREMINDACTIVE` AS `OXREMINDACTIVE`,`oxarticles`.`OXREMINDAMOUNT` AS `OXREMINDAMOUNT`,`oxarticles`.`OXAMITEMID` AS `OXAMITEMID`,`oxarticles`.`OXAMTASKID` AS `OXAMTASKID`,`oxarticles`.`OXVENDORID` AS `OXVENDORID`,`oxarticles`.`OXMANUFACTURERID` AS `OXMANUFACTURERID`,`oxarticles`.`OXSKIPDISCOUNTS` AS `OXSKIPDISCOUNTS`,`oxarticles`.`OXRATING` AS `OXRATING`,`oxarticles`.`OXRATINGCNT` AS `OXRATINGCNT`,`oxarticles`.`OXMINDELTIME` AS `OXMINDELTIME`,`oxarticles`.`OXMAXDELTIME` AS `OXMAXDELTIME`,`oxarticles`.`OXDELTIMEUNIT` AS `OXDELTIMEUNIT`,`oxarticles`.`OXUPDATEPRICE` AS `OXUPDATEPRICE`,`oxarticles`.`OXUPDATEPRICEA` AS `OXUPDATEPRICEA`,`oxarticles`.`OXUPDATEPRICEB` AS `OXUPDATEPRICEB`,`oxarticles`.`OXUPDATEPRICEC` AS `OXUPDATEPRICEC`,`oxarticles`.`OXUPDATEPRICETIME` AS `OXUPDATEPRICETIME`,`oxarticles`.`OXISDOWNLOADABLE` AS `OXISDOWNLOADABLE`,`oxarticles`.`OXSHOWCUSTOMAGREEMENT` AS `OXSHOWCUSTOMAGREEMENT` from `oxarticles` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxarticles_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxarticles_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxarticles_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxarticles_en` AS select `oxarticles`.`OXID` AS `OXID`,`oxarticles`.`OXSHOPID` AS `OXSHOPID`,`oxarticles`.`OXPARENTID` AS `OXPARENTID`,`oxarticles`.`OXACTIVE` AS `OXACTIVE`,`oxarticles`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxarticles`.`OXACTIVETO` AS `OXACTIVETO`,`oxarticles`.`OXARTNUM` AS `OXARTNUM`,`oxarticles`.`OXEAN` AS `OXEAN`,`oxarticles`.`OXDISTEAN` AS `OXDISTEAN`,`oxarticles`.`OXMPN` AS `OXMPN`,`oxarticles`.`OXTITLE_1` AS `OXTITLE`,`oxarticles`.`OXSHORTDESC_1` AS `OXSHORTDESC`,`oxarticles`.`OXPRICE` AS `OXPRICE`,`oxarticles`.`OXBLFIXEDPRICE` AS `OXBLFIXEDPRICE`,`oxarticles`.`OXPRICEA` AS `OXPRICEA`,`oxarticles`.`OXPRICEB` AS `OXPRICEB`,`oxarticles`.`OXPRICEC` AS `OXPRICEC`,`oxarticles`.`OXBPRICE` AS `OXBPRICE`,`oxarticles`.`OXTPRICE` AS `OXTPRICE`,`oxarticles`.`OXUNITNAME` AS `OXUNITNAME`,`oxarticles`.`OXUNITQUANTITY` AS `OXUNITQUANTITY`,`oxarticles`.`OXEXTURL` AS `OXEXTURL`,`oxarticles`.`OXURLDESC_1` AS `OXURLDESC`,`oxarticles`.`OXURLIMG` AS `OXURLIMG`,`oxarticles`.`OXVAT` AS `OXVAT`,`oxarticles`.`OXTHUMB` AS `OXTHUMB`,`oxarticles`.`OXICON` AS `OXICON`,`oxarticles`.`OXPIC1` AS `OXPIC1`,`oxarticles`.`OXPIC2` AS `OXPIC2`,`oxarticles`.`OXPIC3` AS `OXPIC3`,`oxarticles`.`OXPIC4` AS `OXPIC4`,`oxarticles`.`OXPIC5` AS `OXPIC5`,`oxarticles`.`OXPIC6` AS `OXPIC6`,`oxarticles`.`OXPIC7` AS `OXPIC7`,`oxarticles`.`OXPIC8` AS `OXPIC8`,`oxarticles`.`OXPIC9` AS `OXPIC9`,`oxarticles`.`OXPIC10` AS `OXPIC10`,`oxarticles`.`OXPIC11` AS `OXPIC11`,`oxarticles`.`OXPIC12` AS `OXPIC12`,`oxarticles`.`OXWEIGHT` AS `OXWEIGHT`,`oxarticles`.`OXSTOCK` AS `OXSTOCK`,`oxarticles`.`OXSTOCKFLAG` AS `OXSTOCKFLAG`,`oxarticles`.`OXSTOCKTEXT_1` AS `OXSTOCKTEXT`,`oxarticles`.`OXNOSTOCKTEXT_1` AS `OXNOSTOCKTEXT`,`oxarticles`.`OXDELIVERY` AS `OXDELIVERY`,`oxarticles`.`OXINSERT` AS `OXINSERT`,`oxarticles`.`OXTIMESTAMP` AS `OXTIMESTAMP`,`oxarticles`.`OXLENGTH` AS `OXLENGTH`,`oxarticles`.`OXWIDTH` AS `OXWIDTH`,`oxarticles`.`OXHEIGHT` AS `OXHEIGHT`,`oxarticles`.`OXFILE` AS `OXFILE`,`oxarticles`.`OXSEARCHKEYS_1` AS `OXSEARCHKEYS`,`oxarticles`.`OXTEMPLATE` AS `OXTEMPLATE`,`oxarticles`.`OXQUESTIONEMAIL` AS `OXQUESTIONEMAIL`,`oxarticles`.`OXISSEARCH` AS `OXISSEARCH`,`oxarticles`.`OXISCONFIGURABLE` AS `OXISCONFIGURABLE`,`oxarticles`.`OXVARNAME_1` AS `OXVARNAME`,`oxarticles`.`OXVARSTOCK` AS `OXVARSTOCK`,`oxarticles`.`OXVARCOUNT` AS `OXVARCOUNT`,`oxarticles`.`OXVARSELECT_1` AS `OXVARSELECT`,`oxarticles`.`OXVARMINPRICE` AS `OXVARMINPRICE`,`oxarticles`.`OXVARMAXPRICE` AS `OXVARMAXPRICE`,`oxarticles`.`OXBUNDLEID` AS `OXBUNDLEID`,`oxarticles`.`OXFOLDER` AS `OXFOLDER`,`oxarticles`.`OXSUBCLASS` AS `OXSUBCLASS`,`oxarticles`.`OXSORT` AS `OXSORT`,`oxarticles`.`OXSOLDAMOUNT` AS `OXSOLDAMOUNT`,`oxarticles`.`OXNONMATERIAL` AS `OXNONMATERIAL`,`oxarticles`.`OXFREESHIPPING` AS `OXFREESHIPPING`,`oxarticles`.`OXREMINDACTIVE` AS `OXREMINDACTIVE`,`oxarticles`.`OXREMINDAMOUNT` AS `OXREMINDAMOUNT`,`oxarticles`.`OXAMITEMID` AS `OXAMITEMID`,`oxarticles`.`OXAMTASKID` AS `OXAMTASKID`,`oxarticles`.`OXVENDORID` AS `OXVENDORID`,`oxarticles`.`OXMANUFACTURERID` AS `OXMANUFACTURERID`,`oxarticles`.`OXSKIPDISCOUNTS` AS `OXSKIPDISCOUNTS`,`oxarticles`.`OXRATING` AS `OXRATING`,`oxarticles`.`OXRATINGCNT` AS `OXRATINGCNT`,`oxarticles`.`OXMINDELTIME` AS `OXMINDELTIME`,`oxarticles`.`OXMAXDELTIME` AS `OXMAXDELTIME`,`oxarticles`.`OXDELTIMEUNIT` AS `OXDELTIMEUNIT`,`oxarticles`.`OXUPDATEPRICE` AS `OXUPDATEPRICE`,`oxarticles`.`OXUPDATEPRICEA` AS `OXUPDATEPRICEA`,`oxarticles`.`OXUPDATEPRICEB` AS `OXUPDATEPRICEB`,`oxarticles`.`OXUPDATEPRICEC` AS `OXUPDATEPRICEC`,`oxarticles`.`OXUPDATEPRICETIME` AS `OXUPDATEPRICETIME`,`oxarticles`.`OXISDOWNLOADABLE` AS `OXISDOWNLOADABLE`,`oxarticles`.`OXSHOWCUSTOMAGREEMENT` AS `OXSHOWCUSTOMAGREEMENT` from `oxarticles` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxattribute`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxattribute`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxattribute`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxattribute` AS select `oxattribute`.`OXID` AS `OXID`,`oxattribute`.`OXSHOPID` AS `OXSHOPID`,`oxattribute`.`OXTITLE` AS `OXTITLE`,`oxattribute`.`OXTITLE_1` AS `OXTITLE_1`,`oxattribute`.`OXTITLE_2` AS `OXTITLE_2`,`oxattribute`.`OXTITLE_3` AS `OXTITLE_3`,`oxattribute`.`OXPOS` AS `OXPOS`,`oxattribute`.`OXTIMESTAMP` AS `OXTIMESTAMP`,`oxattribute`.`OXDISPLAYINBASKET` AS `OXDISPLAYINBASKET` from `oxattribute` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxattribute_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxattribute_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxattribute_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxattribute_de` AS select `oxattribute`.`OXID` AS `OXID`,`oxattribute`.`OXSHOPID` AS `OXSHOPID`,`oxattribute`.`OXTITLE` AS `OXTITLE`,`oxattribute`.`OXPOS` AS `OXPOS`,`oxattribute`.`OXTIMESTAMP` AS `OXTIMESTAMP`,`oxattribute`.`OXDISPLAYINBASKET` AS `OXDISPLAYINBASKET` from `oxattribute` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxattribute_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxattribute_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxattribute_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxattribute_en` AS select `oxattribute`.`OXID` AS `OXID`,`oxattribute`.`OXSHOPID` AS `OXSHOPID`,`oxattribute`.`OXTITLE_1` AS `OXTITLE`,`oxattribute`.`OXPOS` AS `OXPOS`,`oxattribute`.`OXTIMESTAMP` AS `OXTIMESTAMP`,`oxattribute`.`OXDISPLAYINBASKET` AS `OXDISPLAYINBASKET` from `oxattribute` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcategories`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcategories`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcategories`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcategories` AS select `oxcategories`.`OXID` AS `OXID`,`oxcategories`.`OXPARENTID` AS `OXPARENTID`,`oxcategories`.`OXLEFT` AS `OXLEFT`,`oxcategories`.`OXRIGHT` AS `OXRIGHT`,`oxcategories`.`OXROOTID` AS `OXROOTID`,`oxcategories`.`OXSORT` AS `OXSORT`,`oxcategories`.`OXACTIVE` AS `OXACTIVE`,`oxcategories`.`OXHIDDEN` AS `OXHIDDEN`,`oxcategories`.`OXSHOPID` AS `OXSHOPID`,`oxcategories`.`OXTITLE` AS `OXTITLE`,`oxcategories`.`OXDESC` AS `OXDESC`,`oxcategories`.`OXLONGDESC` AS `OXLONGDESC`,`oxcategories`.`OXTHUMB` AS `OXTHUMB`,`oxcategories`.`OXTHUMB_1` AS `OXTHUMB_1`,`oxcategories`.`OXTHUMB_2` AS `OXTHUMB_2`,`oxcategories`.`OXTHUMB_3` AS `OXTHUMB_3`,`oxcategories`.`OXEXTLINK` AS `OXEXTLINK`,`oxcategories`.`OXTEMPLATE` AS `OXTEMPLATE`,`oxcategories`.`OXDEFSORT` AS `OXDEFSORT`,`oxcategories`.`OXDEFSORTMODE` AS `OXDEFSORTMODE`,`oxcategories`.`OXPRICEFROM` AS `OXPRICEFROM`,`oxcategories`.`OXPRICETO` AS `OXPRICETO`,`oxcategories`.`OXACTIVE_1` AS `OXACTIVE_1`,`oxcategories`.`OXTITLE_1` AS `OXTITLE_1`,`oxcategories`.`OXDESC_1` AS `OXDESC_1`,`oxcategories`.`OXLONGDESC_1` AS `OXLONGDESC_1`,`oxcategories`.`OXACTIVE_2` AS `OXACTIVE_2`,`oxcategories`.`OXTITLE_2` AS `OXTITLE_2`,`oxcategories`.`OXDESC_2` AS `OXDESC_2`,`oxcategories`.`OXLONGDESC_2` AS `OXLONGDESC_2`,`oxcategories`.`OXACTIVE_3` AS `OXACTIVE_3`,`oxcategories`.`OXTITLE_3` AS `OXTITLE_3`,`oxcategories`.`OXDESC_3` AS `OXDESC_3`,`oxcategories`.`OXLONGDESC_3` AS `OXLONGDESC_3`,`oxcategories`.`OXICON` AS `OXICON`,`oxcategories`.`OXPROMOICON` AS `OXPROMOICON`,`oxcategories`.`OXVAT` AS `OXVAT`,`oxcategories`.`OXSKIPDISCOUNTS` AS `OXSKIPDISCOUNTS`,`oxcategories`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxcategories`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcategories` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcategories_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcategories_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcategories_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcategories_de` AS select `oxcategories`.`OXID` AS `OXID`,`oxcategories`.`OXPARENTID` AS `OXPARENTID`,`oxcategories`.`OXLEFT` AS `OXLEFT`,`oxcategories`.`OXRIGHT` AS `OXRIGHT`,`oxcategories`.`OXROOTID` AS `OXROOTID`,`oxcategories`.`OXSORT` AS `OXSORT`,`oxcategories`.`OXACTIVE` AS `OXACTIVE`,`oxcategories`.`OXHIDDEN` AS `OXHIDDEN`,`oxcategories`.`OXSHOPID` AS `OXSHOPID`,`oxcategories`.`OXTITLE` AS `OXTITLE`,`oxcategories`.`OXDESC` AS `OXDESC`,`oxcategories`.`OXLONGDESC` AS `OXLONGDESC`,`oxcategories`.`OXTHUMB` AS `OXTHUMB`,`oxcategories`.`OXEXTLINK` AS `OXEXTLINK`,`oxcategories`.`OXTEMPLATE` AS `OXTEMPLATE`,`oxcategories`.`OXDEFSORT` AS `OXDEFSORT`,`oxcategories`.`OXDEFSORTMODE` AS `OXDEFSORTMODE`,`oxcategories`.`OXPRICEFROM` AS `OXPRICEFROM`,`oxcategories`.`OXPRICETO` AS `OXPRICETO`,`oxcategories`.`OXICON` AS `OXICON`,`oxcategories`.`OXPROMOICON` AS `OXPROMOICON`,`oxcategories`.`OXVAT` AS `OXVAT`,`oxcategories`.`OXSKIPDISCOUNTS` AS `OXSKIPDISCOUNTS`,`oxcategories`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxcategories`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcategories` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcategories_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcategories_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcategories_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcategories_en` AS select `oxcategories`.`OXID` AS `OXID`,`oxcategories`.`OXPARENTID` AS `OXPARENTID`,`oxcategories`.`OXLEFT` AS `OXLEFT`,`oxcategories`.`OXRIGHT` AS `OXRIGHT`,`oxcategories`.`OXROOTID` AS `OXROOTID`,`oxcategories`.`OXSORT` AS `OXSORT`,`oxcategories`.`OXACTIVE_1` AS `OXACTIVE`,`oxcategories`.`OXHIDDEN` AS `OXHIDDEN`,`oxcategories`.`OXSHOPID` AS `OXSHOPID`,`oxcategories`.`OXTITLE_1` AS `OXTITLE`,`oxcategories`.`OXDESC_1` AS `OXDESC`,`oxcategories`.`OXLONGDESC_1` AS `OXLONGDESC`,`oxcategories`.`OXTHUMB_1` AS `OXTHUMB`,`oxcategories`.`OXEXTLINK` AS `OXEXTLINK`,`oxcategories`.`OXTEMPLATE` AS `OXTEMPLATE`,`oxcategories`.`OXDEFSORT` AS `OXDEFSORT`,`oxcategories`.`OXDEFSORTMODE` AS `OXDEFSORTMODE`,`oxcategories`.`OXPRICEFROM` AS `OXPRICEFROM`,`oxcategories`.`OXPRICETO` AS `OXPRICETO`,`oxcategories`.`OXICON` AS `OXICON`,`oxcategories`.`OXPROMOICON` AS `OXPROMOICON`,`oxcategories`.`OXVAT` AS `OXVAT`,`oxcategories`.`OXSKIPDISCOUNTS` AS `OXSKIPDISCOUNTS`,`oxcategories`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxcategories`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcategories` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcontents`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcontents`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcontents`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcontents` AS select `oxcontents`.`OXID` AS `OXID`,`oxcontents`.`OXLOADID` AS `OXLOADID`,`oxcontents`.`OXSHOPID` AS `OXSHOPID`,`oxcontents`.`OXSNIPPET` AS `OXSNIPPET`,`oxcontents`.`OXTYPE` AS `OXTYPE`,`oxcontents`.`OXACTIVE` AS `OXACTIVE`,`oxcontents`.`OXACTIVE_1` AS `OXACTIVE_1`,`oxcontents`.`OXPOSITION` AS `OXPOSITION`,`oxcontents`.`OXTITLE` AS `OXTITLE`,`oxcontents`.`OXCONTENT` AS `OXCONTENT`,`oxcontents`.`OXTITLE_1` AS `OXTITLE_1`,`oxcontents`.`OXCONTENT_1` AS `OXCONTENT_1`,`oxcontents`.`OXACTIVE_2` AS `OXACTIVE_2`,`oxcontents`.`OXTITLE_2` AS `OXTITLE_2`,`oxcontents`.`OXCONTENT_2` AS `OXCONTENT_2`,`oxcontents`.`OXACTIVE_3` AS `OXACTIVE_3`,`oxcontents`.`OXTITLE_3` AS `OXTITLE_3`,`oxcontents`.`OXCONTENT_3` AS `OXCONTENT_3`,`oxcontents`.`OXCATID` AS `OXCATID`,`oxcontents`.`OXFOLDER` AS `OXFOLDER`,`oxcontents`.`OXTERMVERSION` AS `OXTERMVERSION`,`oxcontents`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcontents` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcontents_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcontents_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcontents_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcontents_de` AS select `oxcontents`.`OXID` AS `OXID`,`oxcontents`.`OXLOADID` AS `OXLOADID`,`oxcontents`.`OXSHOPID` AS `OXSHOPID`,`oxcontents`.`OXSNIPPET` AS `OXSNIPPET`,`oxcontents`.`OXTYPE` AS `OXTYPE`,`oxcontents`.`OXACTIVE` AS `OXACTIVE`,`oxcontents`.`OXPOSITION` AS `OXPOSITION`,`oxcontents`.`OXTITLE` AS `OXTITLE`,`oxcontents`.`OXCONTENT` AS `OXCONTENT`,`oxcontents`.`OXCATID` AS `OXCATID`,`oxcontents`.`OXFOLDER` AS `OXFOLDER`,`oxcontents`.`OXTERMVERSION` AS `OXTERMVERSION`,`oxcontents`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcontents` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcontents_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcontents_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcontents_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcontents_en` AS select `oxcontents`.`OXID` AS `OXID`,`oxcontents`.`OXLOADID` AS `OXLOADID`,`oxcontents`.`OXSHOPID` AS `OXSHOPID`,`oxcontents`.`OXSNIPPET` AS `OXSNIPPET`,`oxcontents`.`OXTYPE` AS `OXTYPE`,`oxcontents`.`OXACTIVE_1` AS `OXACTIVE`,`oxcontents`.`OXPOSITION` AS `OXPOSITION`,`oxcontents`.`OXTITLE_1` AS `OXTITLE`,`oxcontents`.`OXCONTENT_1` AS `OXCONTENT`,`oxcontents`.`OXCATID` AS `OXCATID`,`oxcontents`.`OXFOLDER` AS `OXFOLDER`,`oxcontents`.`OXTERMVERSION` AS `OXTERMVERSION`,`oxcontents`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcontents` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcountry`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcountry`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcountry`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcountry` AS select `oxcountry`.`OXID` AS `OXID`,`oxcountry`.`OXACTIVE` AS `OXACTIVE`,`oxcountry`.`OXTITLE` AS `OXTITLE`,`oxcountry`.`OXISOALPHA2` AS `OXISOALPHA2`,`oxcountry`.`OXISOALPHA3` AS `OXISOALPHA3`,`oxcountry`.`OXUNNUM3` AS `OXUNNUM3`,`oxcountry`.`OXVATINPREFIX` AS `OXVATINPREFIX`,`oxcountry`.`OXORDER` AS `OXORDER`,`oxcountry`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxcountry`.`OXLONGDESC` AS `OXLONGDESC`,`oxcountry`.`OXTITLE_1` AS `OXTITLE_1`,`oxcountry`.`OXTITLE_2` AS `OXTITLE_2`,`oxcountry`.`OXTITLE_3` AS `OXTITLE_3`,`oxcountry`.`OXSHORTDESC_1` AS `OXSHORTDESC_1`,`oxcountry`.`OXSHORTDESC_2` AS `OXSHORTDESC_2`,`oxcountry`.`OXSHORTDESC_3` AS `OXSHORTDESC_3`,`oxcountry`.`OXLONGDESC_1` AS `OXLONGDESC_1`,`oxcountry`.`OXLONGDESC_2` AS `OXLONGDESC_2`,`oxcountry`.`OXLONGDESC_3` AS `OXLONGDESC_3`,`oxcountry`.`OXVATSTATUS` AS `OXVATSTATUS`,`oxcountry`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcountry` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcountry_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcountry_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcountry_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcountry_de` AS select `oxcountry`.`OXID` AS `OXID`,`oxcountry`.`OXACTIVE` AS `OXACTIVE`,`oxcountry`.`OXTITLE` AS `OXTITLE`,`oxcountry`.`OXISOALPHA2` AS `OXISOALPHA2`,`oxcountry`.`OXISOALPHA3` AS `OXISOALPHA3`,`oxcountry`.`OXUNNUM3` AS `OXUNNUM3`,`oxcountry`.`OXVATINPREFIX` AS `OXVATINPREFIX`,`oxcountry`.`OXORDER` AS `OXORDER`,`oxcountry`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxcountry`.`OXLONGDESC` AS `OXLONGDESC`,`oxcountry`.`OXVATSTATUS` AS `OXVATSTATUS`,`oxcountry`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcountry` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxcountry_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxcountry_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxcountry_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxcountry_en` AS select `oxcountry`.`OXID` AS `OXID`,`oxcountry`.`OXACTIVE` AS `OXACTIVE`,`oxcountry`.`OXTITLE_1` AS `OXTITLE`,`oxcountry`.`OXISOALPHA2` AS `OXISOALPHA2`,`oxcountry`.`OXISOALPHA3` AS `OXISOALPHA3`,`oxcountry`.`OXUNNUM3` AS `OXUNNUM3`,`oxcountry`.`OXVATINPREFIX` AS `OXVATINPREFIX`,`oxcountry`.`OXORDER` AS `OXORDER`,`oxcountry`.`OXSHORTDESC_1` AS `OXSHORTDESC`,`oxcountry`.`OXLONGDESC_1` AS `OXLONGDESC`,`oxcountry`.`OXVATSTATUS` AS `OXVATSTATUS`,`oxcountry`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxcountry` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdelivery`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdelivery`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdelivery`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdelivery` AS select `oxdelivery`.`OXID` AS `OXID`,`oxdelivery`.`OXSHOPID` AS `OXSHOPID`,`oxdelivery`.`OXACTIVE` AS `OXACTIVE`,`oxdelivery`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdelivery`.`OXACTIVETO` AS `OXACTIVETO`,`oxdelivery`.`OXTITLE` AS `OXTITLE`,`oxdelivery`.`OXTITLE_1` AS `OXTITLE_1`,`oxdelivery`.`OXTITLE_2` AS `OXTITLE_2`,`oxdelivery`.`OXTITLE_3` AS `OXTITLE_3`,`oxdelivery`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxdelivery`.`OXADDSUM` AS `OXADDSUM`,`oxdelivery`.`OXDELTYPE` AS `OXDELTYPE`,`oxdelivery`.`OXPARAM` AS `OXPARAM`,`oxdelivery`.`OXPARAMEND` AS `OXPARAMEND`,`oxdelivery`.`OXFIXED` AS `OXFIXED`,`oxdelivery`.`OXSORT` AS `OXSORT`,`oxdelivery`.`OXFINALIZE` AS `OXFINALIZE`,`oxdelivery`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdelivery` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdelivery_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdelivery_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdelivery_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdelivery_de` AS select `oxdelivery`.`OXID` AS `OXID`,`oxdelivery`.`OXSHOPID` AS `OXSHOPID`,`oxdelivery`.`OXACTIVE` AS `OXACTIVE`,`oxdelivery`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdelivery`.`OXACTIVETO` AS `OXACTIVETO`,`oxdelivery`.`OXTITLE` AS `OXTITLE`,`oxdelivery`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxdelivery`.`OXADDSUM` AS `OXADDSUM`,`oxdelivery`.`OXDELTYPE` AS `OXDELTYPE`,`oxdelivery`.`OXPARAM` AS `OXPARAM`,`oxdelivery`.`OXPARAMEND` AS `OXPARAMEND`,`oxdelivery`.`OXFIXED` AS `OXFIXED`,`oxdelivery`.`OXSORT` AS `OXSORT`,`oxdelivery`.`OXFINALIZE` AS `OXFINALIZE`,`oxdelivery`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdelivery` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdelivery_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdelivery_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdelivery_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdelivery_en` AS select `oxdelivery`.`OXID` AS `OXID`,`oxdelivery`.`OXSHOPID` AS `OXSHOPID`,`oxdelivery`.`OXACTIVE` AS `OXACTIVE`,`oxdelivery`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdelivery`.`OXACTIVETO` AS `OXACTIVETO`,`oxdelivery`.`OXTITLE_1` AS `OXTITLE`,`oxdelivery`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxdelivery`.`OXADDSUM` AS `OXADDSUM`,`oxdelivery`.`OXDELTYPE` AS `OXDELTYPE`,`oxdelivery`.`OXPARAM` AS `OXPARAM`,`oxdelivery`.`OXPARAMEND` AS `OXPARAMEND`,`oxdelivery`.`OXFIXED` AS `OXFIXED`,`oxdelivery`.`OXSORT` AS `OXSORT`,`oxdelivery`.`OXFINALIZE` AS `OXFINALIZE`,`oxdelivery`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdelivery` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdeliveryset`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdeliveryset`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdeliveryset`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdeliveryset` AS select `oxdeliveryset`.`OXID` AS `OXID`,`oxdeliveryset`.`OXSHOPID` AS `OXSHOPID`,`oxdeliveryset`.`OXACTIVE` AS `OXACTIVE`,`oxdeliveryset`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdeliveryset`.`OXACTIVETO` AS `OXACTIVETO`,`oxdeliveryset`.`OXTITLE` AS `OXTITLE`,`oxdeliveryset`.`OXTITLE_1` AS `OXTITLE_1`,`oxdeliveryset`.`OXTITLE_2` AS `OXTITLE_2`,`oxdeliveryset`.`OXTITLE_3` AS `OXTITLE_3`,`oxdeliveryset`.`OXPOS` AS `OXPOS`,`oxdeliveryset`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdeliveryset` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdeliveryset_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdeliveryset_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdeliveryset_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdeliveryset_de` AS select `oxdeliveryset`.`OXID` AS `OXID`,`oxdeliveryset`.`OXSHOPID` AS `OXSHOPID`,`oxdeliveryset`.`OXACTIVE` AS `OXACTIVE`,`oxdeliveryset`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdeliveryset`.`OXACTIVETO` AS `OXACTIVETO`,`oxdeliveryset`.`OXTITLE` AS `OXTITLE`,`oxdeliveryset`.`OXPOS` AS `OXPOS`,`oxdeliveryset`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdeliveryset` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdeliveryset_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdeliveryset_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdeliveryset_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdeliveryset_en` AS select `oxdeliveryset`.`OXID` AS `OXID`,`oxdeliveryset`.`OXSHOPID` AS `OXSHOPID`,`oxdeliveryset`.`OXACTIVE` AS `OXACTIVE`,`oxdeliveryset`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdeliveryset`.`OXACTIVETO` AS `OXACTIVETO`,`oxdeliveryset`.`OXTITLE_1` AS `OXTITLE`,`oxdeliveryset`.`OXPOS` AS `OXPOS`,`oxdeliveryset`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdeliveryset` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdiscount`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdiscount`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdiscount`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdiscount` AS select `oxdiscount`.`OXID` AS `OXID`,`oxdiscount`.`OXSHOPID` AS `OXSHOPID`,`oxdiscount`.`OXACTIVE` AS `OXACTIVE`,`oxdiscount`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdiscount`.`OXACTIVETO` AS `OXACTIVETO`,`oxdiscount`.`OXTITLE` AS `OXTITLE`,`oxdiscount`.`OXTITLE_1` AS `OXTITLE_1`,`oxdiscount`.`OXTITLE_2` AS `OXTITLE_2`,`oxdiscount`.`OXTITLE_3` AS `OXTITLE_3`,`oxdiscount`.`OXAMOUNT` AS `OXAMOUNT`,`oxdiscount`.`OXAMOUNTTO` AS `OXAMOUNTTO`,`oxdiscount`.`OXPRICETO` AS `OXPRICETO`,`oxdiscount`.`OXPRICE` AS `OXPRICE`,`oxdiscount`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxdiscount`.`OXADDSUM` AS `OXADDSUM`,`oxdiscount`.`OXITMARTID` AS `OXITMARTID`,`oxdiscount`.`OXITMAMOUNT` AS `OXITMAMOUNT`,`oxdiscount`.`OXITMMULTIPLE` AS `OXITMMULTIPLE`,`oxdiscount`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdiscount` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdiscount_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdiscount_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdiscount_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdiscount_de` AS select `oxdiscount`.`OXID` AS `OXID`,`oxdiscount`.`OXSHOPID` AS `OXSHOPID`,`oxdiscount`.`OXACTIVE` AS `OXACTIVE`,`oxdiscount`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdiscount`.`OXACTIVETO` AS `OXACTIVETO`,`oxdiscount`.`OXTITLE` AS `OXTITLE`,`oxdiscount`.`OXAMOUNT` AS `OXAMOUNT`,`oxdiscount`.`OXAMOUNTTO` AS `OXAMOUNTTO`,`oxdiscount`.`OXPRICETO` AS `OXPRICETO`,`oxdiscount`.`OXPRICE` AS `OXPRICE`,`oxdiscount`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxdiscount`.`OXADDSUM` AS `OXADDSUM`,`oxdiscount`.`OXITMARTID` AS `OXITMARTID`,`oxdiscount`.`OXITMAMOUNT` AS `OXITMAMOUNT`,`oxdiscount`.`OXITMMULTIPLE` AS `OXITMMULTIPLE`,`oxdiscount`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdiscount` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxdiscount_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxdiscount_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxdiscount_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxdiscount_en` AS select `oxdiscount`.`OXID` AS `OXID`,`oxdiscount`.`OXSHOPID` AS `OXSHOPID`,`oxdiscount`.`OXACTIVE` AS `OXACTIVE`,`oxdiscount`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxdiscount`.`OXACTIVETO` AS `OXACTIVETO`,`oxdiscount`.`OXTITLE_1` AS `OXTITLE`,`oxdiscount`.`OXAMOUNT` AS `OXAMOUNT`,`oxdiscount`.`OXAMOUNTTO` AS `OXAMOUNTTO`,`oxdiscount`.`OXPRICETO` AS `OXPRICETO`,`oxdiscount`.`OXPRICE` AS `OXPRICE`,`oxdiscount`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxdiscount`.`OXADDSUM` AS `OXADDSUM`,`oxdiscount`.`OXITMARTID` AS `OXITMARTID`,`oxdiscount`.`OXITMAMOUNT` AS `OXITMAMOUNT`,`oxdiscount`.`OXITMMULTIPLE` AS `OXITMMULTIPLE`,`oxdiscount`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxdiscount` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxgroups`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxgroups`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxgroups`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxgroups` AS select `oxgroups`.`OXID` AS `OXID`,`oxgroups`.`OXACTIVE` AS `OXACTIVE`,`oxgroups`.`OXTITLE` AS `OXTITLE`,`oxgroups`.`OXTITLE_1` AS `OXTITLE_1`,`oxgroups`.`OXTITLE_2` AS `OXTITLE_2`,`oxgroups`.`OXTITLE_3` AS `OXTITLE_3`,`oxgroups`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxgroups` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxgroups_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxgroups_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxgroups_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxgroups_de` AS select `oxgroups`.`OXID` AS `OXID`,`oxgroups`.`OXACTIVE` AS `OXACTIVE`,`oxgroups`.`OXTITLE` AS `OXTITLE`,`oxgroups`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxgroups` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxgroups_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxgroups_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxgroups_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxgroups_en` AS select `oxgroups`.`OXID` AS `OXID`,`oxgroups`.`OXACTIVE` AS `OXACTIVE`,`oxgroups`.`OXTITLE_1` AS `OXTITLE`,`oxgroups`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxgroups` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxlinks`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxlinks`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxlinks`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxlinks` AS select `oxlinks`.`OXID` AS `OXID`,`oxlinks`.`OXSHOPID` AS `OXSHOPID`,`oxlinks`.`OXACTIVE` AS `OXACTIVE`,`oxlinks`.`OXURL` AS `OXURL`,`oxlinks`.`OXURLDESC` AS `OXURLDESC`,`oxlinks`.`OXURLDESC_1` AS `OXURLDESC_1`,`oxlinks`.`OXURLDESC_2` AS `OXURLDESC_2`,`oxlinks`.`OXURLDESC_3` AS `OXURLDESC_3`,`oxlinks`.`OXINSERT` AS `OXINSERT`,`oxlinks`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxlinks` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxlinks_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxlinks_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxlinks_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxlinks_de` AS select `oxlinks`.`OXID` AS `OXID`,`oxlinks`.`OXSHOPID` AS `OXSHOPID`,`oxlinks`.`OXACTIVE` AS `OXACTIVE`,`oxlinks`.`OXURL` AS `OXURL`,`oxlinks`.`OXURLDESC` AS `OXURLDESC`,`oxlinks`.`OXINSERT` AS `OXINSERT`,`oxlinks`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxlinks` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxlinks_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxlinks_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxlinks_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxlinks_en` AS select `oxlinks`.`OXID` AS `OXID`,`oxlinks`.`OXSHOPID` AS `OXSHOPID`,`oxlinks`.`OXACTIVE` AS `OXACTIVE`,`oxlinks`.`OXURL` AS `OXURL`,`oxlinks`.`OXURLDESC_1` AS `OXURLDESC`,`oxlinks`.`OXINSERT` AS `OXINSERT`,`oxlinks`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxlinks` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxmanufacturers`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxmanufacturers`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmanufacturers`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxmanufacturers` AS select `oxmanufacturers`.`OXID` AS `OXID`,`oxmanufacturers`.`OXSHOPID` AS `OXSHOPID`,`oxmanufacturers`.`OXACTIVE` AS `OXACTIVE`,`oxmanufacturers`.`OXICON` AS `OXICON`,`oxmanufacturers`.`OXTITLE` AS `OXTITLE`,`oxmanufacturers`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxmanufacturers`.`OXTITLE_1` AS `OXTITLE_1`,`oxmanufacturers`.`OXSHORTDESC_1` AS `OXSHORTDESC_1`,`oxmanufacturers`.`OXTITLE_2` AS `OXTITLE_2`,`oxmanufacturers`.`OXSHORTDESC_2` AS `OXSHORTDESC_2`,`oxmanufacturers`.`OXTITLE_3` AS `OXTITLE_3`,`oxmanufacturers`.`OXSHORTDESC_3` AS `OXSHORTDESC_3`,`oxmanufacturers`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxmanufacturers`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxmanufacturers` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxmanufacturers_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxmanufacturers_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmanufacturers_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxmanufacturers_de` AS select `oxmanufacturers`.`OXID` AS `OXID`,`oxmanufacturers`.`OXSHOPID` AS `OXSHOPID`,`oxmanufacturers`.`OXACTIVE` AS `OXACTIVE`,`oxmanufacturers`.`OXICON` AS `OXICON`,`oxmanufacturers`.`OXTITLE` AS `OXTITLE`,`oxmanufacturers`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxmanufacturers`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxmanufacturers`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxmanufacturers` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxmanufacturers_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxmanufacturers_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmanufacturers_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxmanufacturers_en` AS select `oxmanufacturers`.`OXID` AS `OXID`,`oxmanufacturers`.`OXSHOPID` AS `OXSHOPID`,`oxmanufacturers`.`OXACTIVE` AS `OXACTIVE`,`oxmanufacturers`.`OXICON` AS `OXICON`,`oxmanufacturers`.`OXTITLE_1` AS `OXTITLE`,`oxmanufacturers`.`OXSHORTDESC_1` AS `OXSHORTDESC`,`oxmanufacturers`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxmanufacturers`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxmanufacturers` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxmediaurls`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxmediaurls`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmediaurls`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxmediaurls` AS select `oxmediaurls`.`OXID` AS `OXID`,`oxmediaurls`.`OXOBJECTID` AS `OXOBJECTID`,`oxmediaurls`.`OXURL` AS `OXURL`,`oxmediaurls`.`OXDESC` AS `OXDESC`,`oxmediaurls`.`OXDESC_1` AS `OXDESC_1`,`oxmediaurls`.`OXDESC_2` AS `OXDESC_2`,`oxmediaurls`.`OXDESC_3` AS `OXDESC_3`,`oxmediaurls`.`OXISUPLOADED` AS `OXISUPLOADED`,`oxmediaurls`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxmediaurls` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxmediaurls_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxmediaurls_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmediaurls_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxmediaurls_de` AS select `oxmediaurls`.`OXID` AS `OXID`,`oxmediaurls`.`OXOBJECTID` AS `OXOBJECTID`,`oxmediaurls`.`OXURL` AS `OXURL`,`oxmediaurls`.`OXDESC` AS `OXDESC`,`oxmediaurls`.`OXISUPLOADED` AS `OXISUPLOADED`,`oxmediaurls`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxmediaurls` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxmediaurls_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxmediaurls_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxmediaurls_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxmediaurls_en` AS select `oxmediaurls`.`OXID` AS `OXID`,`oxmediaurls`.`OXOBJECTID` AS `OXOBJECTID`,`oxmediaurls`.`OXURL` AS `OXURL`,`oxmediaurls`.`OXDESC_1` AS `OXDESC`,`oxmediaurls`.`OXISUPLOADED` AS `OXISUPLOADED`,`oxmediaurls`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxmediaurls` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxnews`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxnews`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxnews`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxnews` AS select `oxnews`.`OXID` AS `OXID`,`oxnews`.`OXSHOPID` AS `OXSHOPID`,`oxnews`.`OXACTIVE` AS `OXACTIVE`,`oxnews`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxnews`.`OXACTIVETO` AS `OXACTIVETO`,`oxnews`.`OXDATE` AS `OXDATE`,`oxnews`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxnews`.`OXLONGDESC` AS `OXLONGDESC`,`oxnews`.`OXACTIVE_1` AS `OXACTIVE_1`,`oxnews`.`OXSHORTDESC_1` AS `OXSHORTDESC_1`,`oxnews`.`OXLONGDESC_1` AS `OXLONGDESC_1`,`oxnews`.`OXACTIVE_2` AS `OXACTIVE_2`,`oxnews`.`OXSHORTDESC_2` AS `OXSHORTDESC_2`,`oxnews`.`OXLONGDESC_2` AS `OXLONGDESC_2`,`oxnews`.`OXACTIVE_3` AS `OXACTIVE_3`,`oxnews`.`OXSHORTDESC_3` AS `OXSHORTDESC_3`,`oxnews`.`OXLONGDESC_3` AS `OXLONGDESC_3`,`oxnews`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxnews` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxnews_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxnews_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxnews_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxnews_de` AS select `oxnews`.`OXID` AS `OXID`,`oxnews`.`OXSHOPID` AS `OXSHOPID`,`oxnews`.`OXACTIVE` AS `OXACTIVE`,`oxnews`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxnews`.`OXACTIVETO` AS `OXACTIVETO`,`oxnews`.`OXDATE` AS `OXDATE`,`oxnews`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxnews`.`OXLONGDESC` AS `OXLONGDESC`,`oxnews`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxnews` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxnews_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxnews_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxnews_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxnews_en` AS select `oxnews`.`OXID` AS `OXID`,`oxnews`.`OXSHOPID` AS `OXSHOPID`,`oxnews`.`OXACTIVE_1` AS `OXACTIVE`,`oxnews`.`OXACTIVEFROM` AS `OXACTIVEFROM`,`oxnews`.`OXACTIVETO` AS `OXACTIVETO`,`oxnews`.`OXDATE` AS `OXDATE`,`oxnews`.`OXSHORTDESC_1` AS `OXSHORTDESC`,`oxnews`.`OXLONGDESC_1` AS `OXLONGDESC`,`oxnews`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxnews` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxobject2attribute`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxobject2attribute`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxobject2attribute`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxobject2attribute` AS select `oxobject2attribute`.`OXID` AS `OXID`,`oxobject2attribute`.`OXOBJECTID` AS `OXOBJECTID`,`oxobject2attribute`.`OXATTRID` AS `OXATTRID`,`oxobject2attribute`.`OXVALUE` AS `OXVALUE`,`oxobject2attribute`.`OXPOS` AS `OXPOS`,`oxobject2attribute`.`OXVALUE_1` AS `OXVALUE_1`,`oxobject2attribute`.`OXVALUE_2` AS `OXVALUE_2`,`oxobject2attribute`.`OXVALUE_3` AS `OXVALUE_3`,`oxobject2attribute`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxobject2attribute` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxobject2attribute_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxobject2attribute_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxobject2attribute_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxobject2attribute_de` AS select `oxobject2attribute`.`OXID` AS `OXID`,`oxobject2attribute`.`OXOBJECTID` AS `OXOBJECTID`,`oxobject2attribute`.`OXATTRID` AS `OXATTRID`,`oxobject2attribute`.`OXVALUE` AS `OXVALUE`,`oxobject2attribute`.`OXPOS` AS `OXPOS`,`oxobject2attribute`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxobject2attribute` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxobject2attribute_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxobject2attribute_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxobject2attribute_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxobject2attribute_en` AS select `oxobject2attribute`.`OXID` AS `OXID`,`oxobject2attribute`.`OXOBJECTID` AS `OXOBJECTID`,`oxobject2attribute`.`OXATTRID` AS `OXATTRID`,`oxobject2attribute`.`OXVALUE_1` AS `OXVALUE`,`oxobject2attribute`.`OXPOS` AS `OXPOS`,`oxobject2attribute`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxobject2attribute` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxpayments`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxpayments`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxpayments`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxpayments` AS select `oxpayments`.`OXID` AS `OXID`,`oxpayments`.`OXACTIVE` AS `OXACTIVE`,`oxpayments`.`OXDESC` AS `OXDESC`,`oxpayments`.`OXADDSUM` AS `OXADDSUM`,`oxpayments`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxpayments`.`OXADDSUMRULES` AS `OXADDSUMRULES`,`oxpayments`.`OXFROMBONI` AS `OXFROMBONI`,`oxpayments`.`OXFROMAMOUNT` AS `OXFROMAMOUNT`,`oxpayments`.`OXTOAMOUNT` AS `OXTOAMOUNT`,`oxpayments`.`OXVALDESC` AS `OXVALDESC`,`oxpayments`.`OXCHECKED` AS `OXCHECKED`,`oxpayments`.`OXDESC_1` AS `OXDESC_1`,`oxpayments`.`OXVALDESC_1` AS `OXVALDESC_1`,`oxpayments`.`OXDESC_2` AS `OXDESC_2`,`oxpayments`.`OXVALDESC_2` AS `OXVALDESC_2`,`oxpayments`.`OXDESC_3` AS `OXDESC_3`,`oxpayments`.`OXVALDESC_3` AS `OXVALDESC_3`,`oxpayments`.`OXLONGDESC` AS `OXLONGDESC`,`oxpayments`.`OXLONGDESC_1` AS `OXLONGDESC_1`,`oxpayments`.`OXLONGDESC_2` AS `OXLONGDESC_2`,`oxpayments`.`OXLONGDESC_3` AS `OXLONGDESC_3`,`oxpayments`.`OXSORT` AS `OXSORT`,`oxpayments`.`OXTSPAYMENTID` AS `OXTSPAYMENTID`,`oxpayments`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxpayments` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxpayments_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxpayments_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxpayments_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxpayments_de` AS select `oxpayments`.`OXID` AS `OXID`,`oxpayments`.`OXACTIVE` AS `OXACTIVE`,`oxpayments`.`OXDESC` AS `OXDESC`,`oxpayments`.`OXADDSUM` AS `OXADDSUM`,`oxpayments`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxpayments`.`OXADDSUMRULES` AS `OXADDSUMRULES`,`oxpayments`.`OXFROMBONI` AS `OXFROMBONI`,`oxpayments`.`OXFROMAMOUNT` AS `OXFROMAMOUNT`,`oxpayments`.`OXTOAMOUNT` AS `OXTOAMOUNT`,`oxpayments`.`OXVALDESC` AS `OXVALDESC`,`oxpayments`.`OXCHECKED` AS `OXCHECKED`,`oxpayments`.`OXLONGDESC` AS `OXLONGDESC`,`oxpayments`.`OXSORT` AS `OXSORT`,`oxpayments`.`OXTSPAYMENTID` AS `OXTSPAYMENTID`,`oxpayments`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxpayments` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxpayments_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxpayments_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxpayments_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxpayments_en` AS select `oxpayments`.`OXID` AS `OXID`,`oxpayments`.`OXACTIVE` AS `OXACTIVE`,`oxpayments`.`OXDESC_1` AS `OXDESC`,`oxpayments`.`OXADDSUM` AS `OXADDSUM`,`oxpayments`.`OXADDSUMTYPE` AS `OXADDSUMTYPE`,`oxpayments`.`OXADDSUMRULES` AS `OXADDSUMRULES`,`oxpayments`.`OXFROMBONI` AS `OXFROMBONI`,`oxpayments`.`OXFROMAMOUNT` AS `OXFROMAMOUNT`,`oxpayments`.`OXTOAMOUNT` AS `OXTOAMOUNT`,`oxpayments`.`OXVALDESC_1` AS `OXVALDESC`,`oxpayments`.`OXCHECKED` AS `OXCHECKED`,`oxpayments`.`OXLONGDESC_1` AS `OXLONGDESC`,`oxpayments`.`OXSORT` AS `OXSORT`,`oxpayments`.`OXTSPAYMENTID` AS `OXTSPAYMENTID`,`oxpayments`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxpayments` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxselectlist`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxselectlist`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxselectlist`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxselectlist` AS select `oxselectlist`.`OXID` AS `OXID`,`oxselectlist`.`OXSHOPID` AS `OXSHOPID`,`oxselectlist`.`OXTITLE` AS `OXTITLE`,`oxselectlist`.`OXIDENT` AS `OXIDENT`,`oxselectlist`.`OXVALDESC` AS `OXVALDESC`,`oxselectlist`.`OXTITLE_1` AS `OXTITLE_1`,`oxselectlist`.`OXVALDESC_1` AS `OXVALDESC_1`,`oxselectlist`.`OXTITLE_2` AS `OXTITLE_2`,`oxselectlist`.`OXVALDESC_2` AS `OXVALDESC_2`,`oxselectlist`.`OXTITLE_3` AS `OXTITLE_3`,`oxselectlist`.`OXVALDESC_3` AS `OXVALDESC_3`,`oxselectlist`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxselectlist` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxselectlist_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxselectlist_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxselectlist_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxselectlist_de` AS select `oxselectlist`.`OXID` AS `OXID`,`oxselectlist`.`OXSHOPID` AS `OXSHOPID`,`oxselectlist`.`OXTITLE` AS `OXTITLE`,`oxselectlist`.`OXIDENT` AS `OXIDENT`,`oxselectlist`.`OXVALDESC` AS `OXVALDESC`,`oxselectlist`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxselectlist` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxselectlist_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxselectlist_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxselectlist_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxselectlist_en` AS select `oxselectlist`.`OXID` AS `OXID`,`oxselectlist`.`OXSHOPID` AS `OXSHOPID`,`oxselectlist`.`OXTITLE_1` AS `OXTITLE`,`oxselectlist`.`OXIDENT` AS `OXIDENT`,`oxselectlist`.`OXVALDESC_1` AS `OXVALDESC`,`oxselectlist`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxselectlist` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxshops`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxshops`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxshops`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxshops` AS select `oxshops`.`OXID` AS `OXID`,`oxshops`.`OXACTIVE` AS `OXACTIVE`,`oxshops`.`OXPRODUCTIVE` AS `OXPRODUCTIVE`,`oxshops`.`OXDEFCURRENCY` AS `OXDEFCURRENCY`,`oxshops`.`OXDEFLANGUAGE` AS `OXDEFLANGUAGE`,`oxshops`.`OXNAME` AS `OXNAME`,`oxshops`.`OXTITLEPREFIX` AS `OXTITLEPREFIX`,`oxshops`.`OXTITLEPREFIX_1` AS `OXTITLEPREFIX_1`,`oxshops`.`OXTITLEPREFIX_2` AS `OXTITLEPREFIX_2`,`oxshops`.`OXTITLEPREFIX_3` AS `OXTITLEPREFIX_3`,`oxshops`.`OXTITLESUFFIX` AS `OXTITLESUFFIX`,`oxshops`.`OXTITLESUFFIX_1` AS `OXTITLESUFFIX_1`,`oxshops`.`OXTITLESUFFIX_2` AS `OXTITLESUFFIX_2`,`oxshops`.`OXTITLESUFFIX_3` AS `OXTITLESUFFIX_3`,`oxshops`.`OXSTARTTITLE` AS `OXSTARTTITLE`,`oxshops`.`OXSTARTTITLE_1` AS `OXSTARTTITLE_1`,`oxshops`.`OXSTARTTITLE_2` AS `OXSTARTTITLE_2`,`oxshops`.`OXSTARTTITLE_3` AS `OXSTARTTITLE_3`,`oxshops`.`OXINFOEMAIL` AS `OXINFOEMAIL`,`oxshops`.`OXORDEREMAIL` AS `OXORDEREMAIL`,`oxshops`.`OXOWNEREMAIL` AS `OXOWNEREMAIL`,`oxshops`.`OXORDERSUBJECT` AS `OXORDERSUBJECT`,`oxshops`.`OXREGISTERSUBJECT` AS `OXREGISTERSUBJECT`,`oxshops`.`OXFORGOTPWDSUBJECT` AS `OXFORGOTPWDSUBJECT`,`oxshops`.`OXSENDEDNOWSUBJECT` AS `OXSENDEDNOWSUBJECT`,`oxshops`.`OXORDERSUBJECT_1` AS `OXORDERSUBJECT_1`,`oxshops`.`OXREGISTERSUBJECT_1` AS `OXREGISTERSUBJECT_1`,`oxshops`.`OXFORGOTPWDSUBJECT_1` AS `OXFORGOTPWDSUBJECT_1`,`oxshops`.`OXSENDEDNOWSUBJECT_1` AS `OXSENDEDNOWSUBJECT_1`,`oxshops`.`OXORDERSUBJECT_2` AS `OXORDERSUBJECT_2`,`oxshops`.`OXREGISTERSUBJECT_2` AS `OXREGISTERSUBJECT_2`,`oxshops`.`OXFORGOTPWDSUBJECT_2` AS `OXFORGOTPWDSUBJECT_2`,`oxshops`.`OXSENDEDNOWSUBJECT_2` AS `OXSENDEDNOWSUBJECT_2`,`oxshops`.`OXORDERSUBJECT_3` AS `OXORDERSUBJECT_3`,`oxshops`.`OXREGISTERSUBJECT_3` AS `OXREGISTERSUBJECT_3`,`oxshops`.`OXFORGOTPWDSUBJECT_3` AS `OXFORGOTPWDSUBJECT_3`,`oxshops`.`OXSENDEDNOWSUBJECT_3` AS `OXSENDEDNOWSUBJECT_3`,`oxshops`.`OXSMTP` AS `OXSMTP`,`oxshops`.`OXSMTPUSER` AS `OXSMTPUSER`,`oxshops`.`OXSMTPPWD` AS `OXSMTPPWD`,`oxshops`.`OXCOMPANY` AS `OXCOMPANY`,`oxshops`.`OXSTREET` AS `OXSTREET`,`oxshops`.`OXZIP` AS `OXZIP`,`oxshops`.`OXCITY` AS `OXCITY`,`oxshops`.`OXCOUNTRY` AS `OXCOUNTRY`,`oxshops`.`OXBANKNAME` AS `OXBANKNAME`,`oxshops`.`OXBANKNUMBER` AS `OXBANKNUMBER`,`oxshops`.`OXBANKCODE` AS `OXBANKCODE`,`oxshops`.`OXVATNUMBER` AS `OXVATNUMBER`,`oxshops`.`OXTAXNUMBER` AS `OXTAXNUMBER`,`oxshops`.`OXBICCODE` AS `OXBICCODE`,`oxshops`.`OXIBANNUMBER` AS `OXIBANNUMBER`,`oxshops`.`OXFNAME` AS `OXFNAME`,`oxshops`.`OXLNAME` AS `OXLNAME`,`oxshops`.`OXTELEFON` AS `OXTELEFON`,`oxshops`.`OXTELEFAX` AS `OXTELEFAX`,`oxshops`.`OXURL` AS `OXURL`,`oxshops`.`OXDEFCAT` AS `OXDEFCAT`,`oxshops`.`OXHRBNR` AS `OXHRBNR`,`oxshops`.`OXCOURT` AS `OXCOURT`,`oxshops`.`OXADBUTLERID` AS `OXADBUTLERID`,`oxshops`.`OXAFFILINETID` AS `OXAFFILINETID`,`oxshops`.`OXSUPERCLICKSID` AS `OXSUPERCLICKSID`,`oxshops`.`OXAFFILIWELTID` AS `OXAFFILIWELTID`,`oxshops`.`OXAFFILI24ID` AS `OXAFFILI24ID`,`oxshops`.`OXEDITION` AS `OXEDITION`,`oxshops`.`OXVERSION` AS `OXVERSION`,`oxshops`.`OXSEOACTIVE` AS `OXSEOACTIVE`,`oxshops`.`OXSEOACTIVE_1` AS `OXSEOACTIVE_1`,`oxshops`.`OXSEOACTIVE_2` AS `OXSEOACTIVE_2`,`oxshops`.`OXSEOACTIVE_3` AS `OXSEOACTIVE_3`,`oxshops`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxshops` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxshops_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxshops_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxshops_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxshops_de` AS select `oxshops`.`OXID` AS `OXID`,`oxshops`.`OXACTIVE` AS `OXACTIVE`,`oxshops`.`OXPRODUCTIVE` AS `OXPRODUCTIVE`,`oxshops`.`OXDEFCURRENCY` AS `OXDEFCURRENCY`,`oxshops`.`OXDEFLANGUAGE` AS `OXDEFLANGUAGE`,`oxshops`.`OXNAME` AS `OXNAME`,`oxshops`.`OXTITLEPREFIX` AS `OXTITLEPREFIX`,`oxshops`.`OXTITLESUFFIX` AS `OXTITLESUFFIX`,`oxshops`.`OXSTARTTITLE` AS `OXSTARTTITLE`,`oxshops`.`OXINFOEMAIL` AS `OXINFOEMAIL`,`oxshops`.`OXORDEREMAIL` AS `OXORDEREMAIL`,`oxshops`.`OXOWNEREMAIL` AS `OXOWNEREMAIL`,`oxshops`.`OXORDERSUBJECT` AS `OXORDERSUBJECT`,`oxshops`.`OXREGISTERSUBJECT` AS `OXREGISTERSUBJECT`,`oxshops`.`OXFORGOTPWDSUBJECT` AS `OXFORGOTPWDSUBJECT`,`oxshops`.`OXSENDEDNOWSUBJECT` AS `OXSENDEDNOWSUBJECT`,`oxshops`.`OXSMTP` AS `OXSMTP`,`oxshops`.`OXSMTPUSER` AS `OXSMTPUSER`,`oxshops`.`OXSMTPPWD` AS `OXSMTPPWD`,`oxshops`.`OXCOMPANY` AS `OXCOMPANY`,`oxshops`.`OXSTREET` AS `OXSTREET`,`oxshops`.`OXZIP` AS `OXZIP`,`oxshops`.`OXCITY` AS `OXCITY`,`oxshops`.`OXCOUNTRY` AS `OXCOUNTRY`,`oxshops`.`OXBANKNAME` AS `OXBANKNAME`,`oxshops`.`OXBANKNUMBER` AS `OXBANKNUMBER`,`oxshops`.`OXBANKCODE` AS `OXBANKCODE`,`oxshops`.`OXVATNUMBER` AS `OXVATNUMBER`,`oxshops`.`OXTAXNUMBER` AS `OXTAXNUMBER`,`oxshops`.`OXBICCODE` AS `OXBICCODE`,`oxshops`.`OXIBANNUMBER` AS `OXIBANNUMBER`,`oxshops`.`OXFNAME` AS `OXFNAME`,`oxshops`.`OXLNAME` AS `OXLNAME`,`oxshops`.`OXTELEFON` AS `OXTELEFON`,`oxshops`.`OXTELEFAX` AS `OXTELEFAX`,`oxshops`.`OXURL` AS `OXURL`,`oxshops`.`OXDEFCAT` AS `OXDEFCAT`,`oxshops`.`OXHRBNR` AS `OXHRBNR`,`oxshops`.`OXCOURT` AS `OXCOURT`,`oxshops`.`OXADBUTLERID` AS `OXADBUTLERID`,`oxshops`.`OXAFFILINETID` AS `OXAFFILINETID`,`oxshops`.`OXSUPERCLICKSID` AS `OXSUPERCLICKSID`,`oxshops`.`OXAFFILIWELTID` AS `OXAFFILIWELTID`,`oxshops`.`OXAFFILI24ID` AS `OXAFFILI24ID`,`oxshops`.`OXEDITION` AS `OXEDITION`,`oxshops`.`OXVERSION` AS `OXVERSION`,`oxshops`.`OXSEOACTIVE` AS `OXSEOACTIVE`,`oxshops`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxshops` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxshops_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxshops_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxshops_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxshops_en` AS select `oxshops`.`OXID` AS `OXID`,`oxshops`.`OXACTIVE` AS `OXACTIVE`,`oxshops`.`OXPRODUCTIVE` AS `OXPRODUCTIVE`,`oxshops`.`OXDEFCURRENCY` AS `OXDEFCURRENCY`,`oxshops`.`OXDEFLANGUAGE` AS `OXDEFLANGUAGE`,`oxshops`.`OXNAME` AS `OXNAME`,`oxshops`.`OXTITLEPREFIX_1` AS `OXTITLEPREFIX`,`oxshops`.`OXTITLESUFFIX_1` AS `OXTITLESUFFIX`,`oxshops`.`OXSTARTTITLE_1` AS `OXSTARTTITLE`,`oxshops`.`OXINFOEMAIL` AS `OXINFOEMAIL`,`oxshops`.`OXORDEREMAIL` AS `OXORDEREMAIL`,`oxshops`.`OXOWNEREMAIL` AS `OXOWNEREMAIL`,`oxshops`.`OXORDERSUBJECT_1` AS `OXORDERSUBJECT`,`oxshops`.`OXREGISTERSUBJECT_1` AS `OXREGISTERSUBJECT`,`oxshops`.`OXFORGOTPWDSUBJECT_1` AS `OXFORGOTPWDSUBJECT`,`oxshops`.`OXSENDEDNOWSUBJECT_1` AS `OXSENDEDNOWSUBJECT`,`oxshops`.`OXSMTP` AS `OXSMTP`,`oxshops`.`OXSMTPUSER` AS `OXSMTPUSER`,`oxshops`.`OXSMTPPWD` AS `OXSMTPPWD`,`oxshops`.`OXCOMPANY` AS `OXCOMPANY`,`oxshops`.`OXSTREET` AS `OXSTREET`,`oxshops`.`OXZIP` AS `OXZIP`,`oxshops`.`OXCITY` AS `OXCITY`,`oxshops`.`OXCOUNTRY` AS `OXCOUNTRY`,`oxshops`.`OXBANKNAME` AS `OXBANKNAME`,`oxshops`.`OXBANKNUMBER` AS `OXBANKNUMBER`,`oxshops`.`OXBANKCODE` AS `OXBANKCODE`,`oxshops`.`OXVATNUMBER` AS `OXVATNUMBER`,`oxshops`.`OXTAXNUMBER` AS `OXTAXNUMBER`,`oxshops`.`OXBICCODE` AS `OXBICCODE`,`oxshops`.`OXIBANNUMBER` AS `OXIBANNUMBER`,`oxshops`.`OXFNAME` AS `OXFNAME`,`oxshops`.`OXLNAME` AS `OXLNAME`,`oxshops`.`OXTELEFON` AS `OXTELEFON`,`oxshops`.`OXTELEFAX` AS `OXTELEFAX`,`oxshops`.`OXURL` AS `OXURL`,`oxshops`.`OXDEFCAT` AS `OXDEFCAT`,`oxshops`.`OXHRBNR` AS `OXHRBNR`,`oxshops`.`OXCOURT` AS `OXCOURT`,`oxshops`.`OXADBUTLERID` AS `OXADBUTLERID`,`oxshops`.`OXAFFILINETID` AS `OXAFFILINETID`,`oxshops`.`OXSUPERCLICKSID` AS `OXSUPERCLICKSID`,`oxshops`.`OXAFFILIWELTID` AS `OXAFFILIWELTID`,`oxshops`.`OXAFFILI24ID` AS `OXAFFILI24ID`,`oxshops`.`OXEDITION` AS `OXEDITION`,`oxshops`.`OXVERSION` AS `OXVERSION`,`oxshops`.`OXSEOACTIVE_1` AS `OXSEOACTIVE`,`oxshops`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxshops` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxstates`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxstates`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxstates`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxstates` AS select `oxstates`.`OXID` AS `OXID`,`oxstates`.`OXCOUNTRYID` AS `OXCOUNTRYID`,`oxstates`.`OXTITLE` AS `OXTITLE`,`oxstates`.`OXISOALPHA2` AS `OXISOALPHA2`,`oxstates`.`OXTITLE_1` AS `OXTITLE_1`,`oxstates`.`OXTITLE_2` AS `OXTITLE_2`,`oxstates`.`OXTITLE_3` AS `OXTITLE_3`,`oxstates`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxstates` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxstates_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxstates_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxstates_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxstates_de` AS select `oxstates`.`OXID` AS `OXID`,`oxstates`.`OXCOUNTRYID` AS `OXCOUNTRYID`,`oxstates`.`OXTITLE` AS `OXTITLE`,`oxstates`.`OXISOALPHA2` AS `OXISOALPHA2`,`oxstates`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxstates` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxstates_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxstates_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxstates_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxstates_en` AS select `oxstates`.`OXID` AS `OXID`,`oxstates`.`OXCOUNTRYID` AS `OXCOUNTRYID`,`oxstates`.`OXTITLE_1` AS `OXTITLE`,`oxstates`.`OXISOALPHA2` AS `OXISOALPHA2`,`oxstates`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxstates` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxvendor`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxvendor`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxvendor`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxvendor` AS select `oxvendor`.`OXID` AS `OXID`,`oxvendor`.`OXSHOPID` AS `OXSHOPID`,`oxvendor`.`OXACTIVE` AS `OXACTIVE`,`oxvendor`.`OXICON` AS `OXICON`,`oxvendor`.`OXTITLE` AS `OXTITLE`,`oxvendor`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxvendor`.`OXTITLE_1` AS `OXTITLE_1`,`oxvendor`.`OXSHORTDESC_1` AS `OXSHORTDESC_1`,`oxvendor`.`OXTITLE_2` AS `OXTITLE_2`,`oxvendor`.`OXSHORTDESC_2` AS `OXSHORTDESC_2`,`oxvendor`.`OXTITLE_3` AS `OXTITLE_3`,`oxvendor`.`OXSHORTDESC_3` AS `OXSHORTDESC_3`,`oxvendor`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxvendor`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxvendor` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxvendor_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxvendor_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxvendor_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxvendor_de` AS select `oxvendor`.`OXID` AS `OXID`,`oxvendor`.`OXSHOPID` AS `OXSHOPID`,`oxvendor`.`OXACTIVE` AS `OXACTIVE`,`oxvendor`.`OXICON` AS `OXICON`,`oxvendor`.`OXTITLE` AS `OXTITLE`,`oxvendor`.`OXSHORTDESC` AS `OXSHORTDESC`,`oxvendor`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxvendor`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxvendor` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxvendor_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxvendor_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxvendor_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxvendor_en` AS select `oxvendor`.`OXID` AS `OXID`,`oxvendor`.`OXSHOPID` AS `OXSHOPID`,`oxvendor`.`OXACTIVE` AS `OXACTIVE`,`oxvendor`.`OXICON` AS `OXICON`,`oxvendor`.`OXTITLE_1` AS `OXTITLE`,`oxvendor`.`OXSHORTDESC_1` AS `OXSHORTDESC`,`oxvendor`.`OXSHOWSUFFIX` AS `OXSHOWSUFFIX`,`oxvendor`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxvendor` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxwrapping`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxwrapping`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxwrapping`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxwrapping` AS select `oxwrapping`.`OXID` AS `OXID`,`oxwrapping`.`OXSHOPID` AS `OXSHOPID`,`oxwrapping`.`OXACTIVE` AS `OXACTIVE`,`oxwrapping`.`OXACTIVE_1` AS `OXACTIVE_1`,`oxwrapping`.`OXACTIVE_2` AS `OXACTIVE_2`,`oxwrapping`.`OXACTIVE_3` AS `OXACTIVE_3`,`oxwrapping`.`OXTYPE` AS `OXTYPE`,`oxwrapping`.`OXNAME` AS `OXNAME`,`oxwrapping`.`OXNAME_1` AS `OXNAME_1`,`oxwrapping`.`OXNAME_2` AS `OXNAME_2`,`oxwrapping`.`OXNAME_3` AS `OXNAME_3`,`oxwrapping`.`OXPIC` AS `OXPIC`,`oxwrapping`.`OXPRICE` AS `OXPRICE`,`oxwrapping`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxwrapping` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxwrapping_de`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxwrapping_de`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxwrapping_de`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxwrapping_de` AS select `oxwrapping`.`OXID` AS `OXID`,`oxwrapping`.`OXSHOPID` AS `OXSHOPID`,`oxwrapping`.`OXACTIVE` AS `OXACTIVE`,`oxwrapping`.`OXTYPE` AS `OXTYPE`,`oxwrapping`.`OXNAME` AS `OXNAME`,`oxwrapping`.`OXPIC` AS `OXPIC`,`oxwrapping`.`OXPRICE` AS `OXPRICE`,`oxwrapping`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxwrapping` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `oxv_oxwrapping_en`
+--
+
+/*!50001 DROP TABLE IF EXISTS `oxv_oxwrapping_en`*/;
+/*!50001 DROP VIEW IF EXISTS `oxv_oxwrapping_en`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = latin1 */;
+/*!50001 SET character_set_results     = latin1 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`demodata_ce_410`@`localhost` SQL SECURITY INVOKER */
+/*!50001 VIEW `oxv_oxwrapping_en` AS select `oxwrapping`.`OXID` AS `OXID`,`oxwrapping`.`OXSHOPID` AS `OXSHOPID`,`oxwrapping`.`OXACTIVE_1` AS `OXACTIVE`,`oxwrapping`.`OXTYPE` AS `OXTYPE`,`oxwrapping`.`OXNAME_1` AS `OXNAME`,`oxwrapping`.`OXPIC` AS `OXPIC`,`oxwrapping`.`OXPRICE` AS `OXPRICE`,`oxwrapping`.`OXTIMESTAMP` AS `OXTIMESTAMP` from `oxwrapping` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-31 12:38:50
+-- Dump completed on 2016-08-31 14:45:06

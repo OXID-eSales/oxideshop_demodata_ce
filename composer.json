@@ -1,0 +1,21 @@
+{
+  "name": "oxid-esales/oxideshop-demodata-ce",
+  "description": "This is the demodata for OXID eShop CE.",
+  "type": "oxideshop-demodata",
+  "keywords": [
+    "oxid",
+    "demodata",
+    "eShop"
+  ],
+  "homepage": "https://www.oxid-esales.com/en/home.html",
+  "license": [
+    "GPL-3.0",
+    "proprietary"
+  ],
+  "extra": {
+    "oxideshop": {
+      "demodata-target": "setup/sql/demodata.sql",
+      "out-target": "out"
+    }
+  }
+}

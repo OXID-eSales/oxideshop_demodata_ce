@@ -12,6 +12,9 @@
     "GPL-3.0",
     "proprietary"
   ],
+  "require": {
+    "oxid-esales/oxideshop-composer-plugin": "dev-b-5.3"
+  },
   "extra": {
     "oxideshop": {
       "demodata-target": "setup/sql/demodata.sql",

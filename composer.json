@@ -14,11 +14,5 @@
   ],
   "require": {
     "oxid-esales/oxideshop-composer-plugin": "dev-master"
-  },
-  "extra": {
-    "oxideshop": {
-      "demodata-target": "setup/sql/demodata.sql",
-      "out-target": "out"
-    }
   }
 }

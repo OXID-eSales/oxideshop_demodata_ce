@@ -13,7 +13,7 @@
     "proprietary"
   ],
   "require": {
-    "oxid-esales/oxideshop-composer-plugin": "dev-master"
+    "oxid-esales/oxideshop-composer-plugin": "dev-b-5.3"
   },
   "extra": {
     "oxideshop": {

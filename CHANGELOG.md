@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [6.0.2] - 2019-04-18
 
 ### Removed
-- `blFooterShowGuestbook` config option
+- `blFooterShowGuestbook` config option [#0006696](https://bugs.oxid-esales.com/view.php?id=6696)
 
 ### Fixed
 - `oxrightofwithdrawal` content page content fixed

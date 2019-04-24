@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+- Removed the `out/pictures/generated` directory from package
+    - this directory is filled dynamically by shop.
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+- Fixed wording in changelog file.
 
 ## [6.0.2] - 2019-04-18
 

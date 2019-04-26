@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.4] - Unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
 ## [6.0.3] - 2019-04-26
 
 ### Changed
@@ -27,6 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [6.0.1] - 2018-01-24
 
 
+[6.0.4]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v6.0.3...HEAD
 [6.0.3]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v6.0.0...v6.0.1

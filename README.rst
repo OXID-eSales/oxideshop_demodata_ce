@@ -1,7 +1,7 @@
 Community edition demo data
 ===========================
 
-This branch contains the demodata for OXID eShop 6.0
+This branch is compatible with OXID eShop compilation master
 
 Bugs and Issues
 ---------------

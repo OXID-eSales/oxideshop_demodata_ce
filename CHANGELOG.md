@@ -4,17 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.0.4] - Unreleased
-
-### Added
-
-### Changed
-
-### Deprecated
+## [6.0.4] - 2020-04-21
 
 ### Removed
-
-### Fixed
+- Removed date values from titles and descriptions
 
 ## [6.0.3] - 2019-04-26
 

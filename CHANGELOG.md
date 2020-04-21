@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [6.0.4] - 2020-04-21
+
+### Removed
+- Removed date values from titles and descriptions
+
 ## [6.0.3] - 2019-04-26
 
 ### Changed

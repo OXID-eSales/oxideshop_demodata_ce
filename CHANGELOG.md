@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [8.0.0] - Unreleased
+
+### Changed
+- Demodata is now for twig template engine/APEX theme
+- License updated
+
 ## [v7.1.0] - 2023-05-03
 
 ### Changed
@@ -51,6 +57,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v6.0.1] - 2018-01-24
 
+[v8.0.0]: https://github.com/OXID-eSales/oxideshop_demodata_pe/compare/v7.1.0...v8.0.0
 [v7.1.0]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v7.0.0...v7.1.0
 [v7.0.0]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v6.0.4...v7.0.0
 [v6.0.4]: https://github.com/OXID-eSales/oxideshop_demodata_ce/compare/v6.0.3...v6.0.4

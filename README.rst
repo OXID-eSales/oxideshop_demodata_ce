@@ -1,7 +1,7 @@
 Community edition demo data
 ===========================
 
-This branch is compatible with OXID eShop compilation master
+This branch is compatible with OXID eShop compilation 7
 
 Bugs and Issues
 ---------------

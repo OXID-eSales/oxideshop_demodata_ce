@@ -10,5 +10,8 @@
   "homepage": "https://www.oxid-esales.com/en",
   "license": [
     "proprietary"
-  ]
+  ],
+   "conflict": {
+       "oxid-esales/smarty-component": "*"
+   }
 }

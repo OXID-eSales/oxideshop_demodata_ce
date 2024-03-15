@@ -1,5 +1,18 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
+## v8.0.1 - Unreleased
+
+### Fixed
+- Shift oxcontents into its proper position to allow better comparisons
+- Use the same oxcontents part for all editions (the additional fields all have proper defaults for now)
+- Accessibility issues reported by eye able
+  - Links must have accessible text (primary the enlarge links on images)
+  - Identical links with different targets (same as above)
+  - Jump in the heading order (content started with h3, while only h1 exists before)
+  - Abbreviation markup
+  - Removed example text in `how to order page` page
+  - Invalid URL in `test customers` page
+
 ## v8.0.0 - 2023-05-09
 
 ### Changed

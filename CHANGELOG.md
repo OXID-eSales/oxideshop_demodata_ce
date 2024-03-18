@@ -1,6 +1,6 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
-## v8.0.1 - Unreleased
+## v8.0.1 - 2024-03-18
 
 ### Fixed
 - Shift oxcontents into its proper position to allow better comparisons

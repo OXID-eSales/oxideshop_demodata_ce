@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
+## [undecided] - unreleased
+
+### Fixed
+- Remove unnecessary `<small>` tags from CHF currency
+
 ## v8.0.1 - 2024-03-18
 
 ### Fixed

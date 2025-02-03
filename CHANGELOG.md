@@ -1,6 +1,6 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
-## v9.0.0 - unreleased
+## v9.0.0-alpha.1 - 2025-02-03
 
 ### Removed
 - Value for a superseded config setting

@@ -4,6 +4,7 @@
 
 ### Removed
 - Value for a superseded config setting
+- Unused promotions
 
 ## v8.0.2 - 2024-10-14
 

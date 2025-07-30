@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
+## v9.0.0-alpha.2 - Unreleased
+
+### Added
+- Database configuration entry in `oxconfig` table to enable default low stock message
+
 ## v9.0.0-alpha.1 - 2025-02-03
 
 ### Removed

@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
+## v9.0.0-alpha.2 - Unreleased
+
+### Changed
+- Updated Canada province ISO codes and removed obsolete `OXISOALPHA2` column from `oxstates` table
+
 ## v9.0.0-alpha.1 - 2025-02-03
 
 ### Removed

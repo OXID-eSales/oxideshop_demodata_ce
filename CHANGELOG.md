@@ -1,5 +1,6 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
-## v8.1.0 - unreleased
+
+## v8.1.0 - 2025-10-14
 
 ### Removed
 - Remove initial config `blSendTechnicalInformationToOxid`

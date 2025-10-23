@@ -1,6 +1,6 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
-## v9.0.0-alpha.2 - Unreleased
+## compilation-v8.0.0-alpha.2 - Unreleased
 
 ### Added
 - Database configuration entry in `oxconfig` table to enable default low stock message
@@ -10,6 +10,11 @@
 ### Removed
 - Value for a superseded config setting
 - Unused promotions
+
+## v8.1.0 - 2025-10-14
+
+### Removed
+- Remove initial config `blSendTechnicalInformationToOxid`
 
 ## v8.0.2 - 2024-10-14
 

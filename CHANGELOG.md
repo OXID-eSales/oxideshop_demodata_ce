@@ -3,6 +3,9 @@
 ## v8.0.0-alpha.3 - Unreleased
 *Compilation release*
 
+### Added
+- Locale mappings and localized media alt attribute demo data for product images
+
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*
 

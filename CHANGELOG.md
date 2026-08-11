@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Community Edition Demo Data Component
 
+## v8.1.1 - unreleased
+
+### Fixed
+- Incorrect SEO identifiers for forgot password pages
+
 ## v8.1.0 - 2025-10-14
 
 ### Removed

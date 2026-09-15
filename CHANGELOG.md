@@ -6,6 +6,9 @@
 ### Added
 - Locale mappings and localized media alt attribute demo data for product images
 
+### Removed
+- Obsolete `oxconfig` entries for theme settings, which are stored in YAML files now
+
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*
 

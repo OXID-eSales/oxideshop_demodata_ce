@@ -6,6 +6,9 @@
 ### Added
 - Locale mappings and localized media alt attribute demo data for product images
 
+### Removed
+- Theme settings from the `oxconfig` table
+
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*
 

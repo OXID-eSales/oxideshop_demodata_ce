@@ -18,7 +18,7 @@
 - Value for a superseded config setting
 - Unused promotions
 
-## v8.1.1 - unreleased
+## v8.1.1 - 2026-10-06
 
 ### Fixed
 - Incorrect SEO identifiers for forgot password pages
